@@ -84,9 +84,9 @@ def load_catalog(root: Path = ROOT, *, include_history: bool = False) -> dict[st
         if _historical(path):
             if not include_history:
                 continue
-            historical_id = "document.history." + re.sub(
-                r"[^a-z0-9]+", ".", path.lower().removesuffix(".md")
-            ).strip(".")
+            historical_id = "document.history." + re.sub(r"[^a-z0-9]+", ".", path.lower().removesuffix(".md")).strip(
+                "."
+            )
             doc = Document(
                 historical_id,
                 path,
@@ -137,10 +137,7 @@ def _targets(root: Path, doc: Document) -> list[str]:
 def route_index(catalog: dict[str, Document], root: Path = ROOT) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     """Build explicit edges and shortest root-router paths; no persistent graph."""
     by_path = {doc.path: doc.id for doc in catalog.values()}
-    edges = {
-        doc.id: sorted({by_path[p] for p in _targets(root, doc) if p in by_path})
-        for doc in catalog.values()
-    }
+    edges = {doc.id: sorted({by_path[p] for p in _targets(root, doc) if p in by_path}) for doc in catalog.values()}
     routes: dict[str, list[str]] = {}
     if ROUTER_ID in catalog:
         routes[ROUTER_ID] = [ROUTER_ID]
@@ -189,10 +186,7 @@ def search_documents(
         title = next((line[2:].casefold() for line in doc.body.splitlines() if line.startswith("# ")), "")
         searchable = doc.body.lower()
         score = sum(
-            6 * (term in doc.id)
-            + 3 * (term in doc.path.lower())
-            + 2 * (term in title)
-            + (term in searchable)
+            6 * (term in doc.id) + 3 * (term in doc.path.lower()) + 2 * (term in title) + (term in searchable)
             for term in tokens
         )
         if tokens and score > 0:

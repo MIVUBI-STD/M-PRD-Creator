@@ -16,8 +16,7 @@ def doc(resource: str, domain: str, role: str, text: str) -> str:
         f"role: {role}\n"
         "authority: CANONICAL\n"
         "lifecycle: ACTIVE\n"
-        "---\n\n"
-        + text
+        "---\n\n" + text
     )
 
 
