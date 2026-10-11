@@ -7,13 +7,13 @@ authority: HISTORICAL
 lifecycle: ACTIVE
 ---
 
-# Current Validation Status
+# Validation Snapshot — 2026-09-09
 
 Updated: 2026-09-09
 
-This file records the latest repository proof snapshot only. This is a dated historical proof snapshot; current source and exact-head workflow results take precedence. Development intent is at `planning/development.md`.
+This is the repository proof snapshot captured on 2026-09-09. Its metadata authority is HISTORICAL. For current proof, inspect the actual HEAD and matching completed workflow runs; development intent belongs to `planning/development.md`.
 
-## Current state
+## State at capture
 
 ```text
 working branch: develop
@@ -23,7 +23,7 @@ stable branch: main
 candidate: WORKFLOW_NAMING_3_1_3_READY
 ```
 
-Current active production vocabulary is:
+The production vocabulary recorded at capture was:
 
 ```text
 Project Requirements

@@ -11,11 +11,11 @@ lifecycle: ACTIVE
 
 Updated: 2026-09-08
 
-Review bodies preserve what was observed at capture time. This register owns their **current meaning**. Historical findings do not become active work unless the current user instruction or exact topic-based plan or current user instruction promotes a concrete boundary.
+Review bodies preserve what was observed at capture time. This register explains their present relevance; historical findings do not authorize new work without a current instruction or a verified development decision.
 
-Current validation remains at this directory root as a compact proof snapshot. Historical audits live under `history/`; detailed superseded implementation status may remain in Git history rather than being repeated in current context.
+The dated validation snapshot at this directory root is historical evidence, not current repository proof. Historical audits live under `history/`; current behavior is determined by the exact source HEAD and relevant completed tests.
 
-## Current review status
+## Review index
 
 | Evidence / review | Current meaning |
 |---|---|
@@ -26,7 +26,7 @@ Current validation remains at this directory root as a compact proof snapshot. H
 | [Operating Parity Acceptance](history/operating-parity-acceptance.md) | Historical partial acceptance evidence; old full-parity framing is not current policy. |
 | [System Integration Proof](history/system-integration-proof.md) | Historical Flow 2→7 real-project integration evidence; does not substitute for current project state. |
 | [Archived Retirement Audit](history/archived-retirement-audit.md) | Historical implemented evidence supporting retired-builder removal. |
-| [Current Validation Status](current-validation.md) | **Current proof/status snapshot** for the active development candidate. |
+| [Validation Snapshot — 2026-09-09](current-validation.md) | Historical proof from that date only; do not use as today's status. |
 | [Repository Quality / AI-Slop Audit — 2026-08-14](history/repository-quality-audit-2026-08-14.md) | Historical completed-remediation evidence. Remaining conditional items live only in `planning/backlog.md` and are not active unless promoted. |
 
 Use [audit-template.md](audit-template.md) only when a new review is actually justified; reviews are not routine ceremony.
@@ -45,7 +45,7 @@ useful discipline/reference
 ```text
 review body        → capture-time observation/evidence
 reviews/README     → current interpretation of that evidence
-current-validation → compact current proof/status
+current-validation → dated historical proof, not current status
 reviews/history    → historical review bodies
 decisions          → durable chosen rationale/rule where needed
 topic commits       → actual source-work continuity
