@@ -22,6 +22,25 @@ AGENTS.md
 
 A read-only `amati / inspect / understand / recover context` request stops after context recovery/reporting and does not enter implementation.
 
+## Development Operating Standard
+
+This is the **single canonical owner** of PRD-Creator's SYSTEM DEVELOPMENT operating behavior. Root `AGENTS.md` selects the mode; `development-brief` invokes this policy without maintaining a second procedure.
+
+1. **DEFINE:** normalize user intent into a bounded goal, observable acceptance, protected invariants, forbidden proxies, scope, and STOP condition. Distinguish explicit requirements from your interpretation.
+2. **INVESTIGATE:** pin `develop` HEAD, current owner and real consumers. Separate observed source facts, inferred risks, and unresolved proof. No broad repository reading for reassurance.
+3. **DESIGN:** choose in this order: no change → safely remove obsolete behavior → correct the current canonical owner → reuse → smallest complete addition. A new subsystem requires a proven responsibility and an actual consumer.
+4. **IMPLEMENT:** finish the smallest coherent owner-to-consumer vertical path. Do not create duplicate parsers, registries, managers, aliases, workflow states, or compatibility layers to hide an upstream defect.
+5. **VERIFY:** during unfinished BUILD, review current source contracts, imports, affected consumers, trust boundaries, and provenance. Open executable acceptance after the integrated production path exists, rather than creating per-edit test campaigns. Test earlier when delaying would risk security, data loss, irreversible mutation, or broken critical compatibility. Source review never equals an executed test PASS.
+6. **COMMIT + STOP:** publish one valid logical outcome on `develop` with truthful `Work/State/Proof` metadata, verify new HEAD, disclose narrow unexecuted residue, and stop at the requested boundary. No automatic promotion to `Local` or `main`.
+
+### Architecture-first integration boundary
+
+Before calling a multi-owner BUILD coherent, trace **input → canonical owner → dependent consumer → operator-visible output** and check that no parallel current authority remains. At acceptance, use the smallest decisive positive/negative/end-to-end cases, and keep existing regression tests. A large diff is not proof of integration. A missing executable environment leaves exact claims `NOT EXECUTED`, not assumed reliable.
+
+### Anti-AI-SLOP admission
+
+For every new abstraction, state the specific repeated failure, canonical responsibility, real caller, invariant, simplest alternative considered, and what duplicate/legacy owner it replaces. Reject new abstractions without a current consumer. Do not use version-suffixed `-new`/`-v2` names for an unchanged responsibility; public schema/product versions are an exception when contractually required. Optimize cost to a **correct accepted result**, not code volume, docs count, test count, or architecture symmetry with Lazy-Developer.
+
 ## Lifecycle
 
 ```text

@@ -9,6 +9,8 @@ Use when changing how PRD-Creator itself works: policy, skills, workflow, render
 
 Root `AGENTS.md` owns work mode, authority, continuity, canonical workflow naming, action intent, and branch behavior. `GITHUB_RULES.md` owns GitHub mutation/verification mechanics.
 
+The mandatory implementation discipline lives in [Development Workflow](../../../docs/knowledge/work-modes/development.md#development-operating-standard). Apply its DEFINE → INVESTIGATE → DESIGN → IMPLEMENT → VERIFY → COMMIT + STOP sequence before material changes. Prefer a coherent vertical integration batch over small speculative test/framework additions. The protected three-branch model remains `develop → Local → main`; do not promote implicitly.
+
 ## Development contract
 
 Before writing, establish only:

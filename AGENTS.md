@@ -21,6 +21,20 @@ Numeric labels are not workflow names. Numeric prefixes in `docs/foundation/` ar
 
 Do not reintroduce numbered stage aliases in current operating documentation.
 
+## Work-mode boundary
+
+Select one mode from the requested outcome before opening a specialist or mutating files:
+
+- **INSPECT (Plan):** understand/recover/compare only; repository and client project remain read-only.
+- **SYSTEM DEVELOPMENT (Development):** improve PRD-Creator policy, code, architecture, tooling, or knowledge on `develop`; use the existing `development-brief` skill.
+- **PROJECT PRODUCTION (Production Execution):** create or revise *one explicitly selected* authorized project package; do not silently modify repository implementation.
+- **MAINTENANCE:** correct a bounded, evidenced defect at its first wrong owner; no adjacent feature-building.
+- **VALIDATION:** examine existing source, product contracts and evidence without rewriting accepted source or expectations solely to claim PASS.
+
+A production issue discovered during PROJECT PRODUCTION is not automatic authorization for SYSTEM DEVELOPMENT. A system improvement is not automatic approval to revise live project data. An unqualified “continue” preserves the active topic and mode. Root policies and existing three specialist skills remain the only active routing owners; mode labels are not new persisted states.
+
+For SYSTEM DEVELOPMENT, the **Development Operating Standard** and architecture-first integration policy are owned only by [Development Workflow](docs/knowledge/work-modes/development.md). Build a coherent owner-to-consumer path before expanding routine tests. This never permits unverified claims, unsafe mutations, or lost approval/Golden compatibility.
+
 ## Core routing
 
 | Intent | Mode | Start |
@@ -136,6 +150,12 @@ source / approved decisions
 ```
 
 Never hand-patch generated `prd.html`, `context.md`, or `index.json` to hide an upstream defect.
+
+## Topic-based continuation
+
+For a new chat or an explicit resume, pin the exact repository/branch HEAD, identify the requested **topic**, inspect relevant topic commits and current owner/consumer source, and distinguish completed work from unresolved claims. Do not turn the latest unrelated commit or the historical `next-action.md` into automatic work authorization. Chat memory and generated notes are orientation, never repository authority.
+
+Material development commits carry `Work`, `State`, and `Proof` metadata (plus `Unresolved`/`Next` when useful) under `GITHUB_RULES.md`. These describe the bounded commit unit, not the entire feature or a second task-status database.
 
 ## Repository continuity
 

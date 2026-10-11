@@ -175,6 +175,19 @@ Message format:
 
 Use `feat`, `fix`, `docs`, `refactor`, `test`, `ci`, `build`, `release`, or bounded `chore` according to the primary outcome.
 
+For **material repository Development** commits, append concise, truthful continuity fields to the conventional subject:
+
+```text
+Work: <stable topic and canonical responsibility>
+State: ACTIVE | BLOCKED | PAUSED | DONE
+Decision: <rationale, only when material>
+Proof: <exact source/test/CI evidence and NOT EXECUTED limits>
+Unresolved: <specific unresolved question, if any>
+Next: <one bounded next action, when not DONE>
+```
+
+`Work`, `State`, and `Proof` are required for material work. `DONE` closes the specific committed unit, not the entire upgrade. Git commit history is the continuity record: do not create heartbeat commits, mirrored progress registries, or duplicate next-action logs. On resume, match by **topic plus changed owner**, not merely the newest commit.
+
 Split commits only for independent outcomes that can be reviewed/reverted/landed independently. Do not split by file, directory, tool call, work order, or transfer limitation.
 
 Do not rewrite published/shared history merely to make it prettier. A fast-forward ref update from the pinned current HEAD is valid when the repository workflow permits it.
@@ -190,6 +203,9 @@ Do not rewrite published/shared history merely to make it prettier. A fast-forwa
 - Inspect only the failing job/step and relevant error before editing.
 - Do not weaken/delete/bypass a valid test or workflow merely to obtain green status.
 - Static checks prove only the static/mechanical contracts they execute; they do not prove browser visuals, audio quality, deployment success, or another unexecuted capability.
+- Remote GitHub source review can complete source-verifiable work without a user-PC checkout. Label its ceiling `SOURCE_REVIEWED`; it is not an executed test. Existing exact-HEAD CI results may provide stronger evidence.
+- When browser, runtime, audio or local artifact execution is genuinely unavailable, finish independent source-valid scope and mark that **specific** result `NOT EXECUTED`; never invent a PASS or require an unrequested local-PC workaround.
+- During an unfinished multi-owner architecture BUILD, inspect affected source/consumers first; defer routine fixture/test proliferation to one meaningful integration boundary. Exceptions: security, irreversible mutation, data-loss, or compatibility hazards require early checks.
 
 ### Failure policy
 
