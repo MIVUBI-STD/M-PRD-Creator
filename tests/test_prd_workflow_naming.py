@@ -12,6 +12,22 @@ class WorkflowNamingContracts(unittest.TestCase):
         self.assertNotIn('data-full-index="04"', source)
         self.assertNotIn(">04</span>", source)
 
+    def test_active_workspace_policy_has_no_retired_flow_names(self) -> None:
+        policy = (ROOT / "workspace" / "README.md").read_text(encoding="utf-8")
+        self.assertNotIn("Flow 2", policy)
+        self.assertNotIn("Flow 3", policy)
+        self.assertNotIn("Flow 4", policy)
+        self.assertNotIn("Flow 5", policy)
+        self.assertIn("Project Requirements", policy)
+        self.assertIn("Production Assets", policy)
+
+    def test_renderer_error_uses_project_requirements(self) -> None:
+        source = (ROOT / "kits" / "prd-creator" / "renderer" / "render.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("current Flow 2", source)
+        self.assertIn("current Project Requirements", source)
+
     def test_root_readme_uses_canonical_human_workflow_names(self) -> None:
         source = (ROOT / "README.md").read_text(encoding="utf-8")
         expected = (

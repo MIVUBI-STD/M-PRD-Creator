@@ -35,23 +35,23 @@ Do not infer project focus from directory order, filename order, commit recency,
 ## Canonical Project Artifacts
 
 ```text
-Flow 2
+Project Requirements
 state/source-inventory.yaml
 state/requirement-register.yaml
 state/intake-state.yaml
 
-Flow 3 — PRD core 01–03
+PRD Production — document sections 01–03
 work/content.md
 work/render-data.json
 
-04 Production Assets, when justified
+Production Assets, when justified
 work/asset-requirements.md
 
-Flow 4
+PRD Handoff
 work/acceptance.md
 state/handoff-state.yaml
 
-Voice, only when used after formal handoff
+Voice Requirements / Voice Production / Voice Delivery, only after formal handoff
 state/voice-state.yaml
 work/voice-requirements.md
 work/voice-production.md
@@ -79,7 +79,7 @@ PRD mechanical validation uses `kits/prd-creator/validator/validate.py`. PRD →
 
 - `state/intake-state.yaml` must explicitly record the preview status/approval.
 - A preview package may retain canonical `state/` + `work/` material and the approved preview artifact without the formal versioned `output/` bundle or `state/handoff-state.yaml`.
-- `approved_preview` never authorizes Flow 5 automatically.
+- `approved_preview` never authorizes Voice Requirements automatically.
 - Formal downstream Voice handoff still requires `handoff_ready`.
 
 ## Retention and security
@@ -108,7 +108,7 @@ document.version: 1.0.0
 → output/v1.0.0/
 ```
 
-A downstream-only 04 or Voice presentation refresh may regenerate the current version when accepted PRD meaning did not enter a new declared revision.
+A downstream-only Production Assets or Voice presentation refresh may regenerate the current version when accepted PRD meaning did not enter a new declared revision.
 
 ## Authority Rule
 
@@ -116,8 +116,8 @@ A downstream-only 04 or Voice presentation refresh may regenerate the current ve
 source evidence + current user instruction + approved decisions
 → approved project model
    ├─ canonical PRD core
-   └─ optional non-Voice 04 requirements
-→ PRD/04 acceptance
+   └─ optional non-Voice Production Assets requirements
+→ PRD Handoff acceptance
 → optional Voice requirements + canonical Voice Production
 → versioned derived delivery
 ```

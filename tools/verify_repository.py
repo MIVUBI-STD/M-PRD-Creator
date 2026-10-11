@@ -136,6 +136,7 @@ MARKDOWN_ROOTS = [
     ROOT / "docs" / "foundation",
     ROOT / "docs" / "knowledge",
     ROOT / "planning",
+    ROOT / "workspace" / "README.md",
     KIT_ROOT,
 ]
 

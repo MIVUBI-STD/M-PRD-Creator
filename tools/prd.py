@@ -235,7 +235,7 @@ def _git_changed_paths(base: str | None) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
-def impact_payload(changed_paths: list[str]) -> dict[str, Any]:
+def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> dict[str, Any]:
     changed = sorted({_normalize_changed_path(path) for path in changed_paths if _normalize_changed_path(path)})
     checks: set[str] = set()
     owners: set[str] = set()
@@ -315,6 +315,57 @@ def impact_payload(changed_paths: list[str]) -> dict[str, Any]:
             owners.add("unknown")
             checks.add("repository")
 
+    # Existing project state determines which optional downstream gates exist.
+    # This is affected-check planning, not a claim that a SHA is already stale.
+    changed_set = set(changed)
+    project_prd_changed = bool(changed_set & PROJECT_PRD_PATHS)
+    project_handoff_changed = bool(changed_set & PROJECT_HANDOFF_PATHS)
+    project_voice_changed = bool(changed_set & PROJECT_VOICE_PATHS)
+    potential_downstream: list[str] = []
+    stale_if_present: list[str] = []
+    not_proven: list[str] = []
+
+    if project_prd_changed:
+        potential_downstream = ["PRD Production", "PRD Handoff", "Voice Requirements", "Voice Delivery"]
+        stale_if_present = [
+            "accepted Project Requirements / PRD SHA bindings",
+            "PRD Handoff acceptance and versioned delivery",
+            "downstream Voice source and production bindings",
+        ]
+        not_proven = ["semantic acceptance", "browser visual quality"]
+    elif project_handoff_changed:
+        potential_downstream = ["PRD Handoff", "Voice Requirements", "Voice Delivery"]
+        stale_if_present = ["accepted PRD Handoff and downstream Voice binding"]
+        not_proven = ["semantic acceptance"]
+
+    if project_voice_changed:
+        for scope in ("Voice Requirements", "Voice Production", "Voice Delivery"):
+            if scope not in potential_downstream:
+                potential_downstream.append(scope)
+        if not stale_if_present:
+            stale_if_present = ["Voice production and delivery SHA bindings"]
+        not_proven.append("audio/actor/pronunciation quality")
+
+    if project is not None and (project_prd_changed or project_handoff_changed):
+        project = project.resolve()
+        handoff_present = any(
+            (project / name).is_file()
+            for name in ("work/acceptance.md", "state/handoff-state.yaml")
+        )
+        voice_present = any(
+            (project / name).is_file()
+            for name in (
+                "state/voice-state.yaml",
+                "work/voice-requirements.md",
+                "work/voice-production.md",
+                "work/voice-acceptance.md",
+            )
+        )
+        if project_prd_changed and handoff_present:
+            checks.add("handoff")
+        if voice_present:
+            checks.add("voice")
+
     if browser_required:
         checks.add("browser")
     if full_regression_required:
@@ -342,6 +393,10 @@ def impact_payload(changed_paths: list[str]) -> dict[str, Any]:
         "browser_required": browser_required,
         "full_regression_required": full_regression_required,
         "derived_edits": derived_edits,
+        "potential_downstream": potential_downstream,
+        "stale_if_present": stale_if_present,
+        "not_proven": sorted(set(not_proven)),
+        "project_scope": str(project) if project is not None else None,
         "next_action": next_action,
     }
 
@@ -423,6 +478,11 @@ def main() -> int:
     )
     impact_parser.add_argument("changed", nargs="*", help="changed project/repository paths")
     impact_parser.add_argument("--git-base", help="read changed paths from git diff against this ref")
+    impact_parser.add_argument(
+        "--project",
+        type=Path,
+        help="optional exact project package for checking present downstream handoff/Voice artifacts",
+    )
     impact_parser.add_argument("--json", action="store_true", dest="as_json")
 
     status_parser = subparsers.add_parser("status", help="show compact mechanical project status and first wrong owner")
@@ -477,7 +537,7 @@ def main() -> int:
                 changed.extend(_git_changed_paths(args.git_base))
             elif not changed:
                 changed.extend(_git_changed_paths(None))
-            payload = impact_payload(changed)
+            payload = impact_payload(changed, project=args.project)
             if args.as_json:
                 _print_json(payload)
             else:

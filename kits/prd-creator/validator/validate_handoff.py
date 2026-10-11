@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that Flow 5 is entering from the current accepted PRD handoff."""
+"""Validate optional Voice work against the current accepted PRD handoff."""
 
 from __future__ import annotations
 

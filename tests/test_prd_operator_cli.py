@@ -99,6 +99,39 @@ class PrdOperatorCliContracts(unittest.TestCase):
         self.assertEqual(payload["derived_edits"], ["output/v1.0.0/prd.html"])
         self.assertIn("canonical owner", payload["next_action"])
 
+    def test_impact_scopes_optional_downstream_checks_to_real_project(self) -> None:
+        project = self.make_project()
+        changed = ["state/requirement-register.yaml"]
+        before = prd_operator.impact_payload(changed, project=project)
+        self.assertEqual(before["recommended_checks"], ["prd"])
+        self.assertIn("PRD Handoff", before["potential_downstream"])
+        self.assertIn("semantic acceptance", before["not_proven"])
+        self.assertIsNotNone(before["project_scope"])
+
+        (project / "state" / "handoff-state.yaml").write_text(
+            handoff_state_text(), encoding="utf-8"
+        )
+        with_handoff = prd_operator.impact_payload(changed, project=project)
+        self.assertEqual(with_handoff["recommended_checks"], ["prd", "handoff"])
+        self.assertNotIn("voice", with_handoff["recommended_checks"])
+
+        (project / "state" / "voice-state.yaml").write_text(
+            "status: pending_extraction\n", encoding="utf-8"
+        )
+        with_voice = prd_operator.impact_payload(changed, project=project)
+        self.assertEqual(with_voice["recommended_checks"], ["prd", "handoff", "voice"])
+
+    def test_impact_cli_project_is_read_only_and_additive(self) -> None:
+        project = self.make_project()
+        result = run_operator(
+            "impact", "work/asset-requirements.md", "--project", project, "--json"
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertIn("stale_if_present", payload)
+        self.assertIn("project_scope", payload)
+        self.assertNotIn("voice", payload["recommended_checks"])
+
     def test_validate_command_preserves_canonical_validator_exit(self) -> None:
         project = self.make_project()
         self.assertEqual(run_operator("build", project).returncode, 0)

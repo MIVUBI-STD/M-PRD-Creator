@@ -55,9 +55,9 @@ def _load_projection(render_data: Path) -> dict:
         try:
             intake = load_intake_state(intake_path)
         except StateError as exc:
-            raise ValueError(f"current Flow 2 intake state is invalid: {exc}") from exc
+            raise ValueError(f"current Project Requirements intake state is invalid: {exc}") from exc
         if data["approved_requirement_sha256"] != intake.approved_requirement_sha256:
-            raise ValueError("render-data approved_requirement_sha256 does not match current Flow 2 approval")
+            raise ValueError("render-data approved_requirement_sha256 does not match current Project Requirements approval")
     return data
 
 
