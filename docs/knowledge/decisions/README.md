@@ -11,7 +11,7 @@ lifecycle: ACTIVE
 
 This directory stores durable repository/product decisions whose reasons must survive future sessions.
 
-**Current execution does not start from historical decision prose.** Use `../next-action.md` for active continuation, `../ownership.md` for current owners, `../source-authority.md` for precedence, and the nearest current foundation/kit contract for exact behavior.
+**Current execution does not start from historical decision prose.** Use `../../../planning/development.md` for active continuation, `../ownership.md` for current owners, `../source-authority.md` for precedence, and the nearest current foundation/kit contract for exact behavior.
 
 ## Current Durable Decisions
 
@@ -29,7 +29,7 @@ This directory stores durable repository/product decisions whose reasons must su
 
 ## Historical / Superseded Context
 
-- [buildit-parity-reassessment.md](buildit-parity-reassessment.md) records a former parity-remediation phase. It is not active work unless `next-action.md` explicitly reopens it.
+- [buildit-parity-reassessment.md](buildit-parity-reassessment.md) records a former parity-remediation phase. It is not active work unless current topic commits / explicit development plan explicitly reopens it.
 - [operating-parity-gates.md](operating-parity-gates.md) contains captured Phase 1–3 terminology and paths. Current routing/verification owners override stale captured paths.
 
 Git history and explicitly retained legacy references are the recovery mechanism for retired long-form decisions and older architecture. Do not keep live compatibility paths solely for archaeology.
@@ -38,7 +38,7 @@ Git history and explicitly retained legacy references are the recovery mechanism
 
 ```text
 Need current task/status?
-→ ../next-action.md
+→ ../../../planning/development.md (when relevant)
 
 Need current owner?
 → ../ownership.md

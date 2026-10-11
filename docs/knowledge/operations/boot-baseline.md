@@ -31,7 +31,7 @@ Project Requirements
 AGENTS.md
 → GITHUB_RULES.md when GitHub work is material
 → CONTEXT.md
-→ next-action.md
+→ topic-related commit + current owner
 → smallest owner needed
 → report understanding
 → STOP / NO EDIT
@@ -45,7 +45,7 @@ Pass when the agent can state current repository purpose, active boundary/next s
 AGENTS.md
 → GITHUB_RULES.md
 → CONTEXT.md
-→ next-action.md
+→ topic-related commit + current owner
 → development-brief
 → smallest relevant owner/source
 → implementation after grounding
@@ -61,7 +61,7 @@ AGENTS.md
 → STOP
 ```
 
-`CONTEXT.md` / `next-action.md` may be skipped only when they cannot materially change the decision.
+Read `planning/development.md` only when its current development plan can materially change the requested topic. Do not require a historical task note to begin a focused source fix.
 
 ## Scenario D — normal project Production Execution
 

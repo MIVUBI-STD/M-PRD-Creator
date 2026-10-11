@@ -15,12 +15,12 @@ Use this guide to decide **where a change decision belongs** and when ordinary b
 
 ## Source-Of-Truth Routing
 
-- current active task/status → `docs/knowledge/next-action.md`;
+- current active task/status → `planning/development.md`;
 - durable decision/reason → `docs/knowledge/decisions/README.md` or a dedicated note in `decisions/`;
 - stable production policy → `docs/foundation/`;
 - current implementation ownership → `docs/knowledge/ownership.md`;
 - evidence/findings → `reviews/` or a focused operations proof note;
-- future/non-active work → `operations/backlog.md`;
+- future/non-active work → `planning/backlog.md`;
 - project-specific state → the active `workspace/active/<project>/` owner.
 
 Do not create a second planning/state hierarchy.
@@ -62,7 +62,7 @@ Escalate to a durable coordinated change note only when one of these is true:
 - a migration/compatibility promise spans multiple phases or project packages;
 - several developers/sessions need one shared architectural contract;
 - changing one owner invalidates multiple downstream authority/state contracts;
-- existing `next-action` + decision register cannot represent the tradeoff clearly.
+- existing `planning/development.md` + decision register cannot represent the tradeoff clearly.
 
 A coordinated change note should define:
 
@@ -103,7 +103,7 @@ A review records evidence/reasoning. A decision records the chosen durable rule.
 review finding
 → decision (if a durable choice is required)
 → implementation owner
-→ current status in next-action
+→ current status in relevant topic commits and planning
 ```
 
 ## Related

@@ -33,7 +33,7 @@ Use the same boundary names in routing, ownership, continuation, and operator co
 
 | Need | Owner |
 |---|---|
-| Active continuation / resume checkpoint | [next-action.md](./next-action.md) |
+| Active repository development intent | [planning/development.md](../../planning/development.md) (not execution status) |
 | Work routing | [work-routing.md](./work-routing.md) |
 | Repository/code/procedure ownership | [ownership.md](./ownership.md) |
 | Source/state authority | [source-authority.md](./source-authority.md) |
@@ -44,7 +44,7 @@ Use the same boundary names in routing, ownership, continuation, and operator co
 | Durable decision index | [decisions/README.md](./decisions/README.md) |
 | Current validation evidence | [reviews/current-validation.md](./reviews/current-validation.md) |
 | Historical review evidence | [reviews/history/](./reviews/README.md) |
-| Future/non-active work | [operations/backlog.md](./operations/backlog.md) |
+| Future/non-active work | [planning/backlog.md](../../planning/backlog.md) |
 | Boot/routing regression scenarios | [operations/boot-baseline.md](./operations/boot-baseline.md) |
 
 Root `../../AGENTS.md` owns boot/work modes/naming. GitHub execution remains owned by root `GITHUB_RULES.md`.
@@ -52,11 +52,12 @@ Root `../../AGENTS.md` owns boot/work modes/naming. GitHub execution remains own
 ## Separation rule
 
 ```text
-active continuation       → next-action.md
+current topic source       → current GitHub commit + canonical owner
 durable choice/reason     → decisions/
 current proof             → reviews/current-validation.md
 historical proof          → reviews/history/
-future/non-active work    → operations/backlog.md
+development intent        → ../../planning/development.md
+future/non-active work    → ../../planning/backlog.md
 production policy         → ../foundation/
 project-specific state    → external/local project package
 ```

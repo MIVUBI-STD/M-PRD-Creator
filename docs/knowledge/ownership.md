@@ -35,10 +35,10 @@ Use these names in all current ownership/routing language. Numbered document/fil
 | Project Setup / work modes / boot / authority / continuity / skill budget | `AGENTS.md` |
 | GitHub mutation/history/CI/safety | `GITHUB_RULES.md` |
 | Stable repository/product orientation | `CONTEXT.md` |
-| Active continuation | `docs/knowledge/next-action.md` |
+| Repository development intent | `planning/development.md` (topic-scoped) |
 | Source/state precedence | `docs/knowledge/source-authority.md` |
 | Durable decisions/rationale | `docs/knowledge/decisions/` |
-| Current validation evidence | `docs/knowledge/reviews/current-validation.md` |
+| Dated validation evidence | `docs/knowledge/reviews/current-validation.md`; exact-head CI/source remains current authority |
 
 ## Product/package owners
 

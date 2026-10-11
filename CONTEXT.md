@@ -106,7 +106,7 @@ Generated output is replaceable projection; canonical state/work remains upstrea
 AGENTS.md            routing, authority, continuity, branch kernel
 GITHUB_RULES.md      GitHub execution and repository mutation discipline
 CONTEXT.md           this stable orientation
-next-action.md       active continuation only
+planning/development.md  topic-scoped development intent only
 docs/foundation/     durable production policy
 docs/knowledge/      decisions, ownership, evidence, historical context
 .agents/skills/      reusable semantic judgment
@@ -115,4 +115,4 @@ tests/ + tools/      deterministic verification/operator facade
 .github/             CI and promotion gates
 ```
 
-For a new Development session, read `docs/knowledge/next-action.md` after this file. For normal Production Execution, use the matching production skill and smallest project owner instead of broad-reading repository context.
+For a new Development session, inspect the current topic's commits and exact owner; read `planning/development.md` only when its active scope is relevant. For normal Production Execution, use the matching production skill and smallest project owner instead of broad-reading repository context.

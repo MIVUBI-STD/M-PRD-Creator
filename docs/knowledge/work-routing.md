@@ -58,8 +58,9 @@ If the owner is already obvious, use it directly. Consult `ownership.md`, `sourc
 ## Continuity
 
 ```text
-current continuation → next-action.md
-future / non-active work → operations/backlog.md
+current execution state → exact source + topic-related commit evidence
+current/future development intent → ../../planning/development.md
+future / non-active work → ../../planning/backlog.md
 historical evidence → reviews/history/
 durable rationale → decisions/
 ```

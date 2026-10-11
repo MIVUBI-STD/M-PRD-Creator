@@ -11,7 +11,7 @@ lifecycle: ACTIVE
 
 Updated: 2026-09-08
 
-Review bodies preserve what was observed at capture time. This register owns their **current meaning**. Historical findings do not become active work unless `next-action.md` or current user instruction promotes a concrete boundary.
+Review bodies preserve what was observed at capture time. This register owns their **current meaning**. Historical findings do not become active work unless the current user instruction or exact topic-based plan or current user instruction promotes a concrete boundary.
 
 Current validation remains at this directory root as a compact proof snapshot. Historical audits live under `history/`; detailed superseded implementation status may remain in Git history rather than being repeated in current context.
 
@@ -27,7 +27,7 @@ Current validation remains at this directory root as a compact proof snapshot. H
 | [System Integration Proof](history/system-integration-proof.md) | Historical Flow 2→7 real-project integration evidence; does not substitute for current project state. |
 | [Archived Retirement Audit](history/archived-retirement-audit.md) | Historical implemented evidence supporting retired-builder removal. |
 | [Current Validation Status](current-validation.md) | **Current proof/status snapshot** for the active development candidate. |
-| [Repository Quality / AI-Slop Audit — 2026-08-14](history/repository-quality-audit-2026-08-14.md) | Historical completed-remediation evidence. Remaining conditional items live only in `operations/backlog.md` and are not active unless promoted. |
+| [Repository Quality / AI-Slop Audit — 2026-08-14](history/repository-quality-audit-2026-08-14.md) | Historical completed-remediation evidence. Remaining conditional items live only in `planning/backlog.md` and are not active unless promoted. |
 
 Use [audit-template.md](audit-template.md) only when a new review is actually justified; reviews are not routine ceremony.
 
@@ -48,7 +48,8 @@ reviews/README     → current interpretation of that evidence
 current-validation → compact current proof/status
 reviews/history    → historical review bodies
 decisions          → durable chosen rationale/rule where needed
-next-action        → active continuation/work boundary
+topic commits       → actual source-work continuity
+planning/           → current and future development intent
 Git history        → superseded implementation detail when no separate archive is needed
 ```
 

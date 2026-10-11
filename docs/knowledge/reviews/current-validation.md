@@ -11,7 +11,7 @@ lifecycle: ACTIVE
 
 Updated: 2026-09-09
 
-This file records the latest repository proof snapshot only. Active continuation remains in `../next-action.md`.
+This file records the latest repository proof snapshot only. This is a dated historical proof snapshot; current source and exact-head workflow results take precedence. Development intent is at `planning/development.md`.
 
 ## Current state
 

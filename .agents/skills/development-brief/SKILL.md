@@ -35,7 +35,7 @@ A user-proposed implementation is evidence about the requirement, not automatica
    - Project Requirements / PRD Production / Production Assets / PRD Handoff semantic-system change → optionally add `project-document-production`;
    - Voice Requirements / Voice Production / Voice Delivery semantic-system change → optionally add `voice-production`;
    - pure technical mechanics with correct semantics → package `AGENTS.md` + exact implementation owner.
-5. **Execute through completion** — implement reversible scope, follow only invalidated dependencies, use `GITHUB_RULES.md` for mutation/verification, and update `next-action.md` only when continuation materially changes.
+5. **Execute through completion** — implement reversible scope, follow only invalidated dependencies, use `GITHUB_RULES.md` for mutation/verification, and update `planning/development.md` only when actual repository development intent changes; commit metadata and current source remain execution evidence.
 
 ## User-facing form
 

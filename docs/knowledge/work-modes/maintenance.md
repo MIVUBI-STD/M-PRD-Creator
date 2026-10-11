@@ -109,7 +109,7 @@ Do not rerun full unrelated production flows for a local maintenance fix.
 - [ ] derived artifacts regenerated instead of patched where applicable;
 - [ ] smallest informative validation performed;
 - [ ] no material claim exceeds actual proof;
-- [ ] review/decision/next-action owner updated only if its state changed.
+- [ ] review/decision/planning owner updated only if its actual content changed.
 
 ## Retirement Rule
 

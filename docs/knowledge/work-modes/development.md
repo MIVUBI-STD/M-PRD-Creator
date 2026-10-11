@@ -23,11 +23,11 @@ Non-trivial Development begins only after repository continuity is recovered:
 AGENTS.md
 → GITHUB_RULES.md Core Rules
 → CONTEXT.md
-→ docs/knowledge/next-action.md
+→ topic-related commits + current owner
 → development-brief
 ```
 
-`CONTEXT.md` protects stable repository/product boundaries. `next-action.md` protects cross-session continuation. They are mandatory for non-trivial Development even though later investigation should remain read-minimal.
+`CONTEXT.md` protects stable boundaries. Git commits and current canonical source protect topic-based continuation; read `planning/development.md` only when the plan is relevant. The latest unrelated task never becomes default authority.
 
 A read-only `amati / inspect / understand / recover context` request stops after context recovery/reporting and does not enter implementation.
 
@@ -108,7 +108,7 @@ Do not create temporary Actions, helper architecture, or extra repository files 
 
 ## Continuity reconciliation
 
-If `next-action.md` conflicts materially with current source/state:
+If a planning note or earlier commit's `Next` conflicts materially with current source/state:
 
 ```text
 verify exact current owner
@@ -130,7 +130,7 @@ Before `Selesai`, re-check:
 
 Distinguish `implemented` from `verified` when browser/audio/runtime proof remains unavailable.
 
-Do not create a planning note per task. `next-action.md` changes only when the active continuation meaningfully changes; durable decision records require the threshold in `../decisions/recording-policy.md`.
+Do not create a planning note per task. `planning/development.md` records only material scope/intent changes; material development commits own recoverable topic-based proof. Durable decisions require the threshold in `../decisions/recording-policy.md`.
 
 ## Related
 

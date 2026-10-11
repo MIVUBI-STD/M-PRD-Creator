@@ -53,7 +53,7 @@ Production work does not become Development merely because tools or generated fi
 ```text
 AGENTS.md
 → CONTEXT.md
-→ docs/knowledge/next-action.md
+→ current topic commits + exact owner
 → smallest owner needed
 → report current understanding
 → STOP
@@ -77,7 +77,7 @@ concrete failure or explicit target
 ```text
 AGENTS.md
 → CONTEXT.md
-→ docs/knowledge/next-action.md
+→ current topic commits + exact owner
 → development-brief
 → exact owner
 → GITHUB_RULES.md before material GitHub mutation
@@ -153,14 +153,14 @@ Never hand-patch generated `prd.html`, `context.md`, or `index.json` to hide an 
 
 ## Topic-based continuation
 
-For a new chat or an explicit resume, pin the exact repository/branch HEAD, identify the requested **topic**, inspect relevant topic commits and current owner/consumer source, and distinguish completed work from unresolved claims. Do not turn the latest unrelated commit or the historical `next-action.md` into automatic work authorization. Chat memory and generated notes are orientation, never repository authority.
+For a new chat or an explicit resume, pin the exact repository/branch HEAD, identify the requested **topic**, inspect relevant topic commits and current owner/consumer source, and distinguish completed work from unresolved claims. Do not turn the latest unrelated commit or a historical planning note into automatic work authorization. Chat memory and generated notes are orientation, never repository authority.
 
 Material development commits carry `Work`, `State`, and `Proof` metadata (plus `Unresolved`/`Next` when useful) under `GITHUB_RULES.md`. These describe the bounded commit unit, not the entire feature or a second task-status database.
 
 ## Repository continuity
 
 - `CONTEXT.md` → stable product/repository orientation.
-- `docs/knowledge/next-action.md` → active continuation only.
+- `planning/development.md` → current/future repository development intent, only when the topic matches.
 - `docs/knowledge/decisions/` → durable rationale.
 - `docs/foundation/` → durable production policy.
 - `kits/prd-creator/` → detailed production procedure and implementation.
