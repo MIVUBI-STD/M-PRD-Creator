@@ -22,9 +22,7 @@ class WorkflowNamingContracts(unittest.TestCase):
         self.assertIn("Production Assets", policy)
 
     def test_renderer_error_uses_project_requirements(self) -> None:
-        source = (ROOT / "kits" / "prd-creator" / "renderer" / "render.py").read_text(
-            encoding="utf-8"
-        )
+        source = (ROOT / "kits" / "prd-creator" / "renderer" / "render.py").read_text(encoding="utf-8")
         self.assertNotIn("current Flow 2", source)
         self.assertIn("current Project Requirements", source)
 

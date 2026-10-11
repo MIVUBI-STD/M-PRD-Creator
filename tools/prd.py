@@ -348,10 +348,7 @@ def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> 
 
     if project is not None and (project_prd_changed or project_handoff_changed):
         project = project.resolve()
-        handoff_present = any(
-            (project / name).is_file()
-            for name in ("work/acceptance.md", "state/handoff-state.yaml")
-        )
+        handoff_present = any((project / name).is_file() for name in ("work/acceptance.md", "state/handoff-state.yaml"))
         voice_present = any(
             (project / name).is_file()
             for name in (

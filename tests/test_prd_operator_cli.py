@@ -108,24 +108,18 @@ class PrdOperatorCliContracts(unittest.TestCase):
         self.assertIn("semantic acceptance", before["not_proven"])
         self.assertIsNotNone(before["project_scope"])
 
-        (project / "state" / "handoff-state.yaml").write_text(
-            handoff_state_text(), encoding="utf-8"
-        )
+        (project / "state" / "handoff-state.yaml").write_text(handoff_state_text(), encoding="utf-8")
         with_handoff = prd_operator.impact_payload(changed, project=project)
         self.assertEqual(with_handoff["recommended_checks"], ["prd", "handoff"])
         self.assertNotIn("voice", with_handoff["recommended_checks"])
 
-        (project / "state" / "voice-state.yaml").write_text(
-            "status: pending_extraction\n", encoding="utf-8"
-        )
+        (project / "state" / "voice-state.yaml").write_text("status: pending_extraction\n", encoding="utf-8")
         with_voice = prd_operator.impact_payload(changed, project=project)
         self.assertEqual(with_voice["recommended_checks"], ["prd", "handoff", "voice"])
 
     def test_impact_cli_project_is_read_only_and_additive(self) -> None:
         project = self.make_project()
-        result = run_operator(
-            "impact", "work/asset-requirements.md", "--project", project, "--json"
-        )
+        result = run_operator("impact", "work/asset-requirements.md", "--project", project, "--json")
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
         self.assertIn("stale_if_present", payload)
