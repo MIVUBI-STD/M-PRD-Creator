@@ -1,3 +1,12 @@
+---
+id: document.foundation.production-flow
+class: DOCUMENT
+domain: foundation
+role: WORKFLOW
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Canonical Production Workflow
 
 Status: active policy

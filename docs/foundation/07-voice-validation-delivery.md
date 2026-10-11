@@ -1,3 +1,12 @@
+---
+id: document.foundation.voice-delivery
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Voice Delivery
 
 Status: active policy

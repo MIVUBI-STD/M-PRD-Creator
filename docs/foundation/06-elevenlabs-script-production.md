@@ -1,3 +1,12 @@
+---
+id: document.foundation.voice-production
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Voice Production — Eleven v3
 
 Status: active policy

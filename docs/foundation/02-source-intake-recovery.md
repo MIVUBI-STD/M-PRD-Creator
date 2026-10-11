@@ -1,3 +1,12 @@
+---
+id: document.foundation.source-intake
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Project Requirements
 
 Status: active policy

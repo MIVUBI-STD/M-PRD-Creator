@@ -1,3 +1,12 @@
+---
+id: document.knowledge.router
+class: DOCUMENT
+domain: knowledge
+role: ROUTER
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Repository Knowledge
 
 Updated: 2026-09-09
@@ -24,19 +33,19 @@ Use the same boundary names in routing, ownership, continuation, and operator co
 
 | Need | Owner |
 |---|---|
-| Active continuation / resume checkpoint | `next-action.md` |
-| Work routing | `work-routing.md` |
-| Repository/code/procedure ownership | `ownership.md` |
-| Source/state authority | `source-authority.md` |
-| Development lifecycle overview | `work-modes/development.md` |
-| Maintenance workflow | `work-modes/maintenance.md` |
-| Skill inventory | `skills/README.md` |
-| Ambiguous specialist selection | `skills/activation-matrix.md` |
-| Durable decision index | `decisions/README.md` |
-| Current validation evidence | `reviews/current-validation.md` |
-| Historical review evidence | `reviews/history/` |
-| Future/non-active work | `operations/backlog.md` |
-| Boot/routing regression scenarios | `operations/boot-baseline.md` |
+| Active continuation / resume checkpoint | [next-action.md](./next-action.md) |
+| Work routing | [work-routing.md](./work-routing.md) |
+| Repository/code/procedure ownership | [ownership.md](./ownership.md) |
+| Source/state authority | [source-authority.md](./source-authority.md) |
+| Development lifecycle overview | [work-modes/development.md](./work-modes/development.md) |
+| Maintenance workflow | [work-modes/maintenance.md](./work-modes/maintenance.md) |
+| Skill inventory | [skills/README.md](./skills/README.md) |
+| Ambiguous specialist selection | [skills/activation-matrix.md](./skills/activation-matrix.md) |
+| Durable decision index | [decisions/README.md](./decisions/README.md) |
+| Current validation evidence | [reviews/current-validation.md](./reviews/current-validation.md) |
+| Historical review evidence | [reviews/history/](./reviews/README.md) |
+| Future/non-active work | [operations/backlog.md](./operations/backlog.md) |
+| Boot/routing regression scenarios | [operations/boot-baseline.md](./operations/boot-baseline.md) |
 
 Root `../../AGENTS.md` owns boot/work modes/naming. GitHub execution remains owned by root `GITHUB_RULES.md`.
 

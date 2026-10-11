@@ -1,3 +1,12 @@
+---
+id: document.foundation.voice-requirements
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Voice Requirements
 
 Status: active policy

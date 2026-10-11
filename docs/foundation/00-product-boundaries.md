@@ -1,3 +1,12 @@
+---
+id: document.foundation.product-boundaries
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Product Boundaries
 
 Status: active policy

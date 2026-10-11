@@ -1,3 +1,12 @@
+---
+id: document.foundation.prd-handoff
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # PRD Handoff
 
 Status: active policy

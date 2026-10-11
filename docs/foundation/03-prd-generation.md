@@ -1,3 +1,12 @@
+---
+id: document.foundation.prd-production
+class: DOCUMENT
+domain: foundation
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # PRD Production
 
 Status: active policy
