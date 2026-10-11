@@ -68,6 +68,8 @@ A `main` promotion does **not** automatically create a new repository version. C
 
 Creating a Git tag or GitHub Release is always a separate explicit publishing action and is never automatic.
 
+For material development, follow the single [Development Operating Standard](docs/knowledge/work-modes/development.md#development-operating-standard). The exact source owner and its consumers determine scope; source review is not executable validation. Material commits use `Work`, `State`, `Proof` and conditional `Unresolved`/`Next` metadata per [GITHUB_RULES.md](GITHUB_RULES.md). Branches and CI retain their existing promotion contract.
+
 ## Before committing
 
 Run the cheapest relevant proof for the changed claim.

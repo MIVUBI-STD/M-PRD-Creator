@@ -70,5 +70,24 @@ class RepositoryVerifyContracts(unittest.TestCase):
             self.assertEqual(errors, [])
 
 
+    def test_naming_verifier_covers_active_workspace_and_detects_legacy_labels(self) -> None:
+        self.assertIn(
+            verify_repository.ROOT / "workspace" / "README.md",
+            verify_repository.CURRENT_WORKFLOW_NAMING_ROOTS,
+        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            source = root / "workspace.md"
+            source.write_text("Flow 2 should not be current operator vocabulary.\n", encoding="utf-8")
+            errors: list[str] = []
+            with (
+                patch.object(verify_repository, "ROOT", root),
+                patch.object(verify_repository, "CURRENT_WORKFLOW_NAMING_ROOTS", [source]),
+            ):
+                verify_repository.check_canonical_workflow_naming(errors)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("legacy workflow name", errors[0])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -55,6 +55,26 @@ Normal `develop` → `Local` promotion uses a verified squash boundary. `Local` 
 
 Repository behavior is routed by [AGENTS.md](AGENTS.md); GitHub execution policy by [GITHUB_RULES.md](GITHUB_RULES.md).
 
+## Repository Navigation and Continuity
+
+Repository knowledge starts at [Documentation Router](docs/README.md), then the exact [Production Foundation](docs/foundation/README.md) or [Repository Knowledge](docs/knowledge/README.md) owner. Current/future development *intent* lives in [Planning](planning/README.md); implementation continuity belongs to current GitHub source and topic-specific commits, not an always-active `next-action` file.
+
+Read-only document lookup (stdlib only; no persistent index or network calls):
+
+```bash
+python tools/repository_knowledge.py --summary
+python tools/repository_knowledge.py --query "voice requirements" --domain foundation
+python tools/repository_knowledge.py --id document.foundation.prd-production
+```
+
+Changes to approved project state may invalidate optional downstream acceptance. Route exact affected checks with the existing CLI:
+
+```bash
+python tools/prd.py impact state/requirement-register.yaml --project workspace/active/<project>/ --json
+```
+
+This impact result identifies possibly affected checks, not a substitute for semantic approval, a browser observation, or heard audio. The existing `develop → Local → main` branch model and automatic CI remain unchanged.
+
 ## Developer Quick Start
 
 Prerequisite: **Python 3.11**.

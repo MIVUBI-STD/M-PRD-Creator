@@ -177,6 +177,7 @@ CURRENT_WORKFLOW_NAMING_ROOTS = [
     ROOT / "docs" / "knowledge" / "work-routing.md",
     ROOT / "docs" / "knowledge" / "skills",
     ROOT / "docs" / "knowledge" / "operations" / "boot-baseline.md",
+    ROOT / "workspace" / "README.md",
     KIT_ROOT / "README.md",
     KIT_ROOT / "AGENTS.md",
     KIT_ROOT / "SKILL.md",

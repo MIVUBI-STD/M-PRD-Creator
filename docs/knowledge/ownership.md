@@ -35,7 +35,9 @@ Use these names in all current ownership/routing language. Numbered document/fil
 | Project Setup / work modes / boot / authority / continuity / skill budget | `AGENTS.md` |
 | GitHub mutation/history/CI/safety | `GITHUB_RULES.md` |
 | Stable repository/product orientation | `CONTEXT.md` |
-| Repository development intent | `planning/development.md` (topic-scoped) |
+| Repository development intent | `planning/development.md` (topic-scoped); `planning/backlog.md` for non-active proposals |
+| Documentation routing / identity | `docs/README.md` + domain routers; `tools/repository_knowledge.py` derives read-only Catalog/Graph/Context candidates |
+| Repository document/reachability gate | `tools/verify_repository.py` consumes `tools/repository_knowledge.py` validation |
 | Source/state precedence | `docs/knowledge/source-authority.md` |
 | Durable decisions/rationale | `docs/knowledge/decisions/` |
 | Dated validation evidence | `docs/knowledge/reviews/current-validation.md`; exact-head CI/source remains current authority |
