@@ -69,7 +69,15 @@ def _projection_binding(project: Path, current_sha: str) -> str:
         return "unreadable"
     if not isinstance(value, dict):
         return "unreadable"
-    return "current" if value.get("approved_requirement_sha256") == current_sha else "stale"
+    try:
+        actual_content_sha = hashlib.sha256((project / "work" / "content.md").read_bytes()).hexdigest()
+    except OSError:
+        return "unavailable"
+    bindings_current = (
+        value.get("approved_requirement_sha256") == current_sha
+        and value.get("canonical_content_sha256") == actual_content_sha
+    )
+    return "current" if bindings_current else "stale"
 
 
 def plan_revision(project: Path, before: Path) -> dict[str, Any]:
@@ -149,6 +157,7 @@ def plan_revision(project: Path, before: Path) -> dict[str, Any]:
         "semantic_verified": False,
         "project": project.name,
         "baseline_sha256": prior_sha,
+        "baseline_authority": "NOT_VERIFIED_EXPLICIT_SNAPSHOT",
         "current_sha256": current_sha,
         "bytes_changed": byte_change,
         "changed_requirements": changes,
@@ -162,6 +171,7 @@ def plan_revision(project: Path, before: Path) -> dict[str, Any]:
             "semantic conservation and cross-role consistency",
             "that unmarked downstream dependencies are unaffected",
             "source changes outside the supplied requirement snapshots",
+            "that the supplied prior snapshot was previously approved",
         ],
         "next_action": (
             "No requirement register bytes changed; check other project sources separately."

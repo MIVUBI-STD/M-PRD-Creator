@@ -140,7 +140,10 @@ removed requirements, or an incomplete trace, yield `scope_unknown`.
 
 Only locations demonstrated by existing REQ markers may be shown as known.
 The plan must not claim that unmarked, cross-role, asset or Voice dependencies
-are safe. The operator reuses existing `impact` domain planning to recommend
+are safe. `baseline_authority=NOT_VERIFIED_EXPLICIT_SNAPSHOT` explicitly
+states that supplying an older register does not prove it was ever approved.
+The `render_data_binding` is current only when *both* approved requirement
+SHA and canonical `content.md` SHA match; it never proves semantic agreement. The operator reuses existing `impact` domain planning to recommend
 which validation checks follow a byte change. All PRD source edits and
 acceptance decisions remain separate authorized actions.
 
