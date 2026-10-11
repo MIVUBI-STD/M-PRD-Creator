@@ -110,6 +110,22 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(payload["unmapped"], ["REQ-002"])
         self.assertIn("PRD_TRACE_UNMAPPED", {issue["code"] for issue in payload["issues"]})
 
+    def test_trace_markers_in_example_code_fences_are_ignored(self) -> None:
+        project = self.make_project()
+        self.update_content(
+            project,
+            "# Contract Fixture\n\n"
+            "~~~markdown\n"
+            "<!-- PRD-TRACE: REQ-999 -->\n"
+            "~~~\n"
+            "<!-- PRD-TRACE: REQ-001 -->\n"
+            "The approved Core Trial remains intact.\n",
+        )
+        payload = assess(project)
+        self.assertEqual(payload["status"], "mapped_unverified")
+        self.assertEqual(payload["mapped_count"], 1)
+        self.assertEqual(payload["issues"], [])
+
     def test_detached_and_malformed_markers_are_structural_errors(self) -> None:
         project = self.make_project()
         for sample, expected_code in (

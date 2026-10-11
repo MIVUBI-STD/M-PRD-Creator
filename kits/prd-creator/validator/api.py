@@ -147,9 +147,7 @@ def validate(project: Path) -> dict[str, Any]:
         if traced["status"] in {"invalid", "incomplete", "unavailable"}:
             findings = traced["issues"]
             result.setdefault("issues", []).extend(findings)
-            result.setdefault("errors", []).extend(
-                "requirement_trace: " + str(item["message"]) for item in findings
-            )
+            result.setdefault("errors", []).extend("requirement_trace: " + str(item["message"]) for item in findings)
             result.setdefault("checks", []).append(
                 {
                     "check": "requirement_trace",

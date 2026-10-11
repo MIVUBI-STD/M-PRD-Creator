@@ -113,7 +113,17 @@ def assess(project: Path) -> dict[str, Any]:
     issues: list[dict[str, object]] = []
     heading = ""
     marker_count = 0
+    fence: str | None = None
     for i, line in enumerate(lines):
+        stripped = line.lstrip()
+        if fence is not None:
+            if stripped.startswith(fence):
+                fence = None
+            continue
+        opening = next((token for token in (chr(96) * 3, "~~~") if stripped.startswith(token)), None)
+        if opening is not None:
+            fence = opening
+            continue
         title = HEADING.fullmatch(line.strip())
         if title:
             heading = title.group(1)
@@ -133,9 +143,7 @@ def assess(project: Path) -> dict[str, Any]:
             issues.append(_issue("PRD_TRACE_DETACHED", req_id + " must precede PRD prose", i + 1))
             continue
         line_number, excerpt = claim
-        mapped[req_id].append(
-            {"marker_line": i + 1, "claim_line": line_number, "heading": heading, "excerpt": excerpt}
-        )
+        mapped[req_id].append({"marker_line": i + 1, "claim_line": line_number, "heading": heading, "excerpt": excerpt})
 
     missing = []
     for requirement in requirements:
