@@ -148,6 +148,9 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertFalse(case["semantic_status"] == "PASS")
         self.assertFalse(case["compare"]["developer.result"]["produces_score"])
         self.assertIn("developer.reset", case["compare"])
+        self.assertIn("gameplay.player_flow", case["compare"])
+        self.assertIn("level_design.requirements", case["compare"])
+        self.assertIn("developer.requirements", case["compare"])
 
     def test_operator_trace_reports_unreviewed_without_claiming_success(self) -> None:
         project = self.make_project()
