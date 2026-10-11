@@ -302,19 +302,21 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
 
     document = _mapping(data, "document", "render_data")
     _allow_only(document, DOCUMENT_FIELDS, "document")
-    for field in ("title", "document_type", "version"):
-        _required(document, field, "document")
+    _required_text(document, "title", "document")
+    _required_text(document, "document_type", "document")
+    _required(document, "version", "document")
 
     overview = _mapping(data, "overview", "render_data")
     _allow_only(overview, OVERVIEW_FIELDS, "overview")
     for field in ("project_context", "main_experience", "document_scope", "intended_use"):
-        _required(overview, field, "overview")
+        _required_text(overview, field, "overview")
     facts = _list(overview, "facts", "overview", nonempty=True)
     for index, fact in enumerate(facts):
         current = _as_mapping(fact, f"overview.facts[{index}]")
         _allow_only(current, {"key", "label", "value"}, f"overview.facts[{index}]")
-        for field in ("key", "label", "value"):
-            _required(current, field, f"overview.facts[{index}]")
+        _required(current, "key", f"overview.facts[{index}]")
+        for field in ("label", "value"):
+            _required_text(current, field, f"overview.facts[{index}]")
     _validate_simple_flow(_list(overview, "journey", "overview", nonempty=True), "overview.journey")
     _validate_title_description_items(
         _list(overview, "main_systems", "overview", nonempty=True),
@@ -325,8 +327,9 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
     for index, flow in enumerate(gameplay_flow):
         current = _as_mapping(flow, f"gameplay_flow[{index}]")
         _allow_only(current, FLOW_FIELDS, f"gameplay_flow[{index}]")
-        for field in ("id", "title", "narrative_context", "next_destination"):
-            _required(current, field, f"gameplay_flow[{index}]")
+        _required(current, "id", f"gameplay_flow[{index}]")
+        for field in ("title", "narrative_context", "next_destination"):
+            _required_text(current, field, f"gameplay_flow[{index}]")
         beats = _list(current, "beats", f"gameplay_flow[{index}]", nonempty=True)
         _validate_title_description_items(beats, f"gameplay_flow[{index}].beats")
         _validate_terms(current.get("terms", []), f"gameplay_flow[{index}].terms")
@@ -335,8 +338,9 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
     for index, section in enumerate(global_development):
         current = _as_mapping(section, f"global_development[{index}]")
         _allow_only(current, GLOBAL_FIELDS, f"global_development[{index}]")
-        for field in ("id", "title", "overview"):
-            _required(current, field, f"global_development[{index}]")
+        _required(current, "id", f"global_development[{index}]")
+        for field in ("title", "overview"):
+            _required_text(current, field, f"global_development[{index}]")
         _validate_simple_flow(
             _list(current, "flow", f"global_development[{index}]", nonempty=True),
             f"global_development[{index}].flow",
@@ -355,13 +359,15 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
         current = _as_mapping(package, f"packages[{package_index}]")
         context = f"packages[{package_index}]"
         _allow_only(current, PACKAGE_FIELDS, context)
-        for field in ("id", "title", "package_label"):
-            _required(current, field, context)
+        _required(current, "id", context)
+        for field in ("title", "package_label"):
+            _required_text(current, field, context)
         package_id = str(current["id"])
         if package_id in seen_ids:
             raise ProjectionError(f"duplicate package id: {package_id}")
         seen_ids.add(package_id)
-        _list(current, "acceptance", context, nonempty=True)
+        for index, claim in enumerate(_list(current, "acceptance", context, nonempty=True)):
+            _text_value(claim, f"{context}.acceptance[{index}]")
 
         gameplay = _mapping(current, "gameplay", context)
         _allow_only(gameplay, GAMEPLAY_FIELDS, f"{context}.gameplay")
@@ -375,13 +381,16 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
             "end_condition",
             "blocked_or_fail_condition",
         ):
-            _required(gameplay, field, f"{context}.gameplay")
+            if field in {"purpose", "gameplay_time", "start_condition", "end_condition", "blocked_or_fail_condition"}:
+                _required_cell(gameplay, field, f"{context}.gameplay")
+            else:
+                _required_text(gameplay, field, f"{context}.gameplay")
         result_model = _mapping(gameplay, "result_model", f"{context}.gameplay")
         _allow_only(result_model, RESULT_MODEL_FIELDS, f"{context}.gameplay.result_model")
         mode = str(_required(result_model, "mode", f"{context}.gameplay.result_model")).strip()
         if mode not in {"scored", "completion_only"}:
             raise ProjectionError(f"{context}.gameplay.result_model.mode must be 'scored' or 'completion_only'")
-        _required(result_model, "summary", f"{context}.gameplay.result_model")
+        _required_cell(result_model, "summary", f"{context}.gameplay.result_model")
         _validate_player_flow(
             _list(gameplay, "player_flow", f"{context}.gameplay", nonempty=True),
             f"{context}.gameplay.player_flow",
@@ -389,7 +398,7 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
 
         level = _mapping(current, "level_design", context)
         _allow_only(level, LEVEL_FIELDS, f"{context}.level_design")
-        _required(level, "overview", f"{context}.level_design")
+        _required_text(level, "overview", f"{context}.level_design")
         _validate_simple_flow(
             _list(level, "flow", f"{context}.level_design", nonempty=True),
             f"{context}.level_design.flow",
@@ -403,7 +412,7 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
 
         developer = _mapping(current, "developer", context)
         _allow_only(developer, DEVELOPER_FIELDS, f"{context}.developer")
-        _required(developer, "overview", f"{context}.developer")
+        _required_text(developer, "overview", f"{context}.developer")
         _validate_simple_flow(
             _list(developer, "flow", f"{context}.developer", nonempty=True),
             f"{context}.developer.flow",
@@ -413,8 +422,8 @@ def validate_projection_schema(data: dict[str, Any]) -> None:
             f"{context}.developer.requirements",
             kind="development",
         )
-        _required(developer, "reset", f"{context}.developer")
-        _required(developer, "reset_result", f"{context}.developer")
+        _required_cell(developer, "reset", f"{context}.developer")
+        _required_cell(developer, "reset_result", f"{context}.developer")
         _validate_notes(developer.get("notes", []), f"{context}.developer.notes")
         _validate_result_contract(developer, mode, f"{context}.developer")
         _validate_terms(current.get("terms", []), f"{context}.terms")
@@ -446,7 +455,7 @@ def _validate_result_contract(developer: dict[str, Any], mode: str, context: str
             "player_facing_display",
             "telemetry_export",
         ):
-            _required(scoring, field, f"{context}.scoring")
+            _required_text(scoring, field, f"{context}.scoring")
         components = scoring.get("components")
         if components not in (None, []):
             if not isinstance(components, list):
@@ -454,8 +463,9 @@ def _validate_result_contract(developer: dict[str, Any], mode: str, context: str
             for index, item in enumerate(components):
                 component = _as_mapping(item, f"{context}.scoring.components[{index}]")
                 _allow_only(component, {"name", "weight", "rule"}, f"{context}.scoring.components[{index}]")
-                for field in ("name", "weight", "rule"):
-                    _required(component, field, f"{context}.scoring.components[{index}]")
+                _required_text(component, "name", f"{context}.scoring.components[{index}]")
+                _required(component, "weight", f"{context}.scoring.components[{index}]")
+                _required_text(component, "rule", f"{context}.scoring.components[{index}]")
         elif not scoring.get("formula") and not scoring.get("summary"):
             raise ProjectionError(f"{context}.scoring requires components or explicit formula/summary")
         return
@@ -476,7 +486,7 @@ def _validate_result_contract(developer: dict[str, Any], mode: str, context: str
         "player_facing_display",
         "telemetry_export",
     ):
-        _required(completion, field, f"{context}.completion_data")
+        _required_text(completion, field, f"{context}.completion_data")
 
 
 def _validate_simple_flow(items: list[Any], context: str) -> None:
@@ -484,7 +494,7 @@ def _validate_simple_flow(items: list[Any], context: str) -> None:
         current = _as_mapping(item, f"{context}[{index}]")
         _allow_only(current, {"step", "title", "description"}, f"{context}[{index}]")
         for field in ("title", "description"):
-            _required(current, field, f"{context}[{index}]")
+            _required_text(current, field, f"{context}[{index}]")
 
 
 def _validate_player_flow(items: list[Any], context: str) -> None:
@@ -492,7 +502,7 @@ def _validate_player_flow(items: list[Any], context: str) -> None:
         current = _as_mapping(item, f"{context}[{index}]")
         _allow_only(current, {"step", "title", "action", "result"}, f"{context}[{index}]")
         for field in ("title", "action", "result"):
-            _required(current, field, f"{context}[{index}]")
+            _required_text(current, field, f"{context}[{index}]")
 
 
 def _validate_title_description_items(items: list[Any], context: str) -> None:
@@ -500,7 +510,7 @@ def _validate_title_description_items(items: list[Any], context: str) -> None:
         current = _as_mapping(item, f"{context}[{index}]")
         _allow_only(current, {"title", "description"}, f"{context}[{index}]")
         for field in ("title", "description"):
-            _required(current, field, f"{context}[{index}]")
+            _required_text(current, field, f"{context}[{index}]")
 
 
 def _validate_notes(value: Any, context: str) -> None:
@@ -515,7 +525,7 @@ def _validate_requirement_groups(value: list[Any], context: str, *, kind: str) -
     for group_index, group in enumerate(value):
         current_group = _as_mapping(group, f"{context}[{group_index}]")
         _allow_only(current_group, {"title", "items"}, f"{context}[{group_index}]")
-        _required(current_group, "title", f"{context}[{group_index}]")
+        _required_text(current_group, "title", f"{context}[{group_index}]")
         items = _list(current_group, "items", f"{context}[{group_index}]", nonempty=True)
         for item_index, item in enumerate(items):
             current = _as_mapping(item, f"{context}[{group_index}].items[{item_index}]")
@@ -526,8 +536,9 @@ def _validate_requirement_groups(value: list[Any], context: str, *, kind: str) -
                     {"code", "object", "subtitle", "area_size", "build_and_visual", "gameplay_function", "children"},
                     item_context,
                 )
-                for field in ("object", "area_size", "build_and_visual", "gameplay_function"):
-                    _required(current, field, item_context)
+                _required_text(current, "object", item_context)
+                for field in ("area_size", "build_and_visual", "gameplay_function"):
+                    _required_cell(current, field, item_context)
                 children = current.get("children", [])
                 if children:
                     if not isinstance(children, list):
@@ -540,12 +551,14 @@ def _validate_requirement_groups(value: list[Any], context: str, *, kind: str) -
                             {"code", "object", "area_size", "build_and_visual", "gameplay_function"},
                             child_context,
                         )
-                        for field in ("object", "area_size", "build_and_visual", "gameplay_function"):
-                            _required(child_map, field, child_context)
+                        _required_text(child_map, "object", child_context)
+                        for field in ("area_size", "build_and_visual", "gameplay_function"):
+                            _required_cell(child_map, field, child_context)
             else:
                 _allow_only(current, {"code", "title", "details", "result"}, item_context)
-                for field in ("title", "details", "result"):
-                    _required(current, field, item_context)
+                _required_text(current, "title", item_context)
+                for field in ("details", "result"):
+                    _required_cell(current, field, item_context)
 
 
 def _validate_terms(value: Any, context: str) -> None:
@@ -556,8 +569,9 @@ def _validate_terms(value: Any, context: str) -> None:
     for index, item in enumerate(value):
         current = _as_mapping(item, f"{context}[{index}]")
         _allow_only(current, TERM_FIELDS, f"{context}[{index}]")
-        for field in ("key", "label", "definition"):
-            _required(current, field, f"{context}[{index}]")
+        _required(current, "key", f"{context}[{index}]")
+        for field in ("label", "definition"):
+            _required_text(current, field, f"{context}[{index}]")
 
 
 def _allow_only(container: dict[str, Any], allowed: set[str], context: str) -> None:
@@ -586,6 +600,35 @@ def _list(container: dict[str, Any], key: str, context: str, *, nonempty: bool =
     if nonempty and not value:
         raise ProjectionError(f"{context}.{key} must not be empty")
     return value
+
+
+def _text_value(value: Any, context: str) -> Any:
+    """Reject malformed project prose before the renderer stringifies it."""
+    if isinstance(value, str) and value.strip():
+        return value
+    if (
+        isinstance(value, dict)
+        and "en" in value
+        and set(value).issubset({"en", "id"})
+        and all(isinstance(text, str) and text.strip() for text in value.values())
+    ):
+        return value
+    raise ProjectionError(f"{context} must be non-empty text or an en/id text object")
+
+
+def _required_text(container: dict[str, Any], key: str, context: str) -> Any:
+    return _text_value(_required(container, key, context), f"{context}.{key}")
+
+
+def _required_cell(container: dict[str, Any], key: str, context: str) -> Any:
+    """Preserve supported bullet-list cells while rejecting nontext list items."""
+    location = f"{context}.{key}"
+    value = _required(container, key, context)
+    if isinstance(value, list):
+        for index, item in enumerate(value):
+            _text_value(item, f"{location}[{index}]")
+        return value
+    return _text_value(value, location)
 
 
 def _required(container: dict[str, Any], key: str, context: str) -> Any:

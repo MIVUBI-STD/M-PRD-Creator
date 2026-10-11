@@ -148,6 +148,66 @@ class ProjectDocumentContracts(unittest.TestCase):
                 project = self.make_project(data)
                 self.assertEqual(self.render(project).returncode, 2)
 
+    def test_render_schema_rejects_nontext_project_prose(self) -> None:
+        cases = (
+            ("document.title", lambda data: data["document"].update({"title": ["Bad title"]})),
+            ("document.title", lambda data: data["document"].update({"title": {"id": "No English"}})),
+            ("overview.project_context", lambda data: data["overview"].update({"project_context": True})),
+            ("overview.facts[0].value", lambda data: data["overview"]["facts"][0].update({"value": [123]})),
+            (
+                "packages[0].gameplay.start_condition",
+                lambda data: data["packages"][0]["gameplay"].update({"start_condition": {"wrong": "shape"}}),
+            ),
+            ("packages[0].developer.reset", lambda data: data["packages"][0]["developer"].update({"reset": [1]})),
+            (
+                "packages[0].developer.scoring.timer_start",
+                lambda data: data["packages"][0]["developer"]["scoring"].update({"timer_start": ["Wrong"]}),
+            ),
+            (
+                "packages[0].level_design.flow[0].description",
+                lambda data: data["packages"][0]["level_design"]["flow"][0].update({"description": {"bogus": "x"}}),
+            ),
+            (
+                "packages[0].level_design.requirements[0].items[0].area_size[0]",
+                lambda data: data["packages"][0]["level_design"]["requirements"][0]["items"][0].update(
+                    {"area_size": [{"unsupported": "value"}]}
+                ),
+            ),
+            (
+                "packages[0].acceptance[0]",
+                lambda data: data["packages"][0]["acceptance"].__setitem__(0, {"en": "  ", "id": "Invalid"}),
+            ),
+        )
+        for location, mutation in cases:
+            with self.subTest(location=location):
+                data = render_data()
+                mutation(data)
+                project = self.make_project(data)
+                rendered = self.render(project)
+                self.assertEqual(rendered.returncode, 2, rendered.stdout)
+                self.assertIn(location, rendered.stderr)
+
+    def test_render_schema_preserves_list_cells_with_valid_text(self) -> None:
+        data = render_data()
+        data["packages"][0]["gameplay"]["start_condition"] = [
+            "Use the assigned arena.",
+            "Start only when the join pad is ready.",
+        ]
+        data["packages"][0]["level_design"]["requirements"][0]["items"][0]["area_size"] = [
+            "Main area: 25 x 25 blocks",
+            "Spawn margin: 3 blocks",
+        ]
+        data["packages"][0]["developer"]["reset"] = [
+            "Clear the session state.",
+            "Restore the assigned arena.",
+        ]
+        project = self.make_project(data)
+        rendered = self.render(project)
+        self.assertEqual(rendered.returncode, 0, rendered.stderr or rendered.stdout)
+        html = (project / "output" / "v1.0.0" / "prd.html").read_text(encoding="utf-8")
+        self.assertIn("Main area: 25 x 25 blocks", html)
+        self.assertIn("Clear the session state.", html)
+
     def test_non_scored_package_uses_completion_not_scoring_language(self) -> None:
         data = render_data()
         set_completion_only(data)

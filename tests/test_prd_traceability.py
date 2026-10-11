@@ -126,6 +126,61 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(payload["mapped_count"], 1)
         self.assertEqual(payload["issues"], [])
 
+    def test_trace_markers_inside_indented_code_are_not_evidence(self) -> None:
+        project = self.make_project()
+        for indent in ("    ", "\t", "  \t"):
+            with self.subTest(indent=repr(indent)):
+                self.update_content(
+                    project,
+                    "# Contract Fixture\n\n"
+                    + indent + "<!-- PRD-TRACE: REQ-001 -->\n"
+                    + indent + "An example, not a live requirement claim.\n",
+                )
+                payload = assess(project)
+                self.assertEqual(payload["status"], "unreviewed")
+                self.assertEqual(payload["mapped_count"], 0)
+                self.assertEqual(payload["issues"], [])
+
+    def test_marker_cannot_bind_to_following_indented_code(self) -> None:
+        project = self.make_project()
+        self.update_content(
+            project,
+            "# Contract Fixture\n\n"
+            "<!-- PRD-TRACE: REQ-001 -->\n"
+            "    This is code, not a substantive Markdown paragraph.\n",
+        )
+        payload = assess(project)
+        self.assertEqual(payload["status"], "invalid")
+        self.assertIn("PRD_TRACE_DETACHED", {issue["code"] for issue in payload["issues"]})
+
+    def test_html_code_example_does_not_count_as_requirement_evidence(self) -> None:
+        project = self.make_project()
+        self.update_content(
+            project,
+            "# Contract Fixture\n\n"
+            "<pre class=\"language-markdown\">\n"
+            "<!-- PRD-TRACE: REQ-001 -->\n"
+            "An example, not a requirement.\n"
+            "</pre>\n",
+        )
+        payload = assess(project)
+        self.assertEqual(payload["status"], "unreviewed")
+        self.assertEqual(payload["mapped_count"], 0)
+        self.assertEqual(payload["issues"], [])
+
+    def test_marker_does_not_bind_to_fence_or_thematic_break(self) -> None:
+        project = self.make_project()
+        for non_claim in ("~~~python", "---", "<pre>"):
+            with self.subTest(non_claim=non_claim):
+                self.update_content(
+                    project,
+                    "# Contract Fixture\n\n"
+                    "<!-- PRD-TRACE: REQ-001 -->\n" + non_claim + "\n",
+                )
+                payload = assess(project)
+                self.assertEqual(payload["status"], "invalid")
+                self.assertIn("PRD_TRACE_DETACHED", {item["code"] for item in payload["issues"]})
+
     def test_detached_and_malformed_markers_are_structural_errors(self) -> None:
         project = self.make_project()
         for sample, expected_code in (
