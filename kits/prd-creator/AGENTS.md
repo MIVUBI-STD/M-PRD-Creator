@@ -49,6 +49,7 @@ validator/prd_validation_engine.py   PRD validation orchestration
 validator/html_contract.py           derived HTML contract
 validator/api.py                     canonical PRD validation API
 validator/traceability.py            REQ-to-content location + cross-role review, no semantic PASS
+validator/revision.py                 read-only prior/current REQ delta + known impacted locations
 validator/validate_handoff.py        PRD Handoff proof
 validator/voice_validation.py        Voice Requirements→Delivery proof
 validator/validate.py                thin PRD CLI

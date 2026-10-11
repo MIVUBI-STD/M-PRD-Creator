@@ -93,6 +93,25 @@ The existing read-only trace audit compares explicit marker IDs with the current
 
 **Location is not semantic proof.** `mapped_unverified` never establishes source fidelity, material conservation, correct scoring/reset behavior, or human approval. Continue integrated semantic review and exact-byte PRD Handoff acceptance.
 
+## Targeted revision — explicit prior requirement snapshot
+
+When one approved requirement register changes, use the read-only `tools/prd.py revision`
+operator with the exact **previous** register and the current project package. The
+revision comparison returns added, removed, modified and unchanged REQ identities,
+changed fields, known `work/content.md` locations, orphaned markers and current
+Project Requirements / render-data SHA binding status.
+
+A current trace marker is **only a location**, not proof of semantic correctness
+or a guarantee that downstream dependencies are unaffected. When no valid mapping
+exists, return `scope_unknown` rather than guessing which PRD paragraphs are safe
+to keep or rewrite. Register formatting-only changes still invalidate exact-byte
+bindings, but do not automatically require semantic content rewriting.
+
+Do not persist a second REQ registry, auto-rewrite canonical PRD source, delete
+removed requirements' prose without review, or infer a previous approved snapshot
+from generated HTML. Reconcile existing Project Requirements authority and accepted
+content before re-rendering and renewing PRD Handoff.
+
 ## Adaptive cardinality
 
 Use the smallest child cardinality that preserves all material distinctions. Do not add filler to match reference counts or merge distinct rules merely for compactness.

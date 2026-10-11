@@ -72,7 +72,13 @@ Changes to approved project state may invalidate optional downstream acceptance.
 ```bash
 python tools/prd.py impact state/requirement-register.yaml --project workspace/active/<project>/ --json
 python tools/prd.py trace workspace/active/<project>/
+python tools/prd.py revision workspace/active/<project>/ --before /path/to/previous-requirements.yaml
 ```
+
+The `revision` command compares a caller-supplied prior register with the current
+one; it does not create a history copy or modify project files. Known REQ locations
+come from the existing trace audit and are not semantic PASS. Changed SHA bindings
+and unmarked downstream dependencies still require their proper reviews.
 
 This impact result identifies possibly affected checks, not a substitute for semantic approval, a browser observation, or heard audio. The three-branch model remains unchanged. Actions workflows on `develop` are manual-only (`workflow_dispatch`); the two promotion gates require matching open PR numbers. Existing workflow definitions on `Local` and `main` remain unchanged until formally promoted.
 

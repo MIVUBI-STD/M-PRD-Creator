@@ -141,6 +141,7 @@ mechanical parity wrong                     → validator/shared owner
 ```bash
 python tools/prd.py impact <changed-path> ... --json
 python tools/prd.py trace workspace/active/<project>/
+python tools/prd.py revision workspace/active/<project>/ --before /path/to/previous-requirements.yaml
 python tools/prd.py status workspace/active/<project>/ --json
 python tools/prd.py build workspace/active/<project>/
 python tools/prd.py validate workspace/active/<project>/

@@ -124,6 +124,26 @@ accepted_prd_version: <X.Y.Z>
 
 Handoff validation proves the canonical PRD validator still passes, accepted version matches current render data, deterministic artifacts exist, output metadata identifies the same revision, and acceptance binds exact current Render Data + Production Assets bytes.
 
+## Targeted requirement revision review
+
+```bash
+python tools/prd.py revision workspace/active/<project>/ --before /path/to/previous-requirements.yaml
+```
+
+This report is read-only. `--before` must reference a distinct, explicitly
+provided prior requirement-register snapshot; a missing baseline means that an
+exact change cannot be proven. Identical parsed REQ records with changed bytes
+are reported as `byte_only_change` because SHA-based acceptance may still be
+stale. Changed requirements with explicit current trace locations return
+`targeted_review_required` but **never** semantic PASS. Unmapped, added or
+removed requirements, or an incomplete trace, yield `scope_unknown`.
+
+Only locations demonstrated by existing REQ markers may be shown as known.
+The plan must not claim that unmarked, cross-role, asset or Voice dependencies
+are safe. The operator reuses existing `impact` domain planning to recommend
+which validation checks follow a byte change. All PRD source edits and
+acceptance decisions remain separate authorized actions.
+
 ## Bounded revision
 
 ```text

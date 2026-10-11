@@ -93,6 +93,7 @@ Use these names in all current ownership/routing language. Numbered document/fil
 | canonical Golden source | `kits/prd-creator/template/golden-reference.html` |
 | PRD validation orchestration | `kits/prd-creator/validator/prd_validation_engine.py` |
 | REQ-to-content location and cross-role review surfaces (not semantic proof) | `kits/prd-creator/validator/traceability.py` |
+| Prior/current requirement delta and grounded targeted revision plan | `kits/prd-creator/validator/revision.py` (read-only, consumes traceability) |
 | derived HTML contract | `kits/prd-creator/validator/html_contract.py` |
 | canonical PRD validation API | `kits/prd-creator/validator/api.py` |
 | PRD Handoff proof | `kits/prd-creator/validator/validate_handoff.py` |
