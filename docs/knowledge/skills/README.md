@@ -19,7 +19,7 @@ Use this note for the current root skill inventory and ownership boundary. Histo
 | `project-document-production` | semantic judgment for Project Requirements, PRD Production, Production Assets, and PRD Handoff |
 | `voice-production` | semantic judgment for Voice Requirements, Voice Production, and Voice Delivery |
 
-The canonical root set is intentionally small.
+The canonical root set is intentionally small. Consult the [Skill Activation Matrix](activation-matrix.md) only when the current mode and nearest owner leave a genuine semantic boundary ambiguous.
 
 ## Relationship to the production package
 

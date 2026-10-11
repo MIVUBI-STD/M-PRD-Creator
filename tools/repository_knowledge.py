@@ -84,15 +84,33 @@ def load_catalog(root: Path = ROOT, *, include_history: bool = False) -> dict[st
         if _historical(path):
             if not include_history:
                 continue
-            historical_id = "document.history." + re.sub(r"[^a-z0-9]+", ".", path.lower().removesuffix(".md")).strip(".")
-            doc = Document(historical_id, path, "history", "GUIDE", "HISTORICAL", "ACTIVE", file.read_text(encoding="utf-8"))
+            historical_id = "document.history." + re.sub(
+                r"[^a-z0-9]+", ".", path.lower().removesuffix(".md")
+            ).strip(".")
+            doc = Document(
+                historical_id,
+                path,
+                "history",
+                "GUIDE",
+                "HISTORICAL",
+                "ACTIVE",
+                file.read_text(encoding="utf-8"),
+            )
         else:
             metadata, body = _metadata(file.read_text(encoding="utf-8"), path)
             if metadata["authority"] == "HISTORICAL" and not include_history:
                 continue
             if metadata["lifecycle"] != "ACTIVE":
                 continue
-            doc = Document(metadata["id"], path, metadata["domain"], metadata["role"], metadata["authority"], metadata["lifecycle"], body)
+            doc = Document(
+                metadata["id"],
+                path,
+                metadata["domain"],
+                metadata["role"],
+                metadata["authority"],
+                metadata["lifecycle"],
+                body,
+            )
         if doc.id in result:
             raise KnowledgeError(f"duplicate document identity {doc.id}: {result[doc.id].path} and {path}")
         result[doc.id] = doc
@@ -119,7 +137,10 @@ def _targets(root: Path, doc: Document) -> list[str]:
 def route_index(catalog: dict[str, Document], root: Path = ROOT) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     """Build explicit edges and shortest root-router paths; no persistent graph."""
     by_path = {doc.path: doc.id for doc in catalog.values()}
-    edges = {doc.id: sorted({by_path[p] for p in _targets(root, doc) if p in by_path}) for doc in catalog.values()}
+    edges = {
+        doc.id: sorted({by_path[p] for p in _targets(root, doc) if p in by_path})
+        for doc in catalog.values()
+    }
     routes: dict[str, list[str]] = {}
     if ROUTER_ID in catalog:
         routes[ROUTER_ID] = [ROUTER_ID]
@@ -151,7 +172,13 @@ def validate_repository_docs(root: Path = ROOT) -> list[str]:
     return sorted(errors)
 
 
-def search_documents(query: str, root: Path = ROOT, *, domain: str | None = None, include_history: bool = False) -> list[dict]:
+def search_documents(
+    query: str,
+    root: Path = ROOT,
+    *,
+    domain: str | None = None,
+    include_history: bool = False,
+) -> list[dict]:
     catalog = load_catalog(root, include_history=include_history)
     _, routes = route_index(catalog, root)
     tokens = set(re.findall(r"[a-z0-9]+", query.casefold()))
@@ -159,11 +186,26 @@ def search_documents(query: str, root: Path = ROOT, *, domain: str | None = None
     for doc in catalog.values():
         if domain and doc.domain != domain:
             continue
-        title = doc.body.partition("\n")[0].lower()
+        title = next((line[2:].casefold() for line in doc.body.splitlines() if line.startswith("# ")), "")
         searchable = doc.body.lower()
-        score = sum(6 * (term in doc.id) + 3 * (term in doc.path.lower()) + 2 * (term in title) + (term in searchable) for term in tokens)
+        score = sum(
+            6 * (term in doc.id)
+            + 3 * (term in doc.path.lower())
+            + 2 * (term in title)
+            + (term in searchable)
+            for term in tokens
+        )
         if tokens and score > 0:
-            matches.append({"id": doc.id, "path": doc.path, "domain": doc.domain, "authority": doc.authority, "score": score, "route": routes.get(doc.id, [])})
+            matches.append(
+                {
+                    "id": doc.id,
+                    "path": doc.path,
+                    "domain": doc.domain,
+                    "authority": doc.authority,
+                    "score": score,
+                    "route": routes.get(doc.id, []),
+                }
+            )
     return sorted(matches, key=lambda row: (-row["score"], row["id"]))[:10]
 
 
@@ -180,14 +222,39 @@ def main() -> int:
         catalog = load_catalog(ROOT, include_history=args.include_history)
         edges, routes = route_index(catalog)
         if args.summary:
-            result = {"documents": len(catalog), "explicit_edges": sum(map(len, edges.values())), "reachable": len(routes), "by_domain": {domain: sum(d.domain == domain for d in catalog.values()) for domain in sorted({d.domain for d in catalog.values()})}, "validation": validate_repository_docs(ROOT)}
+            result = {
+                "documents": len(catalog),
+                "explicit_edges": sum(map(len, edges.values())),
+                "reachable": len(routes),
+                "by_domain": {
+                    domain: sum(d.domain == domain for d in catalog.values())
+                    for domain in sorted({d.domain for d in catalog.values()})
+                },
+                "validation": validate_repository_docs(ROOT),
+            }
         elif args.id:
             if args.id not in catalog:
                 parser.error("unknown document id: " + args.id)
             doc = catalog[args.id]
-            result = {"id": doc.id, "path": doc.path, "domain": doc.domain, "role": doc.role, "authority": doc.authority, "routes_to": edges[doc.id], "route": routes.get(doc.id, [])}
+            result = {
+                "id": doc.id,
+                "path": doc.path,
+                "domain": doc.domain,
+                "role": doc.role,
+                "authority": doc.authority,
+                "routes_to": edges[doc.id],
+                "route": routes.get(doc.id, []),
+            }
         else:
-            result = {"query": args.query, "matches": search_documents(args.query, ROOT, domain=args.domain, include_history=args.include_history)}
+            result = {
+                "query": args.query,
+                "matches": search_documents(
+                    args.query,
+                    ROOT,
+                    domain=args.domain,
+                    include_history=args.include_history,
+                ),
+            }
     except (KnowledgeError, OSError, UnicodeError) as exc:
         parser.error(str(exc))
     print(json.dumps(result, indent=2, ensure_ascii=False))

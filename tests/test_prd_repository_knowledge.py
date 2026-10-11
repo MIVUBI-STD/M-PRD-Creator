@@ -25,9 +25,24 @@ class RepositoryKnowledgeContracts(unittest.TestCase):
     def _root(self, directory: str) -> Path:
         root = Path(directory)
         files = {
-            "docs/README.md": doc("document.docs.router", "docs", "ROUTER", "# Docs\n[Foundation](foundation/README.md)\n"),
-            "docs/foundation/README.md": doc("document.foundation.router", "foundation", "ROUTER", "# Foundation\n[PRD](prd.md)\n"),
-            "docs/foundation/prd.md": doc("document.foundation.prd", "foundation", "CONTRACT", "# PRD\nApproved requirements drive production.\n"),
+            "docs/README.md": doc(
+                "document.docs.router",
+                "docs",
+                "ROUTER",
+                "# Docs\n[Foundation](foundation/README.md)\n",
+            ),
+            "docs/foundation/README.md": doc(
+                "document.foundation.router",
+                "foundation",
+                "ROUTER",
+                "# Foundation\n[PRD](prd.md)\n",
+            ),
+            "docs/foundation/prd.md": doc(
+                "document.foundation.prd",
+                "foundation",
+                "CONTRACT",
+                "# PRD\nApproved requirements drive production.\n",
+            ),
         }
         for path, content in files.items():
             target = root / path
