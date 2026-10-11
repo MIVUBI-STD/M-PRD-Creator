@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.adaptive-semantic-composition
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Adaptive Semantic Composition
 
 Date: 2026-09-07

@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.technical-ownership
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Technical Ownership Boundary
 
 Updated: 2026-08-10

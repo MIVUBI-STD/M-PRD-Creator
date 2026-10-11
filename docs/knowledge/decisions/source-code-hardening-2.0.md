@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.source-code-hardening
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Decision — Source-Code Hardening and Stable Machine Identity
 
 Date: 2026-09-07  

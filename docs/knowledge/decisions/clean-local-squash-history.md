@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.clean-local-squash-history
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Clean Milestone and Stable History
 
 Status: current

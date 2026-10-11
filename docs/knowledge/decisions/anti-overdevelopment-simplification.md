@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.anti-overdevelopment
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Anti-Overdevelopment Simplification Decision
 
 Date: 2026-08-10  

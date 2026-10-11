@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.project-data-boundary
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Public System / Project Data Boundary
 
 Status: current

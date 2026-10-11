@@ -1,3 +1,12 @@
+---
+id: document.knowledge.reviews.audit-template
+class: DOCUMENT
+domain: knowledge
+role: GUIDE
+authority: REFERENCE
+lifecycle: ACTIVE
+---
+
 # Review Template
 
 Use only when a dedicated review adds durable evidence beyond a normal task diff.

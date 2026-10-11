@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.golden-reference-fidelity
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Golden Reference Fidelity and Material Conservation
 
 Date: 2026-08-12  
