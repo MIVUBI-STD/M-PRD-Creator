@@ -8,6 +8,11 @@ import re
 from pathlib import Path
 from urllib.parse import unquote
 
+if __package__:
+    from .repository_knowledge import validate_repository_docs
+else:
+    from repository_knowledge import validate_repository_docs
+
 ROOT = Path(__file__).resolve().parents[1]
 KIT_ROOT = ROOT / "kits" / "prd-creator"
 
@@ -57,6 +62,8 @@ REQUIRED_FILES = {
     "tools/prd.py",
     "tools/browser_verify.py",
     "tools/verify_repository.py",
+    "tools/repository_knowledge.py",
+    "tests/test_prd_repository_knowledge.py",
     "tests/test_prd_golden_reference.py",
     "tests/test_prd_browser_verify.py",
     "tests/test_voice_contracts.py",
@@ -425,6 +432,12 @@ def check_python_syntax(errors: list[str]) -> None:
                 fail(errors, f"python syntax error in {path.relative_to(ROOT)}: {exc.msg}")
 
 
+def check_document_routing(errors: list[str]) -> None:
+    """One repository-native validator consumes the in-memory document router."""
+    for issue in validate_repository_docs(ROOT):
+        fail(errors, f"document routing: {issue}")
+
+
 def main() -> int:
     errors: list[str] = []
 
@@ -435,6 +448,7 @@ def main() -> int:
     check_dependency_locks(errors)
     check_workflow_action_pins(errors)
     check_markdown_links(errors)
+    check_document_routing(errors)
     check_explicit_repository_paths(errors)
     check_canonical_workflow_naming(errors)
     check_python_syntax(errors)
