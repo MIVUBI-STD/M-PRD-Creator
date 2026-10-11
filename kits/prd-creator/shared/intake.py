@@ -73,6 +73,8 @@ class RequirementRecord:
     provenance: tuple[str, ...]
     recovery_class: str
     approval_status: str
+    evidence_locator: str = ""
+    evidence_status: str = ""
 
 
 @dataclass(frozen=True)
@@ -194,7 +196,22 @@ def load_requirement_register(path: Path, sources: tuple[SourceRecord, ...]) -> 
         if recovery in {"proposal", "blocked"} and not str(entry.get("resolution") or "").strip():
             raise StateError(f"{owner}.resolution is required for {recovery} requirements")
 
-        records.append(RequirementRecord(requirement_id, area, statement, provenance, recovery, approval))
+        # Preserve optional source-evidence pointers for the trace reviewer.
+        # Their contents are claims to inspect, not proof of truth or a new approval gate.
+        evidence_locator = str(entry.get("evidence_locator") or "").strip()
+        evidence_status = str(entry.get("evidence_status") or "").strip()
+        records.append(
+            RequirementRecord(
+                requirement_id,
+                area,
+                statement,
+                provenance,
+                recovery,
+                approval,
+                evidence_locator,
+                evidence_status,
+            )
+        )
     return tuple(records)
 
 

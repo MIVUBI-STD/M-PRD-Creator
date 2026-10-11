@@ -113,6 +113,10 @@ status: handoff_ready
 accepted_prd_version: X.Y.Z
 ```
 
+### Trace is evidence routing, not semantic scoring
+
+REQ markers in `work/content.md` identify where approved requirements are represented, with the canonical grammar owned by `document/CONTENT-CONTRACT.md`. An explicit partial or malformed trace blocks mechanical validation; an unannotated legacy project remains compatible. The trace CLI exposes per-package cross-role review surfaces but never certifies semantic equality.
+
 ### Proof stays truthful
 
 Mechanical checks prove mechanical contracts. Semantic review proves meaning. Visual PASS requires browser/render evidence. Audio quality requires actual audio evidence.
@@ -136,6 +140,7 @@ mechanical parity wrong                     → validator/shared owner
 
 ```bash
 python tools/prd.py impact <changed-path> ... --json
+python tools/prd.py trace workspace/active/<project>/
 python tools/prd.py status workspace/active/<project>/ --json
 python tools/prd.py build workspace/active/<project>/
 python tools/prd.py validate workspace/active/<project>/

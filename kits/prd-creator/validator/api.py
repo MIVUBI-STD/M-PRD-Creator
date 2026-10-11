@@ -8,6 +8,7 @@ from typing import Any, Iterable
 from shared.issues import Issue
 
 from . import prd_validation_engine as engine
+from .traceability import assess as assess_traceability
 
 PROCESS_LEAK_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("Golden HTML/reference language", re.compile(r"\bGolden\s+(?:HTML|Sample|Reference|page structure)\b", re.I)),
@@ -131,4 +132,30 @@ def validate(project: Path) -> dict[str, Any]:
             ).as_dict()
         )
         result["status"] = "fail"
+
+    # A legacy project with no trace markers remains mechanically compatible.
+    # Once tracing is opted into, malformed/unmapped claims cannot silently pass.
+    if result.get("status") == "pass":
+        traced = assess_traceability(project)
+        result["traceability"] = {
+            "status": traced["status"],
+            "mapped_count": traced.get("mapped_count", 0),
+            "total_requirements": traced.get("total_requirements", 0),
+            "unmapped": traced["unmapped"],
+            "semantic_verified": False,
+        }
+        if traced["status"] in {"invalid", "incomplete", "unavailable"}:
+            findings = traced["issues"]
+            result.setdefault("issues", []).extend(findings)
+            result.setdefault("errors", []).extend(
+                "requirement_trace: " + str(item["message"]) for item in findings
+            )
+            result.setdefault("checks", []).append(
+                {
+                    "check": "requirement_trace",
+                    "status": "fail",
+                    "detail": "Explicit requirement references are incomplete or invalid",
+                }
+            )
+            result["status"] = "fail"
     return result

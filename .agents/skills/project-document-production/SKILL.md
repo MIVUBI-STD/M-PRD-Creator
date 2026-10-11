@@ -77,6 +77,10 @@ meaning correct; approved visual grammar wrong → document/DESIGN-CONTRACT.md
 semantic + design contracts correct; executable behavior wrong → kits/prd-creator/AGENTS.md
 ```
 
+## Requirement traceability
+
+When required to prove completeness, inspect `tools/prd.py trace` output and the exact current Project Requirements register. An explicit REQ marker only establishes a content location. Compare source evidence with PRD meaning and cross-role Gameplay/Level Design/Developer outcomes before a human semantic readiness decision. Do not report semantic PASS because a marker or matching phrase exists.
+
 ## Proof economy
 
 Start with the smallest current semantic owner/source, expand only for a dependency that can change the result, do not reconfirm already-authoritative facts, and stop when the requested semantic boundary is correct and sufficiently proven.

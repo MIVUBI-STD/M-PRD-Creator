@@ -41,6 +41,12 @@ no responsible proposal is possible → Blocked / direct user decision
 
 Material Proposals require user approval. Authoritative facts and evidence-backed Completions do not.
 
+## Optional evidence pointers
+
+The existing requirement-register fields `evidence_locator` and `evidence_status` may preserve a source-specific pointer or unresolved/conflicting evidence note without inventing a new source. Source IDs and current authoritative status remain mechanically checked by `shared/intake.py`. A locator written by AI is a claim to inspect, not proof that the referenced passage exists or agrees with the requirement.
+
+Requirement location in PRD production is separate from source provenance; see `../document/CONTENT-CONTRACT.md`. Do not turn an AI-generated evidence pointer or a REQ marker into an approval flag.
+
 ## Integrated completeness
 
 Before PRD Production, reason once across the complete applicable model:

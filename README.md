@@ -71,6 +71,7 @@ Changes to approved project state may invalidate optional downstream acceptance.
 
 ```bash
 python tools/prd.py impact state/requirement-register.yaml --project workspace/active/<project>/ --json
+python tools/prd.py trace workspace/active/<project>/
 ```
 
 This impact result identifies possibly affected checks, not a substitute for semantic approval, a browser observation, or heard audio. The three-branch model remains unchanged. Actions workflows on `develop` are manual-only (`workflow_dispatch`); the two promotion gates require matching open PR numbers. Existing workflow definitions on `Local` and `main` remain unchanged until formally promoted.

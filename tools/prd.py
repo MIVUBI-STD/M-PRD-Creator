@@ -23,6 +23,7 @@ from shared.state import StateError  # noqa: E402
 from validator import api as prd_api  # noqa: E402
 from validator import validate_handoff as handoff_validator  # noqa: E402
 from validator import voice_validation  # noqa: E402
+from validator.traceability import assess as assess_traceability  # noqa: E402
 
 from tools.browser_verify import BrowserVerifyError  # noqa: E402
 from tools.browser_verify import verify as verify_browser  # noqa: E402
@@ -519,6 +520,11 @@ def main() -> int:
     )
     impact_parser.add_argument("--json", action="store_true", dest="as_json")
 
+    trace_parser = subparsers.add_parser(
+        "trace", help="locate current REQ-ID evidence and prepare cross-role semantic review"
+    )
+    trace_parser.add_argument("project", type=Path)
+
     status_parser = subparsers.add_parser("status", help="show compact mechanical project status and first wrong owner")
     status_parser.add_argument("project", type=Path)
     status_parser.add_argument("--json", action="store_true", dest="as_json")
@@ -579,6 +585,10 @@ def main() -> int:
             return 0
 
         project = args.project.resolve()
+        if args.command == "trace":
+            traced = assess_traceability(project)
+            _print_json(traced)
+            return 0 if traced["status"] == "mapped_unverified" else 1
         if args.command == "status":
             payload = status_payload(project)
             if args.as_json:

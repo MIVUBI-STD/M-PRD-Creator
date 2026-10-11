@@ -46,6 +46,16 @@ Mechanical validation proves deterministic facts including:
 
 Mechanical PASS does not prove semantic fidelity or browser visual quality.
 
+## Trace review (read-only)
+
+```bash
+python tools/prd.py trace workspace/active/<project>/
+```
+
+The trace report reads the existing Project Requirements and canonical `content.md`; it writes no extra registry, source, or accepted output. Its per-package review cases expose actual Gameplay start/end/fail, Level Design flow, Developer lifecycle/reset, selected result model and acceptance wording side by side.
+
+An unannotated legacy PRD remains mechanically compatible, with `traceability.status=unreviewed`. When tracing is explicitly used, incomplete/unknown/detached markers fail PRD validation. Even fully located requirements return `mapped_unverified`, never semantic PASS. A reviewer must still judge meaning and any source conflict before setting the existing acceptance fields.
+
 ## Integrated semantic readiness
 
 Review relevant concerns once: source fidelity, decision completeness, new-reader clarity, Level Design actionability, Developer actionability, quantitative/lifecycle coherence, cross-role coherence, content purity, and design placement.

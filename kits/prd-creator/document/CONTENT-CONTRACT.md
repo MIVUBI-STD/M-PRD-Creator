@@ -75,6 +75,24 @@ Level Design communicates spatial/build responsibility, design flow, complete bu
 
 Developer communicates runtime responsibility, lifecycle, implementation requirements, result handling, interruption/reset/reuse/handoff, and runtime invariants.
 
+## Requirement location trace — optional, explicit, reviewable
+
+A material requirement may be located in canonical content with a standalone comment
+immediately before the relevant substantive paragraph:
+
+```markdown
+## Developer — Session Recovery
+
+<!-- PRD-TRACE: REQ-014 -->
+A disconnect ends the running session and resets the assigned arena.
+```
+
+The marker points to the current `REQ-014` entry in `state/requirement-register.yaml`. It is not visible in the Golden PRD core; it travels with canonical `content.md` and therefore changes `canonical_content_sha256` when edited. Never attach a marker to a heading or empty prose to inflate coverage. A requirement may legitimately appear in multiple role sections; use a marker before each relevant substantive statement.
+
+The existing read-only trace audit compares explicit marker IDs with the current register, reports exact line locations and missing/unknown IDs, and prepares Gameplay–Level Design–Developer comparisons. Once any marker is used, all current material REQ entries must be located or mechanical validation fails. Legacy projects with no markers remain mechanically compatible but are reported as `unreviewed`.
+
+**Location is not semantic proof.** `mapped_unverified` never establishes source fidelity, material conservation, correct scoring/reset behavior, or human approval. Continue integrated semantic review and exact-byte PRD Handoff acceptance.
+
 ## Adaptive cardinality
 
 Use the smallest child cardinality that preserves all material distinctions. Do not add filler to match reference counts or merge distinct rules merely for compactness.
