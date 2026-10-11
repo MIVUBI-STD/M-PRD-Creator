@@ -1,3 +1,12 @@
+---
+id: document.knowledge.skills.router
+class: DOCUMENT
+domain: knowledge
+role: ROUTER
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Skill Catalog
 
 Use this note for the current root skill inventory and ownership boundary. Historical consolidation rationale stays in decisions/reviews.

@@ -1,3 +1,12 @@
+---
+id: document.knowledge.source-authority
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Source Authority
 
 Use this note only when source/state precedence for a claim is unclear. Repository/file ownership lives in `ownership.md`; work-mode routing lives in root `AGENTS.md`.

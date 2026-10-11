@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.recording-policy
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Decision Recording Policy
 
 Updated: 2026-08-10

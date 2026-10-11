@@ -1,3 +1,12 @@
+---
+id: document.knowledge.boot-baseline
+class: DOCUMENT
+domain: knowledge
+role: GUIDE
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Boot and Routing Baseline
 
 Updated: 2026-09-09

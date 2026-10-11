@@ -1,3 +1,12 @@
+---
+id: document.knowledge.skills.activation-matrix
+class: DOCUMENT
+domain: knowledge
+role: GUIDE
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Skill Activation Matrix
 
 Use only when root `AGENTS.md` plus the nearest obvious owner still leave the semantic/technical boundary ambiguous.

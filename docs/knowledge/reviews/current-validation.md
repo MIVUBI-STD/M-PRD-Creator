@@ -1,3 +1,12 @@
+---
+id: document.knowledge.reviews.current-validation
+class: DOCUMENT
+domain: knowledge
+role: GUIDE
+authority: HISTORICAL
+lifecycle: ACTIVE
+---
+
 # Current Validation Status
 
 Updated: 2026-09-09

@@ -1,3 +1,12 @@
+---
+id: document.knowledge.reviews.router
+class: DOCUMENT
+domain: knowledge
+role: ROUTER
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Review Register
 
 Updated: 2026-09-08

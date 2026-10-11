@@ -1,3 +1,12 @@
+---
+id: document.knowledge.maintenance
+class: DOCUMENT
+domain: knowledge
+role: WORKFLOW
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Maintenance Workflow
 
 Updated: 2026-08-30

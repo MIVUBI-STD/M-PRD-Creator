@@ -1,3 +1,12 @@
+---
+id: document.knowledge.decisions.router
+class: DOCUMENT
+domain: knowledge
+role: ROUTER
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Decision Index
 
 This directory stores durable repository/product decisions whose reasons must survive future sessions.

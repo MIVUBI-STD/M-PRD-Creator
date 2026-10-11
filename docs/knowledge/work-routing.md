@@ -1,3 +1,12 @@
+---
+id: document.knowledge.work-routing
+class: DOCUMENT
+domain: knowledge
+role: WORKFLOW
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Work Routing
 
 Compact human reference only. Root `AGENTS.md` is the canonical work-mode, boot, authority, naming, and skill-budget owner.

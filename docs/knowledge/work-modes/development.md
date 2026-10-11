@@ -1,3 +1,12 @@
+---
+id: document.knowledge.development
+class: DOCUMENT
+domain: knowledge
+role: WORKFLOW
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Development Workflow
 
 Updated: 2026-08-30

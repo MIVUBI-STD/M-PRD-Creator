@@ -1,3 +1,12 @@
+---
+id: document.knowledge.ownership
+class: DOCUMENT
+domain: knowledge
+role: CONTRACT
+authority: CANONICAL
+lifecycle: ACTIVE
+---
+
 # Repository Ownership
 
 Updated: 2026-09-09
