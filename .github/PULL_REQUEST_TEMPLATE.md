@@ -28,6 +28,8 @@ Manual promotion acceptance (there are no automatic workflow checks):
 - [ ] `develop → Local`: dispatch `Local Promotion Verify` on `develop` with this PR number and attach successful run URL.
 - [ ] `Local → main`: dispatch `Release Verify` on `Local` with this PR number and attach successful run URL.
 - [ ] Recorded gate evaluated the current PR test-merge candidate; head/base are unchanged since that run.
+- [ ] Actual target-branch protection/ruleset settings were checked in GitHub. If absent, record `UNPROTECTED`; do not mistake these checkboxes for enforced GitHub restrictions.
+- [ ] Manual verification run was evaluated against the current PR; the selected branch workflow supports the required dispatch inputs.
 
 Evidence / relevant result:
 

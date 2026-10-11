@@ -280,6 +280,17 @@ main    → stable history
 - A main stable merge marker is not synchronized back into lower branches.
 - Do not bypass a failed gate by direct edits to another branch.
 
+### GitHub branch protection is separate from repository policy
+
+Markdown rules, CODEOWNERS, and a successful manual Actions run do **not** protect a branch from direct GitHub writes. Before any promotion, check the actual GitHub branch-protection/ruleset settings; report `UNPROTECTED` when not enabled. The connected repository's current protection state must be read from GitHub, not guessed from this file.
+
+Recommended server-side boundary:
+- `Local`: require a pull request; disallow branch deletion and force pushes. Linear history is compatible with its **squash-merge** promotion.
+- `main`: require a pull request; disallow branch deletion and force pushes. **Do not require linear history**, because stable promotion uses a merge commit.
+- `develop`: remains the active working branch, with exact-HEAD verification and non-force writes.
+
+Because workflows are manual-only, do not assume a dispatched verification is automatically enforced as a required PR status check. Confirm that any configured required checks can actually be satisfied by the manual run and intended merge SHA. Until server-side rules exist, a passing gate plus a human-reviewed PR is **procedural evidence**, not machine-enforced branch protection. For a merge, explicitly record the successful gate URL, selected PR, head and base identities, and tested candidate. Re-run the gate after either side changes.
+
 ## Pull requests
 
 Use a PR only when repository policy requires it or review/integration is the actual task. Before creating one, ensure the logical change already exists on the intended source branch and the base/head pair matches repository policy. Do not create a PR solely to make work look formal.
