@@ -68,7 +68,7 @@ A `main` promotion does **not** automatically create a new repository version. C
 
 Creating a Git tag or GitHub Release is always a separate explicit publishing action and is never automatic.
 
-For material development, follow the single [Development Operating Standard](docs/knowledge/work-modes/development.md#development-operating-standard). The exact source owner and its consumers determine scope; source review is not executable validation. Material commits use `Work`, `State`, `Proof` and conditional `Unresolved`/`Next` metadata per [GITHUB_RULES.md](GITHUB_RULES.md). Branches and CI retain their existing promotion contract.
+For material development, follow the single [Development Operating Standard](docs/knowledge/work-modes/development.md#development-operating-standard). The exact source owner and its consumers determine scope; source review is not executable validation. Material commits use `Work`, `State`, `Proof` and conditional `Unresolved`/`Next` metadata per [GITHUB_RULES.md](GITHUB_RULES.md). The three-branch promotion contract remains, but verification workflows are now manual-only on the updated branch.
 
 ## Before committing
 
@@ -82,16 +82,15 @@ python tools/verify_repository.py
 
 PRD executable changes use the PRD regression suite. Voice executable changes use the Voice regression suite. Promotion gates run the broader suites required at integration/stable boundaries.
 
-## CI behavior
+## CI behavior — manual only
 
-CI on `develop` is the active asynchronous regression safety net.
+All five workflows on the updated branch use `workflow_dispatch` exclusively: no automatic push, PR, scheduled or chained execution. Keep the repository, PRD, Voice, browser and coverage checks intact.
 
-- Use the cheapest relevant proof before committing.
-- Do not poll superseded runs.
-- Diagnose only a failure on the current relevant HEAD.
-- `Repository Verify`, `PRD Verify`, and `Voice Verify` remain path-targeted.
-- `Local promotion gate` is the full integration boundary for `develop` → `Local`.
-- `Stable release gate` is the full stable-main boundary for `Local` → `main`.
+- `Repository Verify`, `PRD Verify`, and `Voice Verify` can be dispatched manually against the chosen branch. No file path change starts a job automatically.
+- For `develop → Local`, open a promotion PR, then dispatch `Local Promotion Verify` **on `develop`** with that open PR number. The gate verifies the exact current head and GitHub's merge-candidate SHA. Review a successful run before squash merge.
+- For `Local → main`, open a stable PR, then dispatch `Release Verify` **on `Local`** with that PR number. Review the verified merge candidate before a normal merge commit.
+- Re-run the gate if the PR's head or base changes. Source review and queued/in-progress checks are never executable PASS.
+- `Local` and `main` retain their existing workflow definitions until properly promoted; do not claim all branches are manual-only before that. Branch protection and required checks are separate GitHub settings.
 
 ## Commit discipline
 

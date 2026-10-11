@@ -1,24 +1,6 @@
 name: PRD Verify
 
 on:
-  push:
-    branches:
-      - develop
-      - Local
-    paths:
-      - "kits/prd-creator/intake/**/*.py"
-      - "kits/prd-creator/document/**/*.py"
-      - "kits/prd-creator/production-assets/**/*.py"
-      - "kits/prd-creator/renderer/**/*.py"
-      - "kits/prd-creator/shared/**/*.py"
-      - "kits/prd-creator/template/**"
-      - "kits/prd-creator/validator/**/*.py"
-      - "tools/**/*.py"
-      - "tests/**/*.py"
-      - "requirements.lock.txt"
-      - "requirements-dev.lock.txt"
-      - "pyproject.toml"
-      - ".github/workflows/prd-verify.yml"
   workflow_dispatch:
 
 concurrency:

@@ -4,7 +4,7 @@
 
 Goal: adopt Lazy-Developer's strongest engineering practices **natively in Python**, keeping exactly one owner for repository documentation, code semantics and proof.
 
-Protected: `develop → Local → main` promotion, pinned CI actions, current automated promotion/release gates, PRD authoring contract 3.1.3, strict requirements/Voice data, accepted Golden template, transactional delivery, private project workspace.
+Protected: `develop → Local → main` promotion, pinned CI actions, manual-only promotion/release verification gates (full accepted tests and precise PR source validation are preserved), PRD authoring contract 3.1.3, strict requirements/Voice data, accepted Golden template, transactional delivery, private project workspace.
 
 Scope: canonical documentation routes and stable identities; topic-based GitHub continuity; small read-only repository knowledge retrieval; true affected-check planning; named operator vocabulary; integrated source/consumer and executable acceptance when available.
 

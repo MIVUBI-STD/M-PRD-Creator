@@ -23,6 +23,12 @@ Describe the one logical outcome this pull request delivers.
 - [ ] Local promotion gate for `develop` → `Local`
 - [ ] Stable release gate for `Local` → `main`
 
+Manual promotion acceptance (there are no automatic workflow checks):
+
+- [ ] `develop → Local`: dispatch `Local Promotion Verify` on `develop` with this PR number and attach successful run URL.
+- [ ] `Local → main`: dispatch `Release Verify` on `Local` with this PR number and attach successful run URL.
+- [ ] Recorded gate evaluated the current PR test-merge candidate; head/base are unchanged since that run.
+
 Evidence / relevant result:
 
 ## Repository hygiene

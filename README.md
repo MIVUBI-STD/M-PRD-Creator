@@ -73,7 +73,11 @@ Changes to approved project state may invalidate optional downstream acceptance.
 python tools/prd.py impact state/requirement-register.yaml --project workspace/active/<project>/ --json
 ```
 
-This impact result identifies possibly affected checks, not a substitute for semantic approval, a browser observation, or heard audio. The existing `develop → Local → main` branch model and automatic CI remain unchanged.
+This impact result identifies possibly affected checks, not a substitute for semantic approval, a browser observation, or heard audio. The three-branch model remains unchanged. Actions workflows on `develop` are manual-only (`workflow_dispatch`); the two promotion gates require matching open PR numbers. Existing workflow definitions on `Local` and `main` remain unchanged until formally promoted.
+
+## Manual GitHub Actions
+
+Use **Actions → workflow → Run workflow**, then select the exact branch. Repository, PRD and Voice checks need no PR. Run `Local Promotion Verify` on `develop`, or `Release Verify` on `Local`, with the matching open PR number. The gates inspect the PR test-merge candidate, and must be re-run if its head/base changes.
 
 ## Developer Quick Start
 

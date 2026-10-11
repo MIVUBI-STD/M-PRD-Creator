@@ -69,6 +69,41 @@ class RepositoryVerifyContracts(unittest.TestCase):
 
             self.assertEqual(errors, [])
 
+    def test_ci_event_policy_accepts_only_manual_dispatch(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            (workflows / "manual.yml").write_text(
+                """name: Manual
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request_number:
+        type: number
+jobs:
+""",
+                encoding="utf-8",
+            )
+            with patch.object(verify_repository, "ROOT", root):
+                errors: list[str] = []
+                verify_repository.check_manual_workflow_triggers(errors)
+                self.assertEqual(errors, [])
+
+                (workflows / "automatic.yml").write_text(
+                    """name: Automatic
+on:
+  push:
+  workflow_dispatch:
+jobs:
+""",
+                    encoding="utf-8",
+                )
+                errors = []
+                verify_repository.check_manual_workflow_triggers(errors)
+                self.assertEqual(len(errors), 1)
+                self.assertIn("manual-only", errors[0])
+
     def test_naming_verifier_covers_active_workspace_and_detects_legacy_labels(self) -> None:
         self.assertIn(
             verify_repository.ROOT / "workspace" / "README.md",

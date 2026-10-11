@@ -1,10 +1,12 @@
 name: Release Verify
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      pull_request_number:
+        description: "Open Local to main PR number"
+        required: true
+        type: number
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,6 +14,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   verify:
@@ -19,17 +22,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Require Local release source
-        if: github.event_name == 'pull_request'
+      - name: Validate selected promotion pull request
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pull_request_number }}
+        shell: bash
         run: |
-          test "${{ github.head_ref }}" = "Local" || {
-            echo "Stable release promotion must come from Local." >&2
+          set -euo pipefail
+          if [[ "${GITHUB_REF_NAME}" != "Local" ]]; then
+            echo "Run this manual workflow on Local." >&2
             exit 1
-          }
+          fi
+          if [[ ! "${PR_NUMBER}" =~ ^[1-9][0-9]*$ ]]; then
+            echo "A positive pull request number is required." >&2
+            exit 1
+          fi
+          pr="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}")"
+          from="$(jq -r '.head.ref // empty' <<< "${pr}")"
+          to="$(jq -r '.base.ref // empty' <<< "${pr}")"
+          source_repo="$(jq -r '.head.repo.full_name // empty' <<< "${pr}")"
+          base_repo="$(jq -r '.base.repo.full_name // empty' <<< "${pr}")"
+          state="$(jq -r '.state // empty' <<< "${pr}")"
+          head_sha="$(jq -r '.head.sha // empty' <<< "${pr}")"
+          mergeable="$(jq -r '.mergeable // empty' <<< "${pr}")"
+          merge_sha="$(jq -r '.merge_commit_sha // empty' <<< "${pr}")"
+
+          if [[ "${state}" != "open" || "${from}" != "Local" || "${to}" != "main" ||
+                "${source_repo}" != "${GITHUB_REPOSITORY}" || "${base_repo}" != "${GITHUB_REPOSITORY}" ]]; then
+            echo "PR must be open and from Local to main in this repository." >&2
+            exit 1
+          fi
+          if [[ "${head_sha}" != "${GITHUB_SHA}" ]]; then
+            echo "Manual dispatch HEAD does not match the selected PR head." >&2
+            exit 1
+          fi
+          if [[ "${mergeable}" != "true" || ! "${merge_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "A mergeable PR test-merge SHA is required; resolve conflicts or retry after GitHub computes mergeability." >&2
+            exit 1
+          fi
+          printf 'merge_sha=%s\n' "${merge_sha}" >> "${GITHUB_OUTPUT}"
 
       - name: Checkout release candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ steps.candidate.outputs.merge_sha }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -59,9 +96,8 @@ jobs:
           coverage report --fail-under=84
 
       - name: Release policy reminder
-        if: github.event_name == 'pull_request'
         run: |
           echo "Release source: Local."
           echo "Required merge method: merge commit."
-          echo "This gate validates GitHub's pull-request merge candidate."
+          echo "Manually verified the PR test-merge candidate; re-run if source/target changes."
           echo "Do not merge main release-marker commits back into Local merely to satisfy ancestry."

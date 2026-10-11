@@ -338,6 +338,26 @@ def check_dependency_locks(errors: list[str]) -> None:
         fail(errors, "unexpected kit requirements.txt; root lockfiles own Python dependency pins")
 
 
+def check_manual_workflow_triggers(errors: list[str]) -> None:
+    """Reject all workflow events other than explicit manual dispatch."""
+    workflows = ROOT / ".github" / "workflows"
+    for path in sorted([*workflows.glob("*.yml"), *workflows.glob("*.yaml")]):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        starts = [index for index, line in enumerate(lines) if line == "on:"]
+        if len(starts) != 1:
+            fail(errors, f"workflow missing a unique top-level on: block: {path.relative_to(ROOT)}")
+            continue
+        events: list[str] = []
+        for line in lines[starts[0] + 1 :]:
+            if line and not line[0].isspace() and not line.startswith("#"):
+                break
+            matched = re.fullmatch(r"  ([a-z][a-z_]*): *", line)
+            if matched:
+                events.append(matched.group(1))
+        if events != ["workflow_dispatch"]:
+            fail(errors, f"workflow must be manual-only: {path.relative_to(ROOT)}; events={events}")
+
+
 def check_workflow_action_pins(errors: list[str]) -> None:
     workflows = ROOT / ".github" / "workflows"
     for path in sorted(workflows.glob("*.yml")):
@@ -449,6 +469,7 @@ def main() -> int:
     check_retired_paths(errors)
     check_dependency_locks(errors)
     check_workflow_action_pins(errors)
+    check_manual_workflow_triggers(errors)
     check_markdown_links(errors)
     check_document_routing(errors)
     check_explicit_repository_paths(errors)
@@ -466,7 +487,7 @@ def main() -> int:
     print("- active production kit and entrypoints: present")
     print("- package skill metadata: valid")
     print("- retired repository paths: absent")
-    print("- external GitHub Actions: immutable commit-SHA pinned")
+    print("- external GitHub Actions: immutable commit-SHA pinned; manual-only dispatch")
     print(f"- relative Markdown links checked: {len(iter_markdown_files())} files")
     print("- current explicit repository path references: valid")
     print("- canonical workflow naming: valid")

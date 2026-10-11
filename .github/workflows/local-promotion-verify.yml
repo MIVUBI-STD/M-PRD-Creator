@@ -1,20 +1,12 @@
 name: Local Promotion Verify
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - ".github/workflows/local-promotion-verify.yml"
-      - ".github/workflows/release-verify.yml"
-      - "tests/test_prd_browser_verify.py"
-      - "tests/test_repository_verify.py"
-      - "tools/browser_verify.py"
-      - "tools/verify_repository.py"
-  pull_request:
-    branches:
-      - Local
   workflow_dispatch:
+    inputs:
+      pull_request_number:
+        description: "Open develop to Local PR number"
+        required: true
+        type: number
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -22,6 +14,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   verify:
@@ -29,18 +22,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Require develop promotion source
-        if: github.event_name == 'pull_request'
+      - name: Validate selected promotion pull request
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pull_request_number }}
+        shell: bash
         run: |
-          test "${{ github.head_ref }}" = "develop" || {
-            echo "Local promotion must come from develop." >&2
+          set -euo pipefail
+          if [[ "${GITHUB_REF_NAME}" != "develop" ]]; then
+            echo "Run this manual workflow on develop." >&2
             exit 1
-          }
+          fi
+          if [[ ! "${PR_NUMBER}" =~ ^[1-9][0-9]*$ ]]; then
+            echo "A positive pull request number is required." >&2
+            exit 1
+          fi
+          pr="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}")"
+          from="$(jq -r '.head.ref // empty' <<< "${pr}")"
+          to="$(jq -r '.base.ref // empty' <<< "${pr}")"
+          source_repo="$(jq -r '.head.repo.full_name // empty' <<< "${pr}")"
+          base_repo="$(jq -r '.base.repo.full_name // empty' <<< "${pr}")"
+          state="$(jq -r '.state // empty' <<< "${pr}")"
+          head_sha="$(jq -r '.head.sha // empty' <<< "${pr}")"
+          mergeable="$(jq -r '.mergeable // empty' <<< "${pr}")"
+          merge_sha="$(jq -r '.merge_commit_sha // empty' <<< "${pr}")"
+
+          if [[ "${state}" != "open" || "${from}" != "develop" || "${to}" != "Local" ||
+                "${source_repo}" != "${GITHUB_REPOSITORY}" || "${base_repo}" != "${GITHUB_REPOSITORY}" ]]; then
+            echo "PR must be open and from develop to Local in this repository." >&2
+            exit 1
+          fi
+          if [[ "${head_sha}" != "${GITHUB_SHA}" ]]; then
+            echo "Manual dispatch HEAD does not match the selected PR head." >&2
+            exit 1
+          fi
+          if [[ "${mergeable}" != "true" || ! "${merge_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "A mergeable PR test-merge SHA is required; resolve conflicts or retry after GitHub computes mergeability." >&2
+            exit 1
+          fi
+          printf 'merge_sha=%s\n' "${merge_sha}" >> "${GITHUB_OUTPUT}"
 
       - name: Checkout candidate head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ steps.candidate.outputs.merge_sha }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -70,8 +96,8 @@ jobs:
           coverage report --fail-under=84
 
       - name: Promotion policy reminder
-        if: github.event_name == 'pull_request'
         run: |
+          echo "Manual gate verified the selected PR test-merge candidate."
           echo "Required merge method: squash."
           echo "One approved develop -> Local promotion must create exactly one new Local commit."
           echo "After merge, synchronize develop to the resulting Local HEAD before new development."

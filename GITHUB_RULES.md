@@ -163,7 +163,7 @@ prepare complete logical change
 → review intended diff/state
 → one logical commit
 → push once
-→ relevant CI
+→ targeted evidence; manual CI only when explicitly requested or needed for approved promotion
 → STOP
 ```
 
@@ -285,6 +285,8 @@ main    → stable history
 Use a PR only when repository policy requires it or review/integration is the actual task. Before creating one, ensure the logical change already exists on the intended source branch and the base/head pair matches repository policy. Do not create a PR solely to make work look formal.
 
 ## CI and logs
+
+On the updated branch, all five Actions workflows must run only via `workflow_dispatch`. Never trigger on push, PR, schedule or workflow completion. When promotion is approved, manually select the matching source branch and provide the open PR number; the gate checks exact source/target, PR head and GitHub test-merge SHA. Re-run the manual gate after either PR side changes. A source review is not an Actions PASS. Other branch versions and GitHub required-check settings remain independent until separately updated.
 
 Use current commit/run state. Diagnose:
 

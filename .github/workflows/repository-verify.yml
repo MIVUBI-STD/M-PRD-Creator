@@ -1,10 +1,6 @@
 name: Repository Verify
 
 on:
-  push:
-    branches:
-      - develop
-      - Local
   workflow_dispatch:
 
 concurrency:
