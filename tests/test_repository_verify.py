@@ -69,7 +69,6 @@ class RepositoryVerifyContracts(unittest.TestCase):
 
             self.assertEqual(errors, [])
 
-
     def test_naming_verifier_covers_active_workspace_and_detects_legacy_labels(self) -> None:
         self.assertIn(
             verify_repository.ROOT / "workspace" / "README.md",
