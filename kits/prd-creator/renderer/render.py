@@ -60,6 +60,13 @@ def _load_projection(render_data: Path) -> dict:
             raise ValueError(
                 "render-data approved_requirement_sha256 does not match current Project Requirements approval"
             )
+        requirement_path = project / "state" / "requirement-register.yaml"
+        try:
+            actual_requirement_sha = hashlib.sha256(requirement_path.read_bytes()).hexdigest()
+        except OSError as exc:
+            raise ValueError(f"current Project Requirements register cannot be read: {requirement_path}") from exc
+        if actual_requirement_sha != intake.approved_requirement_sha256:
+            raise ValueError("current Project Requirements register bytes do not match approved_requirement_sha256")
     return data
 
 

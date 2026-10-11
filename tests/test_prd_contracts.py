@@ -245,6 +245,23 @@ class ProjectDocumentContracts(unittest.TestCase):
         self.assertEqual(rendered.returncode, 2)
         self.assertIn("approved_requirement_sha256", rendered.stderr)
 
+    def test_renderer_rejects_changed_requirement_bytes_before_writing_html(self) -> None:
+        project = self.make_project()
+        first = self.render(project)
+        self.assertEqual(first.returncode, 0, first.stderr or first.stdout)
+        html_path = project / "output" / "v1.0.0" / "prd.html"
+        old_html = html_path.read_bytes()
+
+        requirement_path = project / "state" / "requirement-register.yaml"
+        requirement_path.write_text(
+            requirement_path.read_text(encoding="utf-8") + "\n# Changed after approval\n",
+            encoding="utf-8",
+        )
+        rejected = self.render(project)
+        self.assertEqual(rejected.returncode, 2)
+        self.assertIn("current Project Requirements register bytes", rejected.stderr)
+        self.assertEqual(html_path.read_bytes(), old_html)
+
     def test_projection_rejects_unknown_compatibility_field(self) -> None:
         data = render_data()
         data["packages"][0]["gameplay"]["estimated_time"] = "legacy alias"
