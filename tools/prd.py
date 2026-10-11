@@ -62,6 +62,10 @@ VISUAL_REPO_PATHS = {
     "kits/prd-creator/renderer/pages.py",
     "kits/prd-creator/renderer/prd_render_engine.py",
     "kits/prd-creator/renderer/template_adapter.py",
+    "kits/prd-creator/renderer/render.py",
+    "kits/prd-creator/renderer/delivery.py",
+    "kits/prd-creator/renderer/production_assets.py",
+    "kits/prd-creator/renderer/production_assets_compositor.py",
     "tools/browser_verify.py",
     "tests/test_prd_browser_verify.py",
 }
@@ -236,7 +240,26 @@ def _git_changed_paths(base: str | None) -> list[str]:
 
 
 def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> dict[str, Any]:
-    changed = sorted({_normalize_changed_path(path) for path in changed_paths if _normalize_changed_path(path)})
+    if project is not None:
+        project = project.resolve()
+        if not project.is_dir():
+            raise ValueError(f"impact --project requires an existing directory: {project}")
+
+    normalized_paths: set[str] = set()
+    for raw in changed_paths:
+        path = _normalize_changed_path(raw)
+        if not path:
+            continue
+        if project is not None:
+            candidate = Path(raw.strip().replace("\\", "/"))
+            if not candidate.is_absolute():
+                candidate = ROOT / candidate
+            try:
+                path = candidate.resolve().relative_to(project).as_posix()
+            except ValueError:
+                pass
+        normalized_paths.add(path)
+    changed = sorted(normalized_paths)
     checks: set[str] = set()
     owners: set[str] = set()
     derived_edits: list[str] = []
@@ -270,6 +293,7 @@ def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> 
             or path.startswith("tools/")
             or path.startswith(".github/")
             or path.startswith("docs/")
+            or path.startswith("planning/")
             or path.startswith(".agents/")
             or path
             in {
@@ -278,12 +302,26 @@ def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> 
                 "CONTEXT.md",
                 "README.md",
                 "CONTRIBUTING.md",
+                "SECURITY.md",
+                "CHANGELOG.md",
+                "LICENSE",
+                ".gitattributes",
+                ".gitignore",
                 "pyproject.toml",
+                "requirements.lock.txt",
+                "requirements-dev.lock.txt",
+                "workspace/README.md",
+                "workspace/active/README.md",
+                "workspace/archive/README.md",
             }
         )
         if is_repo_path:
             checks.add("repository")
             owners.add("repository")
+
+        if path in {"pyproject.toml", "requirements.lock.txt", "requirements-dev.lock.txt"}:
+            checks.update({"prd", "voice"})
+            owners.add("shared_toolchain")
 
         if (
             path.startswith(PRD_REPO_PREFIXES)
@@ -347,7 +385,6 @@ def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> 
         not_proven.append("audio/actor/pronunciation quality")
 
     if project is not None and (project_prd_changed or project_handoff_changed):
-        project = project.resolve()
         handoff_present = any((project / name).is_file() for name in ("work/acceptance.md", "state/handoff-state.yaml"))
         voice_present = any(
             (project / name).is_file()
@@ -358,7 +395,7 @@ def impact_payload(changed_paths: list[str], *, project: Path | None = None) -> 
                 "work/voice-acceptance.md",
             )
         )
-        if project_prd_changed and handoff_present:
+        if project_prd_changed and (handoff_present or voice_present):
             checks.add("handoff")
         if voice_present:
             checks.add("voice")

@@ -126,6 +126,44 @@ class PrdOperatorCliContracts(unittest.TestCase):
         self.assertIn("project_scope", payload)
         self.assertNotIn("voice", payload["recommended_checks"])
 
+    def test_impact_recognizes_repository_policy_and_shared_dependencies(self) -> None:
+        policy = prd_operator.impact_payload(["planning/development.md", "workspace/README.md"])
+        self.assertEqual(policy["recommended_checks"], ["repository"])
+        self.assertNotIn("unknown", policy["owners"])
+
+        dependencies = prd_operator.impact_payload(["requirements.lock.txt"])
+        self.assertEqual(dependencies["recommended_checks"], ["repository", "prd", "voice"])
+        self.assertIn("shared_toolchain", dependencies["owners"])
+
+    def test_impact_marks_html_production_paths_for_browser_review(self) -> None:
+        for path in (
+            "kits/prd-creator/renderer/render.py",
+            "kits/prd-creator/renderer/delivery.py",
+            "kits/prd-creator/renderer/production_assets.py",
+            "kits/prd-creator/renderer/production_assets_compositor.py",
+        ):
+            with self.subTest(path=path):
+                result = prd_operator.impact_payload([path])
+                self.assertTrue(result["browser_required"])
+                self.assertIn("browser", result["recommended_checks"])
+
+    def test_impact_project_paths_are_scoped_by_exact_project(self) -> None:
+        project = self.make_project()
+        changed = str(project / "state" / "requirement-register.yaml")
+        payload = prd_operator.impact_payload([changed], project=project)
+        self.assertEqual(payload["changed"], ["state/requirement-register.yaml"])
+        self.assertEqual(payload["recommended_checks"], ["prd"])
+
+        (project / "work" / "voice-requirements.md").write_text("# Voice\n", encoding="utf-8")
+        downstream = prd_operator.impact_payload([changed], project=project)
+        self.assertEqual(downstream["recommended_checks"], ["prd", "handoff", "voice"])
+
+    def test_impact_rejects_missing_explicit_project(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            missing = Path(temp_dir) / "missing-project"
+            with self.assertRaisesRegex(ValueError, "existing directory"):
+                prd_operator.impact_payload(["work/content.md"], project=missing)
+
     def test_validate_command_preserves_canonical_validator_exit(self) -> None:
         project = self.make_project()
         self.assertEqual(run_operator("build", project).returncode, 0)
