@@ -179,6 +179,15 @@ class TargetedRevisionContracts(unittest.TestCase):
         self.assertEqual(report["baseline_authority"], "NOT_VERIFIED_EXPLICIT_SNAPSHOT")
         self.assertFalse(report["semantic_verified"])
 
+    def test_revision_projection_binding_uses_same_trace_owner(self) -> None:
+        project = self.make_project()
+        baseline = self.before(project)
+        self.assertEqual(assess(project)["review_projection_binding"], "current")
+        self.assertEqual(plan_revision(project, baseline)["render_data_binding"], "current")
+        (project / "work/content.md").write_text("# Updated project meaning\n", encoding="utf-8")
+        self.assertEqual(assess(project)["review_projection_binding"], "stale")
+        self.assertEqual(plan_revision(project, baseline)["render_data_binding"], "stale")
+
     def test_representative_scored_and_completion_packages_revise_only_known_locations(self) -> None:
         project = self.make_project()
         payload = render_data()

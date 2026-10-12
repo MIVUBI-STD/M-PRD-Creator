@@ -208,6 +208,54 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(requirement["evidence_status"], "conflict")
         self.assertEqual(requirement["source_evidence"][0]["role"], "authoritative")
 
+    def test_review_cases_refuse_stale_content_projection(self) -> None:
+        project = self.make_project()
+        current = assess(project)
+        self.assertEqual(current["review_approval_binding"], "current")
+        self.assertEqual(current["review_projection_binding"], "current")
+        self.assertEqual(len(current["review_cases"]), 1)
+
+        (project / "work/content.md").write_text(
+            "# Updated canonical meaning\n\nThe session has changed.\n", encoding="utf-8"
+        )
+        stale = assess(project)
+        self.assertEqual(stale["review_approval_binding"], "current")
+        self.assertEqual(stale["review_projection_binding"], "stale")
+        self.assertEqual(stale["review_cases"], [])
+        self.assertFalse(stale["semantic_verified"])
+
+    def test_review_cases_refuse_stale_project_requirements(self) -> None:
+        project = self.make_project()
+        register = project / "state/requirement-register.yaml"
+        register.write_text(register.read_text(encoding="utf-8") + "\n# Changed since approval\n", encoding="utf-8")
+        stale = assess(project)
+        self.assertEqual(stale["review_approval_binding"], "stale")
+        self.assertEqual(stale["review_projection_binding"], "stale")
+        self.assertEqual(stale["review_cases"], [])
+        self.assertEqual(stale["status"], "unreviewed")
+
+    def test_review_cases_refuse_unreadable_render_projection(self) -> None:
+        project = self.make_project()
+        (project / "work/render-data.json").write_text("{broken", encoding="utf-8")
+        report = assess(project)
+        self.assertEqual(report["review_approval_binding"], "current")
+        self.assertEqual(report["review_projection_binding"], "unreadable")
+        self.assertEqual(report["review_cases"], [])
+
+    def test_review_cases_refuse_stale_intake_approval_with_current_projection(self) -> None:
+        project = self.make_project()
+        intake_path = project / "state/intake-state.yaml"
+        current_hash = json.loads((project / "work/render-data.json").read_text(encoding="utf-8"))[
+            "approved_requirement_sha256"
+        ]
+        intake_path.write_text(
+            intake_path.read_text(encoding="utf-8").replace(current_hash, "f" * 64), encoding="utf-8"
+        )
+        report = assess(project)
+        self.assertEqual(report["review_approval_binding"], "stale")
+        self.assertEqual(report["review_projection_binding"], "current")
+        self.assertEqual(report["review_cases"], [])
+
     def test_completion_only_exposes_the_correct_developer_review_surface(self) -> None:
         project = self.make_project()
         data = json.loads((project / "work/render-data.json").read_text(encoding="utf-8"))

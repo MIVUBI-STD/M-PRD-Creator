@@ -52,7 +52,16 @@ Mechanical PASS does not prove semantic fidelity or browser visual quality.
 python tools/prd.py trace workspace/active/<project>/
 ```
 
-The trace report reads the existing Project Requirements and canonical `content.md`; it writes no extra registry, source, or accepted output. Its per-package review cases expose actual Gameplay start/end/fail, Level Design flow, Developer lifecycle/reset, selected result model and acceptance wording side by side.
+The trace report reads the existing Project Requirements and canonical `content.md`; it writes no extra registry, source, or accepted output. Its per-package review cases expose actual Gameplay start/end/fail, Level
+Design flow, Developer lifecycle/reset, selected result model and acceptance
+wording side by side.
+
+Review comparisons are returned only while current requirement-register
+approval and render-data requirement/content SHA bindings agree. If either is
+stale, the trace still reports source-to-content locations but returns empty
+`review_cases` and explicit `review_approval_binding` /
+`review_projection_binding` statuses. Fresh SHA bindings do **not** prove
+schema completeness or semantic agreement.
 
 An unannotated legacy PRD remains mechanically compatible, with `traceability.status=unreviewed`. When tracing is explicitly used, incomplete/unknown/detached markers fail PRD validation. Even fully located requirements return `mapped_unverified`, never semantic PASS. A reviewer must still judge meaning and any source conflict before setting the existing acceptance fields.
 

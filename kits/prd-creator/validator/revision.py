@@ -7,14 +7,13 @@ No baseline is inferred from chat history, generated HTML or Git commit recency.
 from __future__ import annotations
 
 import hashlib
-import json
 from pathlib import Path
 from typing import Any
 
-from shared.intake import REQUIREMENT_FIELDS, REQUIREMENT_ID_RE, load_intake_state
+from shared.intake import REQUIREMENT_FIELDS, REQUIREMENT_ID_RE
 from shared.state import StateError, list_of_mappings, load_mapping, require_scalar
 
-from .traceability import assess
+from .traceability import approval_binding, assess, projection_binding
 
 MEANING_FIELDS = {"statement", "area", "resolution", "recovery_class", "affects", "impact"}
 
@@ -46,38 +45,6 @@ def _register(path: Path) -> dict[str, dict[str, Any]]:
             raise StateError(f"duplicate requirement id: {identifier}")
         result[identifier] = entry
     return result
-
-
-def _approval_binding(project: Path, current_sha: str) -> dict[str, Any]:
-    try:
-        state = load_intake_state(project / "state" / "intake-state.yaml")
-    except (OSError, StateError) as exc:
-        return {"status": "unavailable", "reason": str(exc)}
-    return {
-        "status": "current" if state.approved_requirement_sha256 == current_sha else "stale",
-        "intake_status": state.status,
-    }
-
-
-def _projection_binding(project: Path, current_sha: str) -> str:
-    path = project / "work" / "render-data.json"
-    if not path.is_file():
-        return "not_present"
-    try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, ValueError):
-        return "unreadable"
-    if not isinstance(value, dict):
-        return "unreadable"
-    try:
-        actual_content_sha = hashlib.sha256((project / "work" / "content.md").read_bytes()).hexdigest()
-    except OSError:
-        return "unavailable"
-    bindings_current = (
-        value.get("approved_requirement_sha256") == current_sha
-        and value.get("canonical_content_sha256") == actual_content_sha
-    )
-    return "current" if bindings_current else "stale"
 
 
 def plan_revision(project: Path, before: Path) -> dict[str, Any]:
@@ -165,8 +132,8 @@ def plan_revision(project: Path, before: Path) -> dict[str, Any]:
         "trace_status": trace["status"],
         "trace_issues": trace["issues"],
         "scope": "KNOWN_LOCATIONS_ONLY" if located else "NOT_PROVEN",
-        "approval_binding": _approval_binding(project, current_sha),
-        "render_data_binding": _projection_binding(project, current_sha),
+        "approval_binding": approval_binding(project, current_sha),
+        "render_data_binding": projection_binding(project, current_sha),
         "not_proven": [
             "semantic conservation and cross-role consistency",
             "that unmarked downstream dependencies are unaffected",

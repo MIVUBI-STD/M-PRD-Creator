@@ -5,12 +5,13 @@ PRD-TRACE markers prove location, never semantic correctness.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
 from typing import Any
 
-from shared.intake import load_requirement_register, load_source_inventory
+from shared.intake import load_intake_state, load_requirement_register, load_source_inventory, sha256_file
 from shared.issues import Issue
 from shared.state import StateError
 
@@ -45,6 +46,40 @@ def _next_claim(lines: list[str], index: int) -> tuple[int, str] | None:
             return None
         return offset + 1, text[:240]
     return None
+
+
+def approval_binding(project: Path, current_sha: str) -> dict[str, Any]:
+    """Report existing intake approval freshness without claiming semantic approval."""
+    try:
+        state = load_intake_state(project / "state" / "intake-state.yaml")
+    except (OSError, StateError) as exc:
+        return {"status": "unavailable", "reason": str(exc)}
+    return {
+        "status": "current" if state.approved_requirement_sha256 == current_sha else "stale",
+        "intake_status": state.status,
+    }
+
+
+def projection_binding(project: Path, current_sha: str) -> str:
+    """Check only current render-data requirement/content SHA bindings."""
+    path = project / "work" / "render-data.json"
+    if not path.is_file():
+        return "not_present"
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, ValueError):
+        return "unreadable"
+    if not isinstance(value, dict):
+        return "unreadable"
+    try:
+        actual_content_sha = hashlib.sha256((project / "work" / "content.md").read_bytes()).hexdigest()
+    except OSError:
+        return "unavailable"
+    bindings_current = (
+        value.get("approved_requirement_sha256") == current_sha
+        and value.get("canonical_content_sha256") == actual_content_sha
+    )
+    return "current" if bindings_current else "stale"
 
 
 def _review_cases(project: Path) -> list[dict[str, Any]]:
@@ -110,7 +145,9 @@ def assess(project: Path) -> dict[str, Any]:
         "requirements": [],
         "unmapped": [],
         "issues": [],
-        "review_cases": _review_cases(project),
+        "review_cases": [],
+        "review_approval_binding": "unavailable",
+        "review_projection_binding": "unavailable",
     }
     try:
         sources = load_source_inventory(project / "state/source-inventory.yaml", project)
@@ -119,6 +156,14 @@ def assess(project: Path) -> dict[str, Any]:
     except (OSError, StateError, UnicodeError) as exc:
         report["issues"] = [_issue("PRD_TRACE_SOURCE_UNAVAILABLE", str(exc))]
         return report
+
+    current_sha = sha256_file(project / "state/requirement-register.yaml")
+    approval = approval_binding(project, current_sha)
+    projection = projection_binding(project, current_sha)
+    report["review_approval_binding"] = approval["status"]
+    report["review_projection_binding"] = projection
+    if approval["status"] == "current" and projection == "current":
+        report["review_cases"] = _review_cases(project)
 
     by_source = {source.source_id: source for source in sources}
     mapped: dict[str, list[dict[str, object]]] = {req.requirement_id: [] for req in requirements}
