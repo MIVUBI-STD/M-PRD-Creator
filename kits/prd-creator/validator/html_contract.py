@@ -7,10 +7,11 @@ from collections import Counter
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from renderer.pages import flow_pages, global_pages, navigation, overview, package_pages
 from shared.issues import Issue
+from shared.render_schema import RenderData
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 GOLDEN_GLOBAL_PAGE_IDS = {
@@ -203,9 +204,11 @@ def document_composition_errors(data: dict[str, Any], facts: HtmlFacts) -> list[
 def _exact_projection_checks(data: dict[str, Any], html_text: str, relative_html: str) -> list[HtmlCheck]:
     """Recreate approved page/navigation HTML without accepting embedded revision metadata as proof."""
 
+    # The canonical schema is already validated before this helper is called.
+    typed = cast(RenderData, data)
     try:
-        core = "".join([overview(data), *flow_pages(data), *global_pages(data), *package_pages(data)])
-        nav = navigation(data)
+        core = "".join([overview(typed), *flow_pages(typed), *global_pages(typed), *package_pages(typed)])
+        nav = navigation(typed)
     except (KeyError, IndexError, TypeError, ValueError) as exc:
         detail = f"canonical HTML projection cannot be reconstructed: {exc}"
         return [
