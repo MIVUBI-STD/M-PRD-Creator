@@ -75,8 +75,7 @@ Semantic Readiness: PASS | FAIL
 
 ### Map-system readiness review (source-activated)
 
-Before accepting a map PRD, follow the [single design contract](
-CONTENT-CONTRACT.md) on material systems only. Check that source-backed
+Before accepting a map PRD, follow the [single design contract](CONTENT-CONTRACT.md) on material systems only. Check that source-backed
 mechanics have: an explicit actor/event/condition, an identified
 player/team/arena/global scope where relevant, a coherent visible outcome,
 role-specific actionable responsibilities, and a reviewable acceptance

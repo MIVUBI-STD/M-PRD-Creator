@@ -80,14 +80,14 @@ Developer communicates runtime responsibility, lifecycle, implementation require
 Before splitting approved map mechanics across role sections, apply one
 bounded design pass **inside PRD Production**:
 
-\`\`\`text
+```text
 current SRC / REQ
 → operating context and player journey (when relevant)
 → actor + event + condition/guard + affected scope/state owner
 → player-visible outcome + interruption/recovery policy
 → actionable Gameplay / Level Design / Developer responsibilities
 → source-grounded acceptance expectation
-\`\`\`
+```
 
 This is a review order, **not** a new PRD stage, artifact, schema or engine.
 For simple maps, omit mechanisms the approved source never establishes.
