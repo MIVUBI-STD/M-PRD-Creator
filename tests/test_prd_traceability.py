@@ -289,6 +289,7 @@ class RequirementTraceContracts(unittest.TestCase):
         source_path.write_text("Keep arena assignment.\n", encoding="utf-8")
         inventory = project / "state/source-inventory.yaml"
         original_inventory = inventory.read_text(encoding="utf-8")
+        source_sha = hashlib.sha256(source_path.read_bytes()).hexdigest()
         register = project / "state/requirement-register.yaml"
         register.write_text(
             register.read_text(encoding="utf-8") + "    evidence_locator: source-note.md#L1\n",
@@ -300,14 +301,14 @@ class RequirementTraceContracts(unittest.TestCase):
             ("current", "repository", "blocked"),
         ):
             with self.subTest(status=status, retention=retention, inspection=inspection):
-                modified = original_inventory.replace('    status: current', f'    status: {status}')
-                modified = modified.replace('    inspection: full', f'    inspection: {inspection}')
-                inventory.write_text(
-                    modified + f"    retention: {retention}\n"
-                    + "    path: source-note.md\n"
-                    + f"    sha256: {hashlib.sha256(source_path.read_bytes()).hexdigest()}\n",
-                    encoding="utf-8",
+                modified = original_inventory.replace("    status: current", f"    status: {status}")
+                modified = modified.replace("    inspection: full", f"    inspection: {inspection}")
+                metadata = (
+                    f"    retention: {retention}\n"
+                    "    path: source-note.md\n"
+                    f"    sha256: {source_sha}\n"
                 )
+                inventory.write_text(modified + metadata, encoding="utf-8")
                 report = assess(project)
                 self.assertEqual(report["status"], "unreviewed")
                 self.assertFalse(report["semantic_verified"])
