@@ -40,7 +40,7 @@ what is already implemented. Runtime testing belongs after PRD Handoff.
 | Input | Processing | Output |
 |---|---|---|
 | New map brief / current instruction | Project Requirements, including material Game Design proposals | approved requirement and design revision |
-| Approved constraints / optional references | PRD Production | buildable Gameplay, Level Design and Developer specification |
+| Approved Project Requirements revision | PRD Production | buildable Gameplay, Level Design and Developer specification |
 | Approved gameplay/build needs | Production Assets | actionable resource requirements |
 | Approved Voice needs | Voice Requirements → Voice Production → Voice Delivery | Eleven v3-ready Voice Production |
 

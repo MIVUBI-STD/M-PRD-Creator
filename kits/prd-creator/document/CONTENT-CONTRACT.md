@@ -77,6 +77,11 @@ Developer communicates runtime responsibility, lifecycle, implementation require
 
 ## Source-activated map system design contract
 
+A map **need not exist** for this design pass. The task is to
+specify future gameplay coherently, not audit command blocks, prove a
+working session or reverse-engineer a reference map. Significant new
+gameplay policy belongs to Project Requirements for approval first.
+
 Before splitting approved map mechanics across role sections, apply one
 bounded design pass **inside PRD Production**:
 

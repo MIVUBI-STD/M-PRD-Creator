@@ -28,6 +28,25 @@ Create explicit requirement entries only for material rules that benefit from tr
 
 Do not turn ordinary descriptive detail or every source sentence into separate records.
 
+## Pre-build Game Design from a brief
+
+A current user brief is enough to begin designing a new map; an existing
+`.mcworld`, implemented gameplay or a testable arena is not required.
+Recover explicit design goals, audience, experience, constraints and
+exclusions. Identify material undecided gameplay choices and generate
+one grounded option or a concise tradeoff between viable alternatives.
+A new AI-proposed mechanic, result, timing, capacity or recovery rule
+is a **Proposal** when the brief does not determine it, not source
+recovery or evidence-backed Completion.
+
+Group repeated consequences under their root decision; do not demand
+approval for cosmetic drafting, trivial decomposition, or already
+authoritative rules. Once material design choices are accepted, keep
+the approved project model in the existing requirement register and
+let PRD Production express it in Gameplay, Level Design and Developer.
+No separate concept document, design decision register or workflow
+status is necessary.
+
 ## Recovery rule
 
 Recover explicit facts, removals, exclusions, topology, terminology, quantitative rules, lifecycle behavior, and necessary Production Assets implications first.

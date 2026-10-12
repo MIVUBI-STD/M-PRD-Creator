@@ -1,30 +1,24 @@
 # Repository Development Intent
 
-## Current bounded initiative: PRD-Creator architecture modernization
+Status: **Requested workflow/design clarification scope closed on `develop`** (2026-10-12; source-reviewed, not an executable-test PASS).
 
-Goal: adopt Lazy-Developer's strongest engineering practices **natively in Python**, keeping exactly one owner for repository documentation, code semantics and proof.
+This file records scope boundaries, not a separate completion ledger or automatic authorization to resume development. Exact current source and topic commits determine what was actually implemented.
 
-Protected: `develop → Local → main` promotion, pinned CI actions, manual-only promotion/release verification gates (full accepted tests and precise PR source validation are preserved), PRD authoring contract 3.1.3, strict requirements/Voice data, accepted Golden template, transactional delivery, private project workspace.
+## Concluded scope — architecture and design-before-build clarity
 
-Scope: canonical documentation routes and stable identities; topic-based GitHub continuity; small read-only repository knowledge retrieval; true affected-check planning; named operator vocabulary; integrated source/consumer and executable acceptance when available.
+Purpose: PRD-Creator converts a new map brief into material **Game Design decisions**, then a coherent, implementation-ready PRD. Project Requirements owns approved gameplay choices; PRD Production owns their actionable Gameplay / Level Design / Developer representation; PRD Handoff accepts the specification. No existing map or runtime QA is required.
 
-Non-goals: Node/TypeScript migration, Minecraft analyzers, new general managers, database/search service, duplicate registries, extra work-lane skills, local-PC dependency, branch promotion.
+Protected: existing canonical workflow names, Project Requirements approval/byte binding, strict render schema, Voice contracts, approved Golden template, transactional delivery, private project workspace and established GitHub verification rules.
 
-## Bounded semantic extension — Behavioral Intelligence
+Work covered: clarify source/decision/PRD/acceptance owners; retain source-grounded Behavioral Intelligence and conditional facilitated-session guidance; distinguish design readiness from a built/playtested world. The [canonical flow contract](../docs/foundation/01-production-flow.md) owns full entry/work/output/exit definitions.
 
-Goal: upgrade source-grounded reasoning about game behavior and consequential
-design gaps without creating a second canonical project model.
+Non-goals: Map Analyzer, gameplay simulator, mandatory sample world, new application or runtime agent, new machine states, schema/framework migration, duplicate design registers, generic management dashboards, or branch promotion.
 
-Scope: a temporary behavioral claim/constraint/concern method; conditional
-domain activation; consume through the existing Project Requirements and
-PRD Production semantic skill/owners. Preserve existing Completion / Proposal
-/ Blocked and Golden/render-data authority.
+## Proof and closure boundary
 
-Out of scope: new runtime AI agent, domain registry/database, machine schema,
-automatic semantic scoring, gameplay simulator, UI redesign, Voice changes,
-client project data, GitHub CI/promotion. Any executable quality benchmark or
-new domain-specific code belongs to a separately bounded implementation.
+- The documentation/architecture clarification has been committed and source-reviewed on `develop`. This **does not** certify AI design quality, real-world map outcomes, or complete repository regression.
+- Exact-HEAD Python/Ruff/GitHub Actions verification has **not** been executed as part of this closure; prior CI runs for older commits do not validate this HEAD. Do not label it CI-PASS or release-ready without that evidence.
+- Game design quality can be evaluated later from a **new design brief before map implementation**, with approved decisions and reviewable PRD output. An already built map must not be requested as a precondition.
+- No further development initiative is active from this file. Resume SYSTEM DEVELOPMENT only for a new explicit request or evidenced defect; ordinary new-map design routes to PROJECT PRODUCTION.
 
-**Actual implementation state must be recovered by topic from current `develop` HEAD and relevant commits.** This plan is not a completion ledger. Do not resume a stale step because it appears here; verify the current source and consumers first.
-
-Acceptance boundary: all current canonical document routes resolvable; one in-memory retrieval owner; changed-input impact does not hide stale downstream acceptance; executable PRD/Voice mechanical contracts unchanged; no Golden template diff. Label unexecuted proof accurately.
+Do not modify `Local`, `main`, release policy, or client workspace merely to close this scoped development work.

@@ -75,6 +75,10 @@ Semantic Readiness: PASS | FAIL
 
 ### Map-system readiness review (source-activated)
 
+This review decides whether a **not-yet-built map design** is ready
+to implement. Do not request a world file or claim real gameplay,
+device or multiplayer QA PASS on the strength of PRD content alone.
+
 Before accepting a map PRD, follow the [single design contract](CONTENT-CONTRACT.md) on material systems only. Check that source-backed
 mechanics have: an explicit actor/event/condition, an identified
 player/team/arena/global scope where relevant, a coherent visible outcome,
