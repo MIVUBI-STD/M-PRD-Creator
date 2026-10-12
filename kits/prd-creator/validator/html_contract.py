@@ -9,6 +9,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
+from renderer.pages import flow_pages, global_pages, navigation, overview, package_pages
 from shared.issues import Issue
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -199,6 +200,63 @@ def document_composition_errors(data: dict[str, Any], facts: HtmlFacts) -> list[
     return failures
 
 
+def _exact_projection_checks(data: dict[str, Any], html_text: str, relative_html: str) -> list[HtmlCheck]:
+    """Recreate approved page/navigation HTML without accepting embedded revision metadata as proof."""
+
+    try:
+        core = "".join([overview(data), *flow_pages(data), *global_pages(data), *package_pages(data)])
+        nav = navigation(data)
+    except (KeyError, IndexError, TypeError, ValueError) as exc:
+        detail = f"canonical HTML projection cannot be reconstructed: {exc}"
+        return [
+            HtmlCheck(
+                "html_core_pages_match_current_projection",
+                False,
+                detail,
+                Issue("PRD_HTML_CORE_CONTENT_DRIFT", "flow3.renderer", detail, path=relative_html),
+            )
+        ]
+
+    checks: list[HtmlCheck] = []
+    for marker, expected, name, code, description in (
+        (
+            '<main class="document-main">',
+            core,
+            "html_core_pages_match_current_projection",
+            "PRD_HTML_CORE_CONTENT_DRIFT",
+            "generated core page content/order",
+        ),
+        (
+            '<nav class="sidebar-nav">',
+            nav,
+            "html_navigation_matches_current_projection",
+            "PRD_HTML_NAV_CONTENT_DRIFT",
+            "generated navigation content/order",
+        ),
+    ):
+        marker_at = html_text.find(marker)
+        ok = (
+            bool(expected)
+            and marker_at >= 0
+            and html_text.count(marker) == 1
+            and html_text.startswith(expected, marker_at + len(marker))
+        )
+        detail = (
+            f"{description} matches the current canonical render projection"
+            if ok
+            else f"{description} differs from the current canonical render projection"
+        )
+        checks.append(
+            HtmlCheck(
+                name,
+                ok,
+                detail,
+                None if ok else Issue(code, "flow3.renderer", detail, path=relative_html),
+            )
+        )
+    return checks
+
+
 def validate_html_contract(
     project: Path,
     data: dict[str, Any],
@@ -222,6 +280,8 @@ def validate_html_contract(
             )
         )
         return HtmlContractResult(tuple(checks), tuple(expected))
+
+    checks.extend(_exact_projection_checks(data, html_text, relative_html))
 
     actual_render_data_sha = hashlib.sha256(data_path.read_bytes()).hexdigest()
     bindings = facts.render_data_sha256

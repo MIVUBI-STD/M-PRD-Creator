@@ -42,7 +42,10 @@ Mechanical validation proves deterministic facts including:
 - strict render schema and result mode are valid;
 - Production Assets source is parseable and uses accepted Owner/Moment/Asset identity;
 - generated HTML binds exact current canonical inputs;
+- core page and navigation HTML match the exact renderer projection, so altering displayed content while leaving metadata hashes untouched fails validation;
 - page/navigation/component markers and duplicate-ID/scoring checks remain valid.
+
+The exact-projection checks cover the canonical PRD core and navigation, not every byte in the Golden shell, scripts, CSS or optional downstream presentation. They are not a browser test or a complete tamper-proof signature.
 
 Mechanical PASS does not prove semantic fidelity or browser visual quality.
 

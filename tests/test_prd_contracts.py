@@ -303,6 +303,44 @@ class ProjectDocumentContracts(unittest.TestCase):
         self.assertEqual(validated.returncode, 1)
         self.assertIn("html_matches_current_render_data", validated.stdout)
 
+    def test_mutated_html_core_text_is_rejected_with_unchanged_render_hash(self) -> None:
+        project = self.make_project()
+        rendered = self.render(project)
+        self.assertEqual(rendered.returncode, 0, rendered.stderr or rendered.stdout)
+        html_path = project / "output" / "v1.0.0" / "prd.html"
+        html = html_path.read_text(encoding="utf-8")
+        marker = '<main class="document-main">'
+        prefix, separator, body = html.partition(marker)
+        phrase = render_data()["overview"]["project_context"]
+        self.assertTrue(separator)
+        self.assertIn(phrase, body)
+        html_path.write_text(
+            prefix + separator + body.replace(phrase, "Unapproved core objective change.", 1),
+            encoding="utf-8",
+        )
+        validated = self.validate(project)
+        self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
+        self.assertIn("PRD_HTML_CORE_CONTENT_DRIFT", validated.stdout)
+        self.assertIn('"check": "html_matches_current_render_data"', validated.stdout)
+
+    def test_mutated_html_navigation_is_rejected_with_unchanged_render_hash(self) -> None:
+        project = self.make_project()
+        rendered = self.render(project)
+        self.assertEqual(rendered.returncode, 0, rendered.stderr or rendered.stdout)
+        html_path = project / "output" / "v1.0.0" / "prd.html"
+        html = html_path.read_text(encoding="utf-8")
+        marker = '<nav class="sidebar-nav">'
+        prefix, separator, nav_and_after = html.partition(marker)
+        self.assertTrue(separator)
+        self.assertIn("Core Trial", nav_and_after)
+        html_path.write_text(
+            prefix + separator + nav_and_after.replace("Core Trial", "Tampered Core Trial", 1),
+            encoding="utf-8",
+        )
+        validated = self.validate(project)
+        self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
+        self.assertIn("PRD_HTML_NAV_CONTENT_DRIFT", validated.stdout)
+
     def test_renderer_rejects_stale_content_hash(self) -> None:
         project = self.make_project()
         (project / "work" / "content.md").write_text(

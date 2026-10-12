@@ -474,6 +474,25 @@ class PrdHandoffContracts(unittest.TestCase):
         self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
         self.assertIn("delivery_revision_matches_current_prd", validated.stdout)
 
+    def test_html_core_tampering_blocks_accepted_handoff(self) -> None:
+        project = self.make_project()
+        html_path = project / "output" / "v1.0.0" / "prd.html"
+        html = html_path.read_text(encoding="utf-8")
+        marker = '<main class="document-main">'
+        prefix, separator, body = html.partition(marker)
+        self.assertTrue(separator)
+        self.assertIn("A controlled gameplay fixture", body)
+        html_path.write_text(
+            prefix + separator + body.replace(
+                "A controlled gameplay fixture", "An unapproved changed gameplay fixture", 1
+            ),
+            encoding="utf-8",
+        )
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+        self.assertIn("PRD_HTML_CORE_CONTENT_DRIFT", result.stdout)
+        self.assertIn("current_prd_complete_validation", result.stdout)
+
     def test_context_body_tampering_fails_same_version_handoff(self) -> None:
         project = self.make_project()
         context = project / "output" / "v1.0.0" / "context.md"
