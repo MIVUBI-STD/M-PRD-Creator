@@ -202,7 +202,11 @@ status: handoff_ready
 accepted_prd_version: <X.Y.Z>
 ```
 
-Handoff validation proves the canonical PRD validator still passes, accepted version matches current render data, deterministic artifacts exist, output metadata identifies the same revision, and acceptance binds exact current Render Data + Production Assets bytes.
+Handoff validation proves the canonical PRD validator still passes, accepted version matches current render data, and acceptance binds exact current Render Data + Production Assets bytes. It also regenerates the expected `context.md`, `index.json`, and `output/README.md` representations **in memory** to reject same-version tampering or stale document bodies rather than trusting version text alone. The comparison does not modify delivered artifacts.
+
+Voice Requirements created **after** an accepted PRD Handoff may be absent from the older accepted context; the validator permits that exact pre-Voice context, without certifying the newer optional Voice content. Voice Delivery and its own checks retain responsibility for those downstream artifacts.
+
+The returned `status: pass` has `proof_scope: mechanical_only` and `semantic_review_authenticated: false`. The human-declared `Semantic Readiness: PASS` and `Material Conservation: PASS` remain required acceptance claims, **not authenticated external review evidence**. A real semantic review must still compare current source meaning and accepted decisions; no machine result in this gate proves that work took place.
 
 ## Targeted requirement revision review
 

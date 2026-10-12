@@ -89,7 +89,7 @@ def _section_source(path: Path, demote_by: int) -> str:
     return _demote_headings(_strip_first_h1(path.read_text(encoding="utf-8")), demote_by)
 
 
-def build_context(project: Path, title: str, version: str, status: str) -> str:
+def build_context(project: Path, title: str, version: str, status: str, *, include_voice: bool = True) -> str:
     work = project / "work"
     content = work / "content.md"
     if not content.is_file():
@@ -112,11 +112,11 @@ def build_context(project: Path, title: str, version: str, status: str) -> str:
 
     asset_requirements = work / "asset-requirements.md"
     voice_requirements = work / "voice-requirements.md"
-    if asset_requirements.is_file() or voice_requirements.is_file():
+    if asset_requirements.is_file() or (include_voice and voice_requirements.is_file()):
         lines.extend(["", "## Production Assets"])
         if asset_requirements.is_file():
             lines.extend(["", "### Non-Voice Requirements", "", _section_source(asset_requirements, 2)])
-        if voice_requirements.is_file():
+        if include_voice and voice_requirements.is_file():
             lines.extend(["", "### Voice Requirements", "", _section_source(voice_requirements, 2)])
     return "\n".join(lines).rstrip() + "\n"
 

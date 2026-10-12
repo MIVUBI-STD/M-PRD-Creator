@@ -16,6 +16,7 @@ KIT_ROOT = HERE.parent
 if __package__ in (None, ""):
     if str(KIT_ROOT) not in sys.path:
         sys.path.insert(0, str(KIT_ROOT))
+    from renderer.delivery import build_context, build_index, build_readme
     from shared.acceptance import required_value_issues, sha_binding_issues
     from shared.handoff import load_handoff_state
     from shared.issues import Issue
@@ -24,6 +25,7 @@ if __package__ in (None, ""):
 
     from validator import api as prd_api
 else:
+    from renderer.delivery import build_context, build_index, build_readme
     from shared.acceptance import required_value_issues, sha_binding_issues
     from shared.handoff import load_handoff_state
     from shared.issues import Issue
@@ -122,6 +124,18 @@ def expected_refs(version: str) -> dict[str, str]:
     }
 
 
+def _recorded_delivery_status(document: str, *, owner: str) -> str:
+    """Read display metadata without treating it as an acceptance authority."""
+
+    lines = document.splitlines()
+    if len(lines) < 4 or not lines[3].startswith("Status: "):
+        raise ValueError(f"{owner} is missing its generated status header")
+    status = lines[3].removeprefix("Status: ").strip()
+    if status not in {"unknown", "needs_revision", "development_ready", "handoff_ready"}:
+        raise ValueError(f"{owner} has unsupported generated status {status!r}")
+    return status
+
+
 def _result(
     errors: list[str],
     checks: list[dict[str, str]],
@@ -129,6 +143,8 @@ def _result(
 ) -> dict[str, Any]:
     return {
         "status": "pass" if not errors else "fail",
+        "proof_scope": "mechanical_only",
+        "semantic_review_authenticated": False,
         "errors": errors,
         "checks": checks,
         "issues": [item.as_dict() if isinstance(item, Issue) else item for item in issues],
@@ -319,15 +335,50 @@ def validate(project: Path) -> dict[str, Any]:
                 delivery_details.append(
                     f"index.json project.prd_version={index_version!r}, expected {current_version!r}"
                 )
-        except (OSError, ProjectPathError, json.JSONDecodeError) as exc:
+
+            # Recover exact derived content from canonical inputs; a matching version
+            # or embedded hash alone cannot establish output-body integrity.
+            title_data = doc.get("title") if isinstance(doc, dict) else None
+            title = str(title_data.get("en") if isinstance(title_data, dict) else title_data or "").strip()
+            if not title:
+                raise ValueError("current render-data.document.title is required for delivery verification")
+            context_status = _recorded_delivery_status(context_text, owner="context.md")
+            readme_status = _recorded_delivery_status(readme_text, owner="output/README.md")
+            if context_status != readme_status:
+                delivery_ok = False
+                delivery_details.append("generated context.md and README.md status metadata disagree")
+
+            expected_context = build_context(project, title, current_version, context_status)
+            if context_text != expected_context:
+                # Voice may be authored after PRD Handoff. Previously accepted
+                # PRD/Asset context need not yet include that optional downstream source.
+                post_handoff_voice = (
+                    (project / "work" / "voice-requirements.md").is_file()
+                    and context_text == build_context(
+                        project, title, current_version, context_status, include_voice=False
+                    )
+                )
+                if not post_handoff_voice:
+                    delivery_ok = False
+                    delivery_details.append("context.md differs from current canonical PRD/Assets source")
+
+            expected_index = build_index(project, title, current_version, context_status, context_text)
+            if index_data != expected_index:
+                delivery_ok = False
+                delivery_details.append("index.json differs from deterministic context navigation")
+            expected_readme = build_readme(project / "output", title, current_version, readme_status)
+            if readme_text != expected_readme:
+                delivery_ok = False
+                delivery_details.append("output/README.md differs from deterministic delivery summary")
+        except (OSError, UnicodeError, ProjectPathError, json.JSONDecodeError, ValueError) as exc:
             delivery_ok = False
-            delivery_details.append(f"delivery metadata unreadable: {exc}")
+            delivery_details.append(f"delivery content cannot be verified: {exc}")
     check(
         "delivery_revision_matches_current_prd",
         delivery_ok,
-        "context.md, index.json, and output/README.md identify the current PRD revision"
+        "context.md, index.json, and output/README.md match deterministic canonical PRD delivery"
         if delivery_ok
-        else "; ".join(delivery_details) or "delivery metadata could not be verified",
+        else "; ".join(delivery_details) or "delivery content could not be verified",
         code="HANDOFF_DELIVERY_STALE",
         owner="flow4.delivery",
     )

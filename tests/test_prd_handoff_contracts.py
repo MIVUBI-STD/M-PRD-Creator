@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -96,6 +97,20 @@ class PrdHandoffContracts(unittest.TestCase):
             )
         )
         (project / "state" / "handoff-state.yaml").write_text(state_text, encoding="utf-8")
+        if re.fullmatch(r"\d+\.\d+\.\d+", current_version):
+            # Use real delivery, not synthetic version-only metadata, for handoff tests.
+            delivered = run_cli(DELIVERY, project)
+            self.assertEqual(delivered.returncode, 0, delivered.stderr or delivered.stdout)
+            if accepted != current_version:
+                readme = project / "output" / "README.md"
+                readme.write_text(
+                    readme.read_text(encoding="utf-8").replace(
+                        f"Current PRD Version: `v{current_version}`",
+                        f"Current PRD Version: `v{accepted}`",
+                        1,
+                    ),
+                    encoding="utf-8",
+                )
         return project
 
     def make_two_package_project(self) -> Path:
@@ -458,6 +473,60 @@ class PrdHandoffContracts(unittest.TestCase):
         validated = self.validate(project)
         self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
         self.assertIn("delivery_revision_matches_current_prd", validated.stdout)
+
+    def test_context_body_tampering_fails_same_version_handoff(self) -> None:
+        project = self.make_project()
+        context = project / "output" / "v1.0.0" / "context.md"
+        original = context.read_text(encoding="utf-8")
+        self.assertIn("Canonical fixture content with no unresolved placeholders.", original)
+        context.write_text(
+            original.replace(
+                "Canonical fixture content with no unresolved placeholders.",
+                "Mutated accepted gameplay meaning without changing the version.",
+            ),
+            encoding="utf-8",
+        )
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+        self.assertIn("context.md differs from current canonical PRD/Assets source", result.stdout)
+
+    def test_tampered_index_navigation_fails_same_version_handoff(self) -> None:
+        project = self.make_project()
+        index_path = project / "output" / "v1.0.0" / "index.json"
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        index["navigation"] = []
+        index_path.write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+        self.assertIn("index.json differs from deterministic context navigation", result.stdout)
+
+    def test_tampered_readme_fails_same_version_handoff(self) -> None:
+        project = self.make_project()
+        readme = project / "output" / "README.md"
+        readme.write_text(
+            readme.read_text(encoding="utf-8") + "\nUnapproved readiness claim.\n",
+            encoding="utf-8",
+        )
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+        self.assertIn("README.md differs from deterministic delivery summary", result.stdout)
+
+    def test_semantic_acceptance_is_not_machine_authenticated(self) -> None:
+        project = self.make_project()
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["proof_scope"], "mechanical_only")
+        self.assertFalse(payload["semantic_review_authenticated"])
+
+    def test_post_handoff_voice_requirements_do_not_invalidate_prd_core(self) -> None:
+        project = self.make_project()
+        (project / "work" / "voice-requirements.md").write_text(
+            "# Voice Requirements\n\nDownstream draft not part of accepted PRD.\n",
+            encoding="utf-8",
+        )
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
 
     def test_nonsemantic_version_cannot_authorize_handoff(self) -> None:
         project = self.make_project(current_version="Final Review")
