@@ -201,8 +201,10 @@ the actual source maps coins to the same reset-owned inventory.
 
 A small [manual semantic calibration set](../../../../tests/semantic-review-cases.md)
 illustrates source precedence, unresolved event ordering, and a no-finding
-control. Its reference answers are not executable test results or evidence
-of empirical model accuracy. Use it only when changing this reasoning method.
+control. For a blind manual calibration, provide only the case inputs,
+record the review, and open the separate reference key afterward. Exposing the
+key in advance contaminates the result. These synthetic answers are not
+executable test results or evidence of empirical model accuracy.
 
 ## Stop / proof boundary
 

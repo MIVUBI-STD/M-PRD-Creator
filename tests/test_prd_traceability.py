@@ -283,6 +283,36 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(stale["status"], "unavailable")
         self.assertEqual(stale["requirements"], [])
 
+    def test_source_preview_rejects_superseded_external_and_blocked_evidence(self) -> None:
+        project = self.make_project()
+        source_path = project / "source-note.md"
+        source_path.write_text("Keep arena assignment.\n", encoding="utf-8")
+        inventory = project / "state/source-inventory.yaml"
+        original_inventory = inventory.read_text(encoding="utf-8")
+        register = project / "state/requirement-register.yaml"
+        register.write_text(
+            register.read_text(encoding="utf-8") + "    evidence_locator: source-note.md#L1\n",
+            encoding="utf-8",
+        )
+        for status, retention, inspection in (
+            ("superseded", "repository", "full"),
+            ("current", "external", "full"),
+            ("current", "repository", "blocked"),
+        ):
+            with self.subTest(status=status, retention=retention, inspection=inspection):
+                modified = original_inventory.replace('    status: current', f'    status: {status}')
+                modified = modified.replace('    inspection: full', f'    inspection: {inspection}')
+                inventory.write_text(
+                    modified + f"    retention: {retention}\n"
+                    + "    path: source-note.md\n"
+                    + f"    sha256: {hashlib.sha256(source_path.read_bytes()).hexdigest()}\n",
+                    encoding="utf-8",
+                )
+                report = assess(project)
+                self.assertEqual(report["status"], "unreviewed")
+                self.assertFalse(report["semantic_verified"])
+                self.assertNotIn("source_excerpt", report["requirements"][0]["source_evidence"][0])
+
     def test_review_cases_refuse_stale_content_projection(self) -> None:
         project = self.make_project()
         current = assess(project)

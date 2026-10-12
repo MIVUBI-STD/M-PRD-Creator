@@ -34,23 +34,17 @@ Prefer one root finding over repeated warnings. Never report a runtime bug as re
 - Candidate PRD: "On round completion, clear each player's equipment and preserve
   the team's bank balance until the tournament ends."
 
-## Reference decisions (open only after reviewing the inputs)
+## Two-pass manual evaluation
 
-**A — One material contradiction:** The candidate contradicts `SRC-101` in *two* effects
-of the same disconnect/reconnect rule: arena ownership and unfinished run progress.
-`SRC-102` is superseded; do not treat it as a competing current authority.
-Correct the PRD to keep arena assignment and restart the attempt. Do not invent
-saved checkpoints, additional arena reassignment rules, or an observed reconnect bug.
+1. Give the reviewer **this file only**. Record the original answer to all three cases before opening any reference.
+2. For each answer check the relevant current source, event/scope, root finding, correction, and unsupported claims.
+3. Only after the answer is recorded, open `tests/semantic-review-key.md` to compare with the independently authored key.
+4. Mark each case `MATCH`, `MISMATCH`, or `INCOMPLETE` and keep the concrete reasoning difference.
 
-**B — One missing decision / unsupported priority:** `SRC-201` establishes two
-end conditions and an at-most-one-result invariant, but not their precedence when
-they coincide. The candidate invents a capture-first priority. Route **one**
-`MISSING_DECISION` to the existing Project Requirements owner; do not claim
-that a duplicate-result race occurred or prescribe a synchronization architecture.
-
-**C — No material finding:** Bank persistence and item reset concern different
-owners and can coexist. Do not invent a wallet reset, shop, concurrency failure,
-or additional approvals solely because both concepts use the word 'round'.
+**Pilot acceptance:** all three cases must match their root decision and authority; no invented game mechanic,
+duplicate blocker, or alleged reproduced runtime defect. This is a calibration check, not a confidence
+score or real-project semantic quality proof. If the reviewer has already seen the key, mark the
+attempt `CONTAMINATED` and do not report it as a blind measurement.
 
 ## Evaluation boundary
 
