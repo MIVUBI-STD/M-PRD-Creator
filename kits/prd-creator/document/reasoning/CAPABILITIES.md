@@ -266,12 +266,10 @@ gesture, timing and player feedback. Do not impose every accessibility
 guideline when the project's audience and interaction do not activate it.
 
 Reference methods only, not project facts:
-[Minecraft Education system requirements]
-(https://edusupport.minecraft.net/hc/en-us/articles/360047556591-System-Requirements),
-[Xbox input guidance]
-(https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107),
-and [NASA requirements verification]
-(https://www.nasa.gov/reference/system-engineering-handbook-appendix/).
+
+- [Minecraft Education system requirements](https://edusupport.minecraft.net/hc/en-us/articles/360047556591-System-Requirements)
+- [Xbox input guidance](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107)
+- [NASA requirements verification](https://www.nasa.gov/reference/system-engineering-handbook-appendix/)
 
 ## Extending the capability menu
 
