@@ -58,6 +58,9 @@ def _retained_source_excerpt(project: Path, locator: str, source: SourceRecord) 
     match = SOURCE_LINES.fullmatch(locator)
     if match is None or match.group(1) != source.path:
         return {}
+    # Large user-authored line numbers must not reach int/islice unbounded.
+    if len(match.group(2)) > 7 or (match.group(3) and len(match.group(3)) > 7):
+        return {}
     first = int(match.group(2))
     last = int(match.group(3) or match.group(2))
     if last < first or last - first >= 8:
@@ -70,7 +73,11 @@ def _retained_source_excerpt(project: Path, locator: str, source: SourceRecord) 
         return {}
     if len(excerpt) != last - first + 1 or sum(map(len, excerpt)) > 2400:
         return {}
-    return {"source_excerpt_lines": [first, last], "source_excerpt": "".join(excerpt).rstrip("\r\n")}
+    text = "".join(excerpt).rstrip("\r\n")
+    if not text.strip():
+        return {}
+    return {"source_excerpt_lines": [first, last], "source_excerpt": text}
+
 
 def approval_binding(project: Path, current_sha: str) -> dict[str, Any]:
     """Report existing intake approval freshness without claiming semantic approval."""

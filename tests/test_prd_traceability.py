@@ -263,6 +263,7 @@ class RequirementTraceContracts(unittest.TestCase):
             ("source-note.md#L4", None),
             ("source-note.md#L3-L2", None),
             ("source-note.md#L1-L9", None),
+            ("source-note.md#L999999999999999999999999999999999999999999999999", None),
             ("../source-note.md#L2", None),
             ("source-note.md#reconnect", None),
         ):
@@ -276,6 +277,11 @@ class RequirementTraceContracts(unittest.TestCase):
                 else:
                     self.assertEqual(source["source_excerpt"], expected)
                     self.assertEqual(source["source_excerpt_lines"], [2, 3] if "L2-L3" in locator else [2, 2])
+
+        source_path.write_text("Source changed after inventory approval.\n", encoding="utf-8")
+        stale = assess(project)
+        self.assertEqual(stale["status"], "unavailable")
+        self.assertEqual(stale["requirements"], [])
 
     def test_review_cases_refuse_stale_content_projection(self) -> None:
         project = self.make_project()
