@@ -240,7 +240,7 @@ def _state_issue(exc: Exception, *, path: str) -> Issue:
     return Issue("FLOW2_STATE_INVALID", "flow2.state", str(exc), path=path, line=line)
 
 
-def validate_flow2_state(project: Path) -> list[Issue]:
+def validate_flow2_state(project: Path, *, warnings: list[str] | None = None) -> list[Issue]:
     issues: list[Issue] = []
     source_path = project / "state" / "source-inventory.yaml"
     requirement_path = project / "state" / "requirement-register.yaml"
@@ -351,6 +351,11 @@ def validate_flow2_state(project: Path) -> list[Issue]:
                 path="state/intake-state.yaml",
                 field="approved_requirement_sha256",
             )
+        )
+    if requires_preview_approval and intake.preview_approved and not issues and warnings is not None:
+        warnings.append(
+            "Material Proposal approval is declared in project files; the approval flag and requirement SHA "
+            "do not independently authenticate a user's decision. Confirm the original approval before semantic handoff."
         )
     return issues
 

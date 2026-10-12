@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -29,13 +30,19 @@ def text_en(value: Any) -> str:
 def scoring_weight(value: Any) -> float | None:
     if isinstance(value, bool):
         return None
-    if isinstance(value, (int, float)):
-        return float(value)
-    if isinstance(value, str):
-        match = WEIGHT_RE.fullmatch(value)
-        if match:
-            return float(match.group(1))
-    return None
+    try:
+        if isinstance(value, (int, float)):
+            weight = float(value)
+        elif isinstance(value, str):
+            match = WEIGHT_RE.fullmatch(value)
+            if match is None:
+                return None
+            weight = float(match.group(1))
+        else:
+            return None
+    except (OverflowError, ValueError):
+        return None
+    return weight if math.isfinite(weight) and 0 <= weight <= 100 else None
 
 
 def _scoring_weight_issues(data: dict[str, Any]) -> list[Issue]:
@@ -57,7 +64,7 @@ def _scoring_weight_issues(data: dict[str, Any]) -> list[Issue]:
                     Issue(
                         "PRD_SCORING_WEIGHT_INVALID",
                         "flow3.projection",
-                        "scoring component weight must be numeric or a numeric percentage string",
+                        "scoring component weight must be a finite percentage between 0 and 100",
                         path="work/render-data.json",
                         field=f"packages.{package_id}.developer.scoring.components[{index}].weight",
                     )
@@ -115,7 +122,7 @@ def validate(project: Path) -> dict[str, Any]:
             if issue is not None:
                 structured.append(issue)
 
-    flow2_issues = validate_flow2_state(project)
+    flow2_issues = validate_flow2_state(project, warnings=warnings)
     check(
         "flow2_state_current",
         not flow2_issues,

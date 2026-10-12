@@ -92,6 +92,28 @@ simultaneous endings). A clear no-finding case does not justify another
 approval layer. A design acceptance expectation is **not** a runtime
 implementation test, load benchmark or device PASS.
 
+### Critical scenario acceptance and design-vs-runtime proof
+
+For a material requirement affecting completion, permissions, player
+ownership, scoring or recovery, state an expected outcome as a concise
+`Given / When / Then` **only if** approved source meaning establishes
+the Then. Include the trigger, scope, visible result and state effect.
+If the expected result is still unknown, return one root decision to
+Project Requirements rather than fabricating an acceptance criterion.
+
+Check the central gameplay loop against its **approved player-experience
+goal** (for example whether a proposed team mechanic actually gives
+teammates meaningful decisions). Mark unplayed dynamics as hypothesis
+or advisory design risk; never declare entertainment, learning outcome
+or playability PASS based on prose alone.
+
+When gameplay relies on an edition-specific API, school device input,
+multiplayer hosting or a stated capacity, identify the exact unverified
+dependency and the subsequent implementation check needed. This is an
+acceptance *plan*, not evidence that the future map passed on those
+devices or with those players. Keep the scenario selection limited
+to the real mechanisms and consequential boundaries.
+
 ### Operated-session acceptance (only when source-backed)
 
 For an explicitly facilitated project, manually reconcile the approved

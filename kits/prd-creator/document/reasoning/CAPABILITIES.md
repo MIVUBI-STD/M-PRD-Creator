@@ -248,6 +248,31 @@ Explain the causal tradeoff and provide alternatives. A subjective preference
 is a `DESIGN_RISK` at most, not an automatic blocker or change of difficulty,
 time, rewards, monetization or creative intent.
 
+### Grounded design feasibility and input accessibility
+
+When a source-backed mechanic requires multiple simultaneous players,
+special input gestures, platform-specific APIs, constrained devices,
+or timed interactions, check the dependency **before approval**:
+what is the intended Minecraft edition and deployment, what specific
+feature/interaction is required, and what evidence supports feasibility?
+An assumed player capacity, universal touch accessibility, or guaranteed
+frame rate is not a feature contract.
+
+Keep an unsupported platform assertion `UNKNOWN` until grounded in
+appropriate versioned documentation; a dependent material choice
+returns to Project Requirements. If a gameplay control is critical
+and target players use touch or accessible input, inspect the required
+gesture, timing and player feedback. Do not impose every accessibility
+guideline when the project's audience and interaction do not activate it.
+
+Reference methods only, not project facts:
+[Minecraft Education system requirements]
+(https://edusupport.minecraft.net/hc/en-us/articles/360047556591-System-Requirements),
+[Xbox input guidance]
+(https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107),
+and [NASA requirements verification]
+(https://www.nasa.gov/reference/system-engineering-handbook-appendix/).
+
 ## Extending the capability menu
 
 Do not add a new domain file because a game genre is mentioned. A domain

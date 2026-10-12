@@ -129,6 +129,29 @@ Do not infer atomicity, cancellation, retries, shared ownership, or storage
 consistency merely because an implementation might usually supply them.
 Two events being conceivable does not prove a race condition.
 
+### Experience goal and implementation feasibility
+
+When an approved goal concerns cooperation, learning, exploration,
+fairness or pacing, connect the **proposed mechanic** to the likely
+player behavior it enables and the intended experience. For example,
+"cooperative" is not established merely by supporting four players:
+ask whether separate players have meaningful interdependent actions.
+State this as a design hypothesis until observed play evidence exists.
+
+For an actual technical constraint, identify the target Minecraft
+edition/version, supported APIs or features, intended hosting,
+player count, device/input assumptions and relevant content limits
+**only where the proposed mechanic materially depends on them**.
+Distinguish documented platform capability from implementation-dependent
+capacity and from unmeasured performance. Unknown feasibility may justify
+one decision or an implementation validation requirement; it must
+not be represented as a passed load test or a proven impossibility.
+
+Keep subjective design critique advisory unless an approved goal is
+demonstrably contradicted. Do not run a generic platform checklist
+for every small map, invent mechanics to increase engagement, or
+claim a runtime simulation from this reasoning pass.
+
 ### Reviewer-facing materiality gate
 
 Before surfacing an open concern ask:

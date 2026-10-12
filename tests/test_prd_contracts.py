@@ -229,6 +229,29 @@ class ProjectDocumentContracts(unittest.TestCase):
         self.assertIn("100%", html)
         self.assertNotIn("100%%", html)
 
+    def test_scoring_rejects_nonfinite_or_out_of_range_weights(self) -> None:
+        for weight in (float("nan"), float("inf"), -20, 120, "9" * 400):
+            with self.subTest(weight=repr(weight)[:40]):
+                data = render_data()
+                data["packages"][0]["developer"]["scoring"]["components"][0]["weight"] = weight
+                project = self.make_project(data)
+                result = self.validate(project)
+                self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+                self.assertIn("PRD_SCORING_WEIGHT_INVALID", result.stdout)
+
+    def test_scoring_rejects_negative_and_over_100_weights_even_if_total_is_100(self) -> None:
+        data = render_data()
+        components = data["packages"][0]["developer"]["scoring"]["components"]
+        components[0]["weight"] = -20
+        second = dict(components[0])
+        second["name"] = "Unbounded second component"
+        second["weight"] = 120
+        components.append(second)
+        project = self.make_project(data)
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+        self.assertIn("PRD_SCORING_WEIGHT_INVALID", result.stdout)
+
     def test_bilingual_document_rejects_implicit_translation(self) -> None:
         data = bilingual_render_data()
         data["packages"][0]["gameplay"]["main_objective"] = "English-only objective."

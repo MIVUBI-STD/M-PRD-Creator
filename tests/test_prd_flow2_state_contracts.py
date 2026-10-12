@@ -53,6 +53,8 @@ class Flow2StateConsistencyContracts(unittest.TestCase):
         )
         validated = self.validate(project)
         self.assertEqual(validated.returncode, 0, validated.stderr or validated.stdout)
+        result = json.loads(validated.stdout)
+        self.assertFalse(any("Proposal approval is declared" in item for item in result["warnings"]))
 
     def test_ready_rejects_duplicate_preview_approval_key(self) -> None:
         project = self.make_project()
@@ -286,6 +288,11 @@ class Flow2StateConsistencyContracts(unittest.TestCase):
         self.assertEqual(rendered.returncode, 0, rendered.stderr or rendered.stdout)
         validated = self.validate(project)
         self.assertEqual(validated.returncode, 0, validated.stderr or validated.stdout)
+        result = json.loads(validated.stdout)
+        self.assertEqual(result["status"], "pass")
+        self.assertTrue(
+            any("do not independently authenticate a user's decision" in item for item in result["warnings"])
+        )
 
 
 if __name__ == "__main__":

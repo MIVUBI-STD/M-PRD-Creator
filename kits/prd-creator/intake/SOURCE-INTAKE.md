@@ -169,6 +169,23 @@ recover requirements
 
 When a material Proposal exists, show one compact user-facing review, then bind the exact accepted requirement revision.
 
+## Approval evidence boundary
+
+The existing `approval_status: approved` and `preview_approved: true`
+are **declared project state**, not an authenticated record of a user
+action. Their presence and matching SHA-256 values prove only that the
+persisted fields and requirement revision agree. The mechanical validator
+emits a non-blocking warning when a material Proposal uses these declarations;
+it does not impersonate an approval provider or change legacy state formats.
+
+Before moving a consequential AI-designed rule into PRD Production,
+compare the proposal with the user's actual approval in the active
+conversation or another legitimate source of approved decisions. If
+that approval cannot be established, keep the decision open using the
+existing Proposal / pending or Blocked process. Never fill the approval
+fields merely to make a validator green; do not treat AI-authored notes
+as independent user consent.
+
 ## Revision binding
 
 ```text
