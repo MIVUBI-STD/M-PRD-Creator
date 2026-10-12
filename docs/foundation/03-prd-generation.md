@@ -30,6 +30,25 @@ work/render-data.json
 
 `content.md` owns readable PRD meaning. `render-data.json` is one strict machine projection bound to exact current content bytes.
 
+## Design-to-specification responsibility
+
+This flow **writes the design for a map that may not exist yet**. The
+approved model is made actionable in existing PRD surfaces:
+
+| PRD surface | Responsibility |
+|---|---|
+| Overview | Experience, audience, relevant constraints and scope |
+| Gameplay Flow | End-to-end player journey and gameplay loop |
+| Gameplay | Objectives, actions, conditions and visible results |
+| Level Design | Space, routes, affordances and build requirements |
+| Developer | Event guards, state ownership, result/reset/recovery behavior |
+
+Follow the [semantic content contract](../../kits/prd-creator/document/CONTENT-CONTRACT.md).
+Each material system should be coherent across its owning roles, with the
+same approved actor, trigger, scope, outcome and relevant exception.
+Details may be written and grouped; gameplay policy may not be fabricated
+to fill a field. Actual blocks/scripts/runtime test results are not required.
+
 ## Authoring rule
 
 Preserve approved meaning, including material conditions, values, exceptions, result/scoring behavior, reset/retry/interruption, build/spatial constraints, technical constraints, and role ownership.

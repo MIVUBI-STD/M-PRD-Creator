@@ -23,6 +23,19 @@ current Project Requirements revision
 + current deterministic project delivery
 ```
 
+## Acceptance of a pre-build design
+
+Evaluate the **specification**, not a non-existent implemented map.
+A valid schema, current hashes and render success prove mechanical
+document integrity only. Semantic readiness depends on source-to-design
+fidelity, complete material decisions, actionable Gameplay / Level Design /
+Developer responsibilities and non-contradictory results.
+
+Design acceptance does **not** imply working Minecraft gameplay, tested
+server capacity, stable performance or successful classroom sessions.
+Those claims require later observations of an actual implementation.
+Return any consequential unapproved design policy to Project Requirements.
+
 ## Validation
 
 PRD Handoff combines:

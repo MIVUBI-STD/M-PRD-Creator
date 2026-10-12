@@ -11,6 +11,17 @@ lifecycle: ACTIVE
 
 Status: active policy
 
+## Product goal
+
+Turn an initial map brief and its relevant sources into an **approved Game
+Design / System Design** and a clear implementation-ready PRD. A playable
+Minecraft world, map code or a previous map is **not a prerequisite**.
+Creating, patching or runtime-testing a map is outside this production
+workflow. Design decisions and implementation test evidence are different.
+
+Game Design, System Design, Level Design and Technical Design are
+responsibilities **within existing named flows**, not extra flow names.
+
 ## Naming contract
 
 PRD-Creator uses one human workflow vocabulary:
@@ -35,98 +46,85 @@ Rules:
 
 ## Project Setup
 
-Recover repository/project continuity and choose the smallest current owner. This is repository/session setup, not project meaning authoring.
+**Input:** an authorized new-map brief or a clearly selected project.
+
+**Work:** select the project, identify current sources and privacy boundary, recover the smallest relevant context. No existing world is required.
+
+**Output:** one project working context; this is session/repository preparation, **not** the Game Design decision owner.
+
+**Exit:** current project and source authority are unambiguous. No speculative files or unrelated sample-map selections.
 
 ## Project Requirements
 
-```text
-sources + current instruction + approved decisions
-→ authority/provenance recovery
-→ material requirements
-→ Completion | Proposal | Blocked resolution
-→ exact requirement revision binding
-```
+**Input:** the project brief (which may be the only source), constraints, approved decisions and optional references.
 
-Output authority: `state/source-inventory.yaml`, `state/requirement-register.yaml`, `state/intake-state.yaml`.
+**Work:** develop and reconcile the intended experience, audience, core gameplay loop, player journey, mechanisms and their material rules. Distinguish source facts from AI design choices; offer a grounded **Proposal** where the brief leaves multiple valid designs.
+
+**Decision rule:** current authority → recover; one necessary consequence → Completion; multiple material choices → Proposal requiring approval; no responsible option → Blocked / decision requested.
+
+**Output:** canonical `state/source-inventory.yaml`, `state/requirement-register.yaml`, and `state/intake-state.yaml`, with optional human-readable review.
+
+**Exit:** no consequential unresolved design decisions; `ready_for_prd` binds the exact current approved requirement bytes. Do not create mechanics by silently borrowing from reference maps.
 
 ## PRD Production
 
-```text
-approved Project Requirements
-→ canonical work/content.md
-→ strict work/render-data.json
-→ deterministic PRD rendering
-```
+**Input:** the current `ready_for_prd` Project Requirements model, **not** a completed map.
 
-PRD Production preserves approved meaning; it does not invent missing product decisions.
+**Work:** specify approved Game Design and System Design in the existing PRD surfaces: Overview (intent/context), Gameplay Flow (journey), Gameplay (player rules/outcomes), Level Design (space/navigation/build needs), Developer (events, state ownership, results, reset/recovery). Use the [semantic content contract](../../kits/prd-creator/document/CONTENT-CONTRACT.md).
+
+**Output:** `work/content.md` (canonical meaning), `work/render-data.json` (strict projection) and derived PRD pages.
+
+**Exit:** the approved rules are actionable across relevant roles, source/content bindings are current and rendering succeeds. New material design choices return to Project Requirements; rendering does not establish semantic approval.
 
 ## Production Assets
 
-Production Assets is optional and bounded:
+**Input:** approved gameplay/build requirements that justify concrete production resources.
 
-```text
-approved project model
-→ concrete resources somebody must prepare
-→ work/asset-requirements.md when non-Voice resources exist
-```
+**Work:** identify the actual non-Voice assets and their Owner/Moment/Asset relationships, without inventing filler.
 
-Voice resources join the same Production Assets presentation later through stable Owner ID + Moment ID + Voice ID.
+**Output:** optional `work/asset-requirements.md` and its derived presentation.
+
+**Exit:** required resources are actionable, or the capability is omitted when no asset work is justified. Voice remains downstream and optional.
 
 ## PRD Handoff
 
-```text
-current Project Requirements
-+ PRD Production
-+ Production Assets when present
-→ mechanical validation
-→ semantic reconciliation
-→ exact-byte acceptance
-→ handoff_ready
-```
+**Input:** current Project Requirements, canonical PRD content/projection, and optional Production Assets.
 
-Only an accepted PRD Handoff may enter Voice Requirements.
+**Work:** mechanical validation + source-to-design semantic reconciliation, cross-role coherence, Material Conservation and visual evidence only when claimed.
+
+**Output:** exact-revision `work/acceptance.md`, current versioned delivery and `state/handoff-state.yaml` when accepted.
+
+**Exit:** `development_ready` accepts the meaning for implementation; `handoff_ready` binds the accepted delivery. **Neither means a Minecraft world has been built or playtested.** The design process may stop here if Voice is not needed.
 
 ## Voice Requirements
 
-```text
-accepted PRD Handoff
-→ justified player-facing Voice moments
-→ stable Owner/Moment/Voice identity
-→ communication intent + required facts + timing truth
-→ voice_requirements_ready | no_voice_required
-```
+**Input:** accepted `handoff_ready` PRD **only where player-facing Voice is justified**.
 
-Voice Requirements owns what must be communicated, not final performance wording.
+**Work:** identify Voice moments, speaker/trigger/placement and required communication, without writing final performance text.
+
+**Output:** `work/voice-requirements.md` and stable Owner/Moment/Voice identity.
+
+**Exit:** `voice_requirements_ready`, or an accepted `no_voice_required` decision. No Voice work is forced for a map that does not need it.
 
 ## Voice Production
 
-```text
-Voice Requirements
-→ Actor Baseline / Voice Fit
-→ natural spoken wording
-→ Expression Coverage / Audio Tags
-→ pronunciation/language strategy
-→ continuity + duration planning
-→ Voice Script Readiness
-→ voice_script_ready
-```
+**Input:** ready Voice Requirements.
 
-Canonical output: `work/voice-production.md`.
+**Work:** author spoken wording and actor, acting, pronunciation, duration and continuity direction without changing approved map meaning.
+
+**Output:** `work/voice-production.md` bound to current Voice Requirements.
+
+**Exit:** `voice_script_ready` only with the existing semantic/craft readiness checks; no generated-audio or implemented-game PASS is implied.
 
 ## Voice Delivery
 
-```text
-current PRD Handoff
-+ Voice Requirements
-+ Voice Production
-→ mechanical parity
-→ semantic/craft readiness
-→ current consolidated project HTML
-→ exact Voice acceptance
-→ voice_delivery_ready | needs_revision
-```
+**Input:** current accepted PRD Handoff and Voice Requirements/Production.
 
-Actual audio quality or pronunciation approval requires heard evidence.
+**Work:** validate exact Voice/source bindings, communication/identity parity and the consolidated project HTML.
+
+**Output:** `work/voice-acceptance.md`, `state/voice-state.yaml` and derived delivery.
+
+**Exit:** `voice_delivery_ready` where supported. Audio quality requires separate heard evidence; it is not proof of map implementation or release.
 
 ## First wrong owner
 
@@ -142,4 +140,12 @@ Voice acceptance / delivery evidence → Voice Delivery
 
 ## Stop rule
 
-Do not create parallel workflow names, aliases, compatibility terminology, or duplicate status systems. Use the canonical names above and stop when the current owner is correct and sufficiently proven.
+Production design may stop after accepted PRD Handoff. Voice is conditional;
+Map Development and live gameplay/device QA happen outside PRD-Creator.
+For a later design revision, revisit only the affected authoritative owner
+and invalidated downstream work.
+
+Do not invent numbered flow aliases, parallel schemas, extra workflow
+states, new agent systems or speculative test-map requirements. Say exactly
+what is proven: mechanical document checks, semantic design review, visual
+presentation evidence, or separately observed runtime QA.

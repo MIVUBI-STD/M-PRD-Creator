@@ -26,6 +26,20 @@ Project Setup
 
 These names are canonical for both repository-internal reasoning and user/operator communication. Numeric file prefixes and generated-document section numbers are ordering only.
 
+## Design-before-build product definition
+
+PRD-Creator helps design a Minecraft map **before any world exists**. An
+approved brief, goals, constraints and optional references are enough to
+begin. Project Requirements develops and resolves material Game Design
+choices; PRD Production expresses the approved experience, game systems,
+level needs and technical behavior as a buildable specification.
+
+Existing maps can be optional reference evidence, not mandatory test fixtures
+or sources of new project facts. Building a world, inspecting command blocks,
+finding implementation bugs, running multiplayer sessions or measuring real
+device performance are **not** PRD-Creator design outputs. Those belong to
+downstream Map Development and Gameplay QA after PRD Handoff.
+
 ## Project / PRD Domain
 
 Inside `kits/prd-creator/`, the Project/PRD domain owns:

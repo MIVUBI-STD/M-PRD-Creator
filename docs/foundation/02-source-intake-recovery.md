@@ -26,6 +26,21 @@ current user instruction
 
 It owns source authority, provenance, material requirement recovery, unresolved material choices, cross-role coherence, and the approval boundary only when a real Proposal requires it.
 
+## Designing a map that does not yet exist
+
+A new project can begin with a **brief alone**. Recover its goals, players,
+context and constraints; identify open core-loop, scoring/completion,
+session, progression and recovery choices only when materially relevant.
+Develop reasonable game-design alternatives and explain tradeoffs, but
+record an AI design suggestion as **Proposal**, not an accepted source fact,
+until a material choice is approved.
+
+One necessary evidence-backed inference is a Completion; clear wording and
+non-material decomposition do not warrant repeated approval prompts.
+A reference map may teach design patterns but does not authorize copying
+its mechanics, geometry, numbers or implementation into another project.
+No `.mcworld`, code checkout or built arena is required for entry.
+
 ## Canonical state
 
 ```text
@@ -49,7 +64,7 @@ Material Proposals require approval. Authoritative facts and evidence-backed Com
 
 ## Integrated completeness
 
-Before PRD Production, reason across all material implementation concerns:
+Before PRD Production, reason across the proposed/approved design and all material implementation concerns:
 
 ```text
 player journey
