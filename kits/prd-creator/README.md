@@ -167,6 +167,7 @@ Use `impact` for read-only affected-check planning. Adding `--project` inspects 
 ```bash
 python tools/prd.py impact state/requirement-register.yaml --project workspace/active/<project>/ --json
 python tools/prd.py status workspace/active/<project>/
+python tools/prd.py trace workspace/active/<project>/
 python tools/prd.py build workspace/active/<project>/
 python tools/prd.py validate workspace/active/<project>/
 python tools/prd.py handoff workspace/active/<project>/

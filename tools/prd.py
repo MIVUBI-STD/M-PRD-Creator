@@ -630,13 +630,15 @@ def main() -> int:
             return 1 if payload["mechanical_status"] == "blocked" else 0
         if args.command == "build":
             outputs = build_delivery(project)
-            _print_json({
-                "status": "pass",
-                "operation": "build",
-                "proof_scope": "generated_artifacts_only",
-                "handoff_verified": False,
-                "outputs": _relative_outputs(project, outputs),
-            })
+            _print_json(
+                {
+                    "status": "pass",
+                    "operation": "build",
+                    "proof_scope": "generated_artifacts_only",
+                    "handoff_verified": False,
+                    "outputs": _relative_outputs(project, outputs),
+                }
+            )
             return 0
         if args.command == "validate":
             return _result_exit(prd_api.validate(project))
