@@ -5,7 +5,12 @@ Development branch: `develop`
 Verified integration baseline: `Local`  
 Stable branch: `main`
 
-PRD-Creator converts uneven project discussion/source material into one approved project model, development-ready PRD documentation, bounded Production Assets, and optional downstream Voice Production.
+PRD-Creator creates **Minecraft map designs before implementation**: brief and
+optional project sources → material Game Design decisions in Project Requirements
+→ actionable Gameplay, Level Design and Developer specifications in PRD Production
+→ accepted PRD Handoff. No existing `.mcworld`, map script, test arena or
+runtime QA is required to author a new PRD. Production Assets and Voice
+remain conditional; world building and gameplay QA are downstream work.
 
 ## Canonical workflow
 
@@ -39,7 +44,7 @@ current user instruction
 → Voice Delivery / derived evidence
 ```
 
-Authority decreases downstream. Generated artifacts never repair or outrank canonical source. If downstream work exposes missing upstream meaning, reopen only the affected owner.
+Authority decreases downstream. AI design alternatives require project approval when they materially change gameplay; reference maps do not authorize borrowed rules. Generated artifacts never repair or outrank canonical source. If downstream work exposes missing upstream meaning, reopen only the affected owner.
 
 ## Branch model
 

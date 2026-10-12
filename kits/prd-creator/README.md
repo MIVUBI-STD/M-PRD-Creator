@@ -2,7 +2,7 @@
 
 **Version:** 3.1.3
 
-PRD Creator turns project evidence/discussion into one revision-bound project model, canonical PRD, required Production Assets, and optional Voice Production in one versioned delivery.
+PRD Creator helps design a **new Minecraft map from an initial brief**, even when no playable map exists. Project Requirements resolves material Game Design options; PRD Production makes the approved Gameplay, Level Design and Developer specification actionable. Accepted PRD Handoff precedes map implementation; Production Assets and Voice are optional. An accepted design is not a runtime QA result.
 
 ## Version rule
 
@@ -29,6 +29,10 @@ Project Setup
 ```
 
 These names are canonical in both repository reasoning and user/operator communication. Numbered stage aliases are retired from current policy. Generated PRD section numbers remain document ordinals only.
+
+See the [canonical per-flow input/output/exit contracts](../../docs/foundation/01-production-flow.md).
+Do not request `.mcworld`, built arenas or source-code access as prerequisites
+for designing a new map, and do not treat reference projects as design authority.
 
 ## Product flow
 

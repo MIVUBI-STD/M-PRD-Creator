@@ -6,7 +6,7 @@ version: 3.1.3
 
 # PRD Creator
 
-Use for normal project Production Execution and bounded production revisions. Changes to PRD-Creator itself route to repository Development.
+Use for new Minecraft map design **from a brief before the map exists**, normal project Production Execution and bounded PRD revisions. AI proposes material Game Design choices during Project Requirements, then represents approved meaning in PRD Production. Changes to PRD-Creator itself route to repository Development. Do not require an existing world, map analyzer or code checkout.
 
 ## Canonical workflow
 
@@ -27,7 +27,7 @@ Numbered stage aliases are retired from current workflow language. Generated PRD
 ## Route first
 
 ```text
-new / materially uncertain project meaning → Project Requirements
+new map brief / material gameplay decision → Project Requirements; develop proposals and obtain required approval
 bounded approved revision → first changed canonical owner → only invalidated downstream owners
 meaning complete, presentation grammar wrong → document/DESIGN-CONTRACT.md
 contracts correct, executable behavior wrong → package AGENTS.md → exact technical owner
@@ -38,13 +38,13 @@ Start from the smallest owner that can settle the issue. Expand context only for
 ## Canonical sequence
 
 ```text
-source / instruction
-→ Project Requirements
+brief / instruction / optional source (no map file required)
+→ Project Requirements: grounded goals + Game Design proposals
 → material Proposal/conflict?
    yes → compact review → approval/correction
    no  → continue
 → exact requirement-revision binding
-→ PRD Production: content.md + strict render-data projection
+→ PRD Production: approved gameplay + level + developer design in content.md and render-data.json
 → Production Assets when concrete resources are required
 → PRD Handoff: exact-byte acceptance + handoff_ready
 → Voice Requirements when justified
@@ -52,7 +52,7 @@ source / instruction
 → Voice Delivery
 ```
 
-Production Assets is not a separate numbered stage. Non-dialogue `AUDIO` can use `production-assets/SOUND-EFFECTS.md`. Voice begins only from `handoff_ready`.
+Production Assets is not a separate numbered stage. Non-dialogue `AUDIO` can use `production-assets/SOUND-EFFECTS.md`. Voice begins only from `handoff_ready` and only when justified. **An accepted PRD Handoff is a valid completion of map design, not a playtest or implemented map.** For all flow entry/exit boundaries, use [Canonical Production Workflow](../../docs/foundation/01-production-flow.md).
 
 ## Owners
 

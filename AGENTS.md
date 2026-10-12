@@ -27,7 +27,7 @@ Select one mode from the requested outcome before opening a specialist or mutati
 
 - **INSPECT (Plan):** understand/recover/compare only; repository and client project remain read-only.
 - **SYSTEM DEVELOPMENT (Development):** improve PRD-Creator policy, code, architecture, tooling, or knowledge on `develop`; use the existing `development-brief` skill.
-- **PROJECT PRODUCTION (Production Execution):** create or revise *one explicitly selected* authorized project package; do not silently modify repository implementation.
+- **PROJECT PRODUCTION (Production Execution):** design a new map from an authorized brief or revise *one explicitly selected* project PRD; the map need not exist. Do not silently modify repository implementation.
 - **MAINTENANCE:** correct a bounded, evidenced defect at its first wrong owner; no adjacent feature-building.
 - **VALIDATION:** examine existing source, product contracts and evidence without rewriting accepted source or expectations solely to claim PASS.
 
@@ -86,9 +86,10 @@ AGENTS.md
 ### Production Execution
 
 ```text
-new / materially uncertain project meaning
-→ project-document-production when semantic judgment is needed
-→ Project Requirements
+new map brief / materially uncertain design meaning
+→ project-document-production for game-design options when needed
+→ Project Requirements → approved design choices
+→ PRD Production for buildable specification
 
 bounded approved PRD revision
 → smallest changed canonical owner
@@ -182,6 +183,10 @@ After an approved `develop → Local` squash, synchronize `develop` to the resul
 Default to concise result-first reporting. Use the canonical workflow names above; do not translate them into numbered aliases.
 
 ## Product boundaries
+
+- PRD-Creator owns **pre-build game/map design**, not inspection or QA of an existing Minecraft world. A map file is never a mandatory input to a new design.
+- Game Design/System Design are reasoning responsibilities inside Project Requirements and PRD Production, **not** extra persisted workflow names.
+- Design Handoff means a specification can guide implementation; it is **not** evidence of gameplay, multiplayer capacity or device performance PASS.
 
 - `kits/prd-creator/` is the single product package for Project Requirements through Voice Delivery, with Production Assets as a bounded capability.
 - Project/PRD and Voice remain separate semantic domains.

@@ -5,7 +5,7 @@ description: Semantic/product-contract specialist for Project Requirements, PRD 
 
 # Project Document Production
 
-Own semantic judgment for the Project/PRD domain. Detailed procedure, visual mechanics, and executable routing stay with the nearest package owner.
+Own semantic judgment for **pre-build Minecraft map design** in the Project/PRD domain. Start with an authorized brief even when no game/world has yet been made; do not assume an existing map, codebase or audit task. Detailed procedure, visual mechanics and executable routing stay with the nearest package owner.
 
 ## Authority
 
@@ -55,11 +55,11 @@ multiple plausible material answers exist → one concrete Proposal → user rev
 no responsible proposal can be formed → Blocked / direct decision
 ```
 
-Material AI Proposals require approval. Authoritative facts and evidence-backed Completions do not require redundant approval.
+Material AI Proposals require approval. This includes consequential gameplay alternatives developed **because the brief has not decided them yet**. Give a bounded rationale/tradeoff and request the smallest necessary choice; do not present the proposal as a recovered fact. Authoritative facts and evidence-backed Completions do not require redundant approval.
 
 ### PRD Production
 
-Preserve current Project Requirements meaning without inventing product decisions or deleting independently actionable rules. Semantic cardinality follows meaning; do not add filler or compress distinct rules to imitate a reference.
+Make the approved design buildable across Gameplay, Level Design and Developer; it describes intended behavior, not verified code or a completed map. Preserve current Project Requirements meaning without inventing product decisions or deleting independently actionable rules. Semantic cardinality follows meaning; do not add filler or compress distinct rules to imitate a reference.
 
 ### Production Assets / PRD Handoff
 

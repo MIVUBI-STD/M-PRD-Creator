@@ -1,6 +1,6 @@
 # PRD-Creator
 
-PRD-Creator is an AI-assisted production system for turning game-project evidence and discussion into a revision-bound approved project model, a development-ready PRD, required Production Assets, and optional downstream Voice Production.
+PRD-Creator is an AI-assisted **Minecraft map Game Design and PRD production** system. It starts from a new project brief, goals, constraints and optional sources—even when **no map has been built**—and develops approved gameplay/system decisions into a development-ready PRD. Production Assets and Voice are optional downstream scopes. It does **not** build or QA a running Minecraft world.
 
 ## Canonical Workflow
 
@@ -21,12 +21,26 @@ The generated PRD keeps `01 Overview`, `02 Gameplay Flow`, and `03 Development` 
 
 Machine lifecycle states such as `handoff_ready`, `voice_requirements_ready`, `voice_script_ready`, and `voice_delivery_ready` are implementation state values only; they do not create alternate human workflow names.
 
+## Start designing a new map
+
+Provide the map's intended experience, audience, objectives and any known
+constraints. This can be a short brief: a `.mcworld`, codebase or previously
+built map is **not** required. The AI recovers what is already decided,
+develops actionable game-design proposals for consequential gaps, and requests
+approval only for material choices before writing the canonical specification.
+
+The [single production workflow](docs/foundation/01-production-flow.md)
+defines each flow's input, work, output and completion gate; the
+[PRD production skill](kits/prd-creator/SKILL.md) routes actual project work.
+Gameplay, Level Design and Developer describe what **should be built**, not
+what is already implemented. Runtime testing belongs after PRD Handoff.
+
 ## Input → Output
 
 | Input | Processing | Output |
 |---|---|---|
-| Project discussion / current instruction | Project Requirements | approved requirement revision |
-| Authoritative/reference sources | Project Requirements + PRD Production | canonical PRD meaning |
+| New map brief / current instruction | Project Requirements, including material Game Design proposals | approved requirement and design revision |
+| Approved constraints / optional references | PRD Production | buildable Gameplay, Level Design and Developer specification |
 | Approved gameplay/build needs | Production Assets | actionable resource requirements |
 | Approved Voice needs | Voice Requirements → Voice Production → Voice Delivery | Eleven v3-ready Voice Production |
 
