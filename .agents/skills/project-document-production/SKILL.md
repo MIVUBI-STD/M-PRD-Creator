@@ -92,6 +92,14 @@ persist a second register, treat hypotheses as approved meaning, or force
 review for simple settled projects. Group material findings into a compact
 review; **no finding** is a valid result.
 
+For linked rules, follow the **bounded causal walk and materiality gate** in
+`BEHAVIOR.md`: source evidence → event/guard → owned effect → only supported
+dependent outcome. Compare role ownership and temporal overlap before naming
+a contradiction. Prioritize genuinely consequential gaps, collapse repeated
+domain warnings into one root question, and stop rather than inventing missing
+design decisions. This produces review guidance, not simulated or formally
+verified gameplay.
+
 ## Requirement traceability
 
 When required to prove completeness, inspect `tools/prd.py trace` output and the exact current Project Requirements register. An explicit REQ marker only establishes a content location. Compare source evidence with PRD meaning and cross-role Gameplay/Level Design/Developer outcomes before a human semantic readiness decision. Do not report semantic PASS because a marker or matching phrase exists.

@@ -84,6 +84,17 @@ Project Requirements
 
 Look for material LOSS, CONTRADICTION, UNSUPPORTED meaning, AMBIGUITY, or CROSS-ROLE DRIFT.
 
+When a material behavior spans multiple roles, apply the existing
+[Behavioral Working Model](reasoning/BEHAVIOR.md) to trace the approved
+event/condition → owned effect → dependent result. Use only relevant
+[domain concerns](reasoning/CAPABILITIES.md), and ask whether apparently
+competing rules truly share a scope, guard and lifecycle window.
+An `UNKNOWN` downstream outcome is a review question, not automatically
+a blocker or semantic failure. Resolve **material** gaps through the existing
+Project Requirements authority before accepting PRD meaning; advisory design
+risks remain clearly labeled. Do not infer semantic PASS from model sketches,
+scenario lists, hashes or `PRD-TRACE` locations.
+
 ## Material Conservation
 
 Verify changed/regenerated scope retains every resolved material condition, value, exception, recovery rule, result behavior, technical constraint, and role-owned requirement.

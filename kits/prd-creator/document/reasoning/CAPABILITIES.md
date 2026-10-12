@@ -53,6 +53,47 @@ Avoid Cartesian explosion: don't enumerate all combinations of all events.
 Prioritize behavior with consequential results, irreversible resources,
 concurrent ownership or a concrete failure mechanism.
 
+
+## Cross-domain consequence selection
+
+When several capabilities are active, they do **not** run independent
+free-form audits of the same rule. Use the [bounded causal walk](BEHAVIOR.md)
+once and select the domains that own the affected transitions/resources.
+
+| Shared consequence | Consult only when supported |
+|---|---|
+| Disconnect changes run progress and assignment | Session + Multiplayer if multiple actors/sessions exist |
+| Completion records a score as timer expires | Competition + Time; add Session only if a session boundary matters |
+| Resource is spent while a level resets | Economy + Session or Spatial only if those specific mechanics are described |
+| Puzzle changes which routes are reachable | Puzzle + Spatial only if navigation constraints are explicit |
+
+For each cross-domain review, preserve the **same cited requirement**, actor,
+trigger and outcome. Merge repeated warnings at the earliest consequential
+decision. A domain may add a distinct question but cannot redefine a source
+fact to match its typical design pattern.
+
+### Targeted scenario budget
+
+Prefer one normal flow, then only the highest-impact grounded boundary,
+interruption, or concurrency case. During a focused revision inspect only
+scenarios touched by the changed requirement or documented dependency.
+Do not enumerate possible permutations or seek 100% edge coverage without
+a formal, user-approved executable model.
+
+Prioritize: irreversible result/resource changes; mutually competing effects
+on the same owner; possible dead ends in an approved journey; then observed
+player-facing or production ambiguity. No material concern means no scenario
+report. Synthetic examples illustrate a question, not a reproduced issue.
+
+### Negative activation cases
+
+- "PvP" alone does not activate economy, shops, or timer review.
+- "An arena" does not prove that multiple arenas or players run concurrently.
+- "One puzzle" does not establish that the game contains collectible keys.
+- A single-player timed puzzle is not a multiplayer scenario.
+- A general "reset" does not imply persistent currency is cleared.
+- A hypothetical performance spike is not evidence of a technical bug.
+
 ## Scenario and design criticism
 
 A scenario may be written as Given / When / Then, but an unknown expected
