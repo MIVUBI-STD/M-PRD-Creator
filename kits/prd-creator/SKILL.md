@@ -115,8 +115,9 @@ accepted_prd_version: X.Y.Z
 
 ### Conditional behavioral intelligence
 
-When project meaning includes material interacting gameplay mechanisms,
-use the existing [semantic specialist](../../.agents/skills/project-document-production/SKILL.md)
+When project meaning includes material interacting gameplay mechanisms
+or source-backed constraints for facilitator-operated sessions, use the
+existing [semantic specialist](../../.agents/skills/project-document-production/SKILL.md)
 with [Behavioral Working Model](document/reasoning/BEHAVIOR.md) and only
 applicable [domain guidance](document/reasoning/CAPABILITIES.md).
 This is internal Project Requirements / PRD semantic reasoning, not another

@@ -90,6 +90,39 @@ player journey
 
 Routine wording, grouping, ordering, and decomposition remain downstream craft.
 
+## Source-grounded operating context before map design
+
+When an approved project source describes an operated session (for example a
+facilitated class, club, or workshop), recover the **operating conditions**
+before treating a gameplay description as implementable. Inspect only the
+material source-backed dimensions:
+
+- intended participants, skill mix, facilitator presence/permissions,
+  usable session time, supported devices and essential input methods;
+- simultaneous player/group capacity, admission after start, team assignment,
+  independent sessions, reconnect location versus run progress;
+- ready/start conditions, cancellation and override authority;
+- recovery from a stuck group, scope of any restart/return command, and the
+  journey for early finishers or departing players;
+- in-world guidance, safe routes, device constraints and observable end state.
+
+Keep source facts, observed session problems, suggested solutions, and
+unresolved project decisions distinct. A source checklist is evidence of
+**desired design**, not evidence that an implementation already works.
+Do not turn an example count, timeout, team composition or control scheme
+into a default for another map. An absolute requirement such as admitting
+every late arrival still needs an approved policy for actual capacity limits;
+a fragmentary sentence cannot become a complete requirement by AI inference.
+Request only consequential missing decisions through the existing
+Completion / Proposal / Blocked process.
+
+Classroom-specific project instructions are authoritative only for the
+project that adopts them. Keep client originals and production facts in the
+approved private project workspace, not this public system repository.
+For cross-role concerns, use the existing [facilitated-session reasoning](
+../document/reasoning/CAPABILITIES.md) selectively; do not create another
+project schema, operator role section, or universal classroom checklist.
+
 ## Conditional behavioral understanding
 
 For material gameplay interactions or unresolved causal consequences, use

@@ -32,6 +32,7 @@ game facts. Skip irrelevant domains entirely; do not generate empty N/A cards.
 | Puzzle/solvability | Actual logic puzzle, gates, clues, or dependency sequence | reachability, dead ends, feedback, recovery | every puzzle has a collectible key |
 | Spatial/level design | Navigation, zone permission, spawn, or placement materially constrains behavior | route, access, boundary, zone ownership | every named location needs a spatial audit |
 | Narrative/choice | Choices, story flags, or branches that condition later outcomes | branch guard, continuity, reachability | a linear cutscene has branching state |
+| Facilitated/cohort operation | An approved source describes an operator-led group with material constraints on joining, readiness, recovery or device use | cohort entry, operator authority, independent groups, instruction/recovery and usable session time | a school setting, genre label or generic multiplayer map automatically imposes classroom rules |
 
 ## Domain lifecycle
 
@@ -145,6 +146,31 @@ a template game rule. Apply its questions only to a relevant project source.
 - **Do not infer:** Minecraft-specific dimensions, blocks, physics,
   teleport commands or engine limitations from an engine-neutral PRD.
 
+### Facilitated/cohort operation
+
+- **Activate:** "A facilitator who is normally outside the game supervises
+  several independent student groups; some participants join late and a
+  stuck group must be recoverable without restarting others." Trace the
+  source-backed operating journey from joining to end/return. Examine who
+  may start, override, rejoin and reset, plus which player/team/arena owns
+  each affected state.
+- **Skip:** "Two players independently visit a public building map" with
+  no source-backed facilitator, attendance, shared readiness, or recovery
+  contract. No classroom-specific readiness board or teacher command is
+  implied.
+- **Do not infer:** a standard class size, Minecraft edition, actual
+  server capacity, progress restoration on reconnect, mid-round PvP
+  admission policy, fixed countdown duration, teacher command syntax or
+  device performance guarantee from the setting alone.
+
+When the source motivates it, review one consequential arrival/readiness
+case, one interruption/reconnect case, and one **scoped** recovery case.
+Do not multiply the same root decision across Session, Multiplayer and
+Time. A demand to admit everyone cannot establish technical capacity by
+itself; an incomplete source sentence cannot establish a missing event
+outcome. Preserve any consequential unknown for Project Requirements rather
+than selecting a plausible fix or claiming a reproduced defect.
+
 ### Narrative / choice
 
 - **Activate:** "Protecting the village sets a flag that selects the
@@ -184,6 +210,7 @@ once and select the domains that own the affected transitions/resources.
 | Completion records a score as timer expires | Competition + Time; add Session only if a session boundary matters |
 | Resource is spent while a level resets | Economy + Session or Spatial only if those specific mechanics are described |
 | Puzzle changes which routes are reachable | Puzzle + Spatial only if navigation constraints are explicit |
+| A facilitator cannot enter the game to recover one stuck group | Facilitated operation + Session/Multiplayer only if recovery scope and group isolation matter |
 
 For each cross-domain review, preserve the **same cited requirement**, actor,
 trigger and outcome. Merge repeated warnings at the earliest consequential

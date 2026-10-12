@@ -75,6 +75,33 @@ Level Design communicates spatial/build responsibility, design flow, complete bu
 
 Developer communicates runtime responsibility, lifecycle, implementation requirements, result handling, interruption/reset/reuse/handoff, and runtime invariants.
 
+## Facilitated-session design placement (conditional)
+
+When current, approved Project Requirements include teacher/facilitator-led
+or other operated-session constraints, place that meaning in the existing
+PRD surfaces without creating a fourth mandatory gameplay role:
+
+- **Overview:** approved audience/operator context, realistic usable
+  session time, participant/capacity assumptions, and device constraints;
+- **Gameplay Flow:** entry and late arrival, lobby/team or independent
+  session assignment, ready/start, play, interruption/recovery, end,
+  return/replay, only where required by the actual project;
+- **Gameplay:** player-visible team, start, fail/finish and result
+  behavior, including relevant late joins and early finishers;
+- **Level Design:** readable capacity/ready feedback, accessible input,
+  wayfinding, hint/respawn placement, and safe return routes;
+- **Developer:** capacity and state ownership; separate team, position
+  and progress policies; start guards and authorized overrides; scoped
+  arena/group resets; runtime/performance acceptance constraints.
+
+For any material cross-role rule, keep the *same approved trigger, actor,
+scope and outcome* while giving each role actionable responsibilities.
+Distinguish source-stated requirements from design proposals and unresolved
+decisions. No map-specific counts, teacher commands, progression restoration,
+UI widget, or device benchmark may be invented merely to fill a Golden slot.
+Apply no classroom defaults when the current source does not activate this
+context. New Production Assets or Voice requirements remain conditional.
+
 ## Behavioral conservation
 
 For complex or revised gameplay, use [Behavioral Working Model](reasoning/BEHAVIOR.md)

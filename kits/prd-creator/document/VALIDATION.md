@@ -73,6 +73,25 @@ Review relevant concerns once: source fidelity, decision completeness, new-reade
 Semantic Readiness: PASS | FAIL
 ```
 
+### Operated-session acceptance (only when source-backed)
+
+For an explicitly facilitated project, manually reconcile the approved
+participant journey and any consequential operating constraints across
+Overview, Gameplay, Level Design and Developer. Select only applicable
+review cases: entry at the actual capacity boundary, late arrival after
+start, readiness/override authority, odd or departing teams, reconnect
+(team versus position versus progress), one group's recovery without
+affecting another, accessible instructions/input, safe return and an
+observable session end. These are **questions to resolve from project
+authority**, not universal required mechanics.
+
+Before design handoff, each material case needs an approved expected
+outcome and an actionable owner; unresolved material choices stay in
+Project Requirements instead of becoming silent PRD assumptions.
+Do not claim the map has passed gameplay, device, capacity, or teacher
+acceptance tests from a document-only review. Runtime/device PASS requires
+observations on the actual implementation and target environment.
+
 ## Semantic reconciliation
 
 ```text
