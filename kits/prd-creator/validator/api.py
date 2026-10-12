@@ -144,6 +144,10 @@ def validate(project: Path) -> dict[str, Any]:
             "unmapped": traced["unmapped"],
             "semantic_verified": False,
         }
+        if traced["status"] == "unreviewed":
+            result.setdefault("warnings", []).append(
+                "Requirement traceability is unreviewed; mechanical PASS does not establish requirement coverage."
+            )
         if traced["status"] in {"invalid", "incomplete", "unavailable"}:
             findings = traced["issues"]
             result.setdefault("issues", []).extend(findings)

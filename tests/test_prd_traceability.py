@@ -49,6 +49,7 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(validated["status"], "pass", validated["errors"])
         self.assertEqual(validated["traceability"]["status"], "unreviewed")
         self.assertFalse(validated["traceability"]["semantic_verified"])
+        self.assertTrue(any("traceability is unreviewed" in warning for warning in validated["warnings"]))
 
     def test_bound_marker_locates_claim_but_never_claims_meaning(self) -> None:
         project = self.make_project()

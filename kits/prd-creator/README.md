@@ -173,6 +173,13 @@ python tools/prd.py handoff workspace/active/<project>/
 python tools/prd.py voice workspace/active/<project>/
 ```
 
+The operator distinguishes build success from actual review: `build` returns a
+`generated_artifacts_only` proof scope, while `status` reports only mechanical
+readiness. A project without PRD-TRACE markers remains mechanically compatible,
+but validation emits an explicit unreviewed traceability warning. Only accepted,
+source-grounded semantic review can establish PRD meaning; successful rendering
+or matching SHA values cannot do so.
+
 Mechanical PASS does not establish semantic, visual, naturalness, expression, pronunciation, or audio-quality proof.
 
 For production use start from `SKILL.md`. For implementation defects start from `AGENTS.md` and the smallest exact technical owner.

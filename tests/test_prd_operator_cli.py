@@ -49,7 +49,11 @@ class PrdOperatorCliContracts(unittest.TestCase):
         project = self.make_project()
         built = run_operator("build", project)
         self.assertEqual(built.returncode, 0, built.stderr or built.stdout)
-        outputs = json.loads(built.stdout)["outputs"]
+        build_result = json.loads(built.stdout)
+        self.assertEqual(build_result["operation"], "build")
+        self.assertEqual(build_result["proof_scope"], "generated_artifacts_only")
+        self.assertFalse(build_result["handoff_verified"])
+        outputs = build_result["outputs"]
         self.assertEqual(outputs["prd"], "output/v1.0.0/prd.html")
         self.assertEqual(outputs["context"], "output/v1.0.0/context.md")
         self.assertEqual(outputs["index"], "output/v1.0.0/index.json")
@@ -60,9 +64,23 @@ class PrdOperatorCliContracts(unittest.TestCase):
         self.assertEqual(payload["mechanical_status"], "clear")
         self.assertEqual(payload["prd"]["status"], "pass")
         self.assertEqual(payload["handoff"]["status"], "not_present")
+        self.assertEqual(payload["proof_scope"], "mechanical_only")
         self.assertEqual(payload["voice"]["status"], "not_present")
         self.assertIsNone(payload["first_issue"])
         self.assertIn("no handoff readiness is claimed", payload["next_action"])
+
+    def test_status_fails_closed_without_structured_validator_issue(self) -> None:
+        project = self.make_project()
+        with patch.object(
+            prd_operator.prd_api, "validate", return_value={"status": "fail", "errors": [], "issues": []}
+        ):
+            payload = prd_operator.status_payload(project)
+
+        self.assertEqual(payload["mechanical_status"], "blocked")
+        self.assertEqual(payload["prd"]["status"], "fail")
+        self.assertEqual(payload["first_issue"]["code"], "VALIDATION_FAILURE_WITHOUT_ISSUE")
+        self.assertEqual(payload["first_issue"]["owner"], "prd.validation")
+        self.assertIn("first wrong owner", payload["next_action"])
 
     def test_status_reuses_handoff_prd_proof(self) -> None:
         project = self.make_project()

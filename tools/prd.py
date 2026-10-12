@@ -190,11 +190,19 @@ def status_payload(project: Path) -> dict[str, Any]:
         handoff = _not_present()
         voice = _not_present()
 
+    stages = (("prd", prd), ("handoff", handoff), ("voice", voice))
     first_issue = next(
-        (stage["first_issue"] for stage in (prd, handoff, voice) if isinstance(stage.get("first_issue"), dict)),
+        (stage["first_issue"] for _, stage in stages if isinstance(stage.get("first_issue"), dict)),
         None,
     )
-    blocked = first_issue is not None
+    failed = next((name for name, stage in stages if stage["status"] not in {"pass", "not_present"}), None)
+    if failed is not None and first_issue is None:
+        first_issue = {
+            "code": "VALIDATION_FAILURE_WITHOUT_ISSUE",
+            "owner": f"{failed}.validation",
+            "message": f"{failed.upper()} validator reported a non-pass status without an actionable issue.",
+        }
+    blocked = failed is not None or first_issue is not None
 
     if first_issue is not None:
         owner = str(first_issue.get("owner") or "unknown")
@@ -215,6 +223,7 @@ def status_payload(project: Path) -> dict[str, Any]:
     return {
         "project": project.name,
         "mechanical_status": "blocked" if blocked else "clear",
+        "proof_scope": "mechanical_only",
         "prd": prd,
         "handoff": handoff,
         "voice": voice,
@@ -444,6 +453,7 @@ def _print_json(value: Any) -> None:
 def _print_status(payload: dict[str, Any]) -> None:
     print(f"Project: {payload['project']}")
     print(f"Mechanical: {str(payload['mechanical_status']).upper()}")
+    print("Proof: mechanical only (semantic, visual, and audio quality are separate).")
     for label in ("prd", "handoff", "voice"):
         stage = payload[label]
         print(f"{label.upper()}: {str(stage['status']).upper()}")
@@ -620,7 +630,13 @@ def main() -> int:
             return 1 if payload["mechanical_status"] == "blocked" else 0
         if args.command == "build":
             outputs = build_delivery(project)
-            _print_json({"status": "pass", "outputs": _relative_outputs(project, outputs)})
+            _print_json({
+                "status": "pass",
+                "operation": "build",
+                "proof_scope": "generated_artifacts_only",
+                "handoff_verified": False,
+                "outputs": _relative_outputs(project, outputs),
+            })
             return 0
         if args.command == "validate":
             return _result_exit(prd_api.validate(project))
