@@ -10,6 +10,21 @@ Scope: canonical documentation routes and stable identities; topic-based GitHub 
 
 Non-goals: Node/TypeScript migration, Minecraft analyzers, new general managers, database/search service, duplicate registries, extra work-lane skills, local-PC dependency, branch promotion.
 
+## Bounded semantic extension — Behavioral Intelligence
+
+Goal: upgrade source-grounded reasoning about game behavior and consequential
+design gaps without creating a second canonical project model.
+
+Scope: a temporary behavioral claim/constraint/concern method; conditional
+domain activation; consume through the existing Project Requirements and
+PRD Production semantic skill/owners. Preserve existing Completion / Proposal
+/ Blocked and Golden/render-data authority.
+
+Out of scope: new runtime AI agent, domain registry/database, machine schema,
+automatic semantic scoring, gameplay simulator, UI redesign, Voice changes,
+client project data, GitHub CI/promotion. Any executable quality benchmark or
+new domain-specific code belongs to a separately bounded implementation.
+
 **Actual implementation state must be recovered by topic from current `develop` HEAD and relevant commits.** This plan is not a completion ledger. Do not resume a stale step because it appears here; verify the current source and consumers first.
 
 Acceptance boundary: all current canonical document routes resolvable; one in-memory retrieval owner; changed-input impact does not hide stale downstream acceptance; executable PRD/Voice mechanical contracts unchanged; no Golden template diff. Label unexecuted proof accurately.

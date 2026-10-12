@@ -62,6 +62,20 @@ player journey
 
 Routine wording, grouping, ordering, and decomposition remain downstream craft.
 
+## Conditional behavioral understanding
+
+For material gameplay interactions or unresolved causal consequences, use
+[Behavioral Working Model](../document/reasoning/BEHAVIOR.md) to distinguish
+evidence-backed events/effects from hypotheses. Apply only
+[source-activated domains](../document/reasoning/CAPABILITIES.md), not a
+generic checklist for every genre. Inspect actor/scope, ownership, lifecycle
+and outcome without guessing unstated policy.
+
+This pass is in-memory and uses existing `SRC`/`REQ` identities. Merge
+duplicate root concerns, keep design criticism advisory, and route only
+material missing decisions through existing Completion / Proposal / Blocked.
+If nothing material is missing, continue without extra approvals or files.
+
 ## Conditional review
 
 When no material Proposal or unresolved conflict exists:

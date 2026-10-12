@@ -113,6 +113,15 @@ status: handoff_ready
 accepted_prd_version: X.Y.Z
 ```
 
+### Conditional behavioral intelligence
+
+When project meaning includes material interacting gameplay mechanisms,
+use the existing [semantic specialist](../../.agents/skills/project-document-production/SKILL.md)
+with [Behavioral Working Model](document/reasoning/BEHAVIOR.md) and only
+applicable [domain guidance](document/reasoning/CAPABILITIES.md).
+This is internal Project Requirements / PRD semantic reasoning, not another
+workflow, persisted project model, automatic approval, or mechanical PASS.
+
 ### Trace is evidence routing, not semantic scoring
 
 REQ markers in `work/content.md` identify where approved requirements are represented, with the canonical grammar owned by `document/CONTENT-CONTRACT.md`. An explicit partial or malformed trace blocks mechanical validation; an unannotated legacy project remains compatible. The trace CLI exposes per-package cross-role review surfaces but never certifies semantic equality.

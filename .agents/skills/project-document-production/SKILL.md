@@ -77,6 +77,21 @@ meaning correct; approved visual grammar wrong → document/DESIGN-CONTRACT.md
 semantic + design contracts correct; executable behavior wrong → kits/prd-creator/AGENTS.md
 ```
 
+## Conditional behavioral reasoning
+
+For material interactions, ownership, lifecycle, results or cross-role
+ambiguity, use [Behavioral Working Model](../../../kits/prd-creator/document/reasoning/BEHAVIOR.md)
+for source-grounded claims and unknowns. Read [Context-Activated Domain
+Capabilities](../../../kits/prd-creator/document/reasoning/CAPABILITIES.md)
+only if a demonstrated mechanism requires specialized analysis.
+
+Perform one bounded in-workflow interpretation → targeted scenario/critique
+→ decision reconciliation pass. Use existing `SRC`/`REQ` authority and
+Completion / Proposal / Blocked; keep the working model temporary. Do not
+persist a second register, treat hypotheses as approved meaning, or force
+review for simple settled projects. Group material findings into a compact
+review; **no finding** is a valid result.
+
 ## Requirement traceability
 
 When required to prove completeness, inspect `tools/prd.py trace` output and the exact current Project Requirements register. An explicit REQ marker only establishes a content location. Compare source evidence with PRD meaning and cross-role Gameplay/Level Design/Developer outcomes before a human semantic readiness decision. Do not report semantic PASS because a marker or matching phrase exists.

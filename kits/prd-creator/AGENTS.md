@@ -8,6 +8,7 @@ Root `AGENTS.md` owns repository routing, authority, continuity, branch policy, 
 |---|---|
 | Project Requirements | `intake/SOURCE-INTAKE.md` |
 | PRD semantic completeness | `document/CONTENT-CONTRACT.md` |
+| Complex behavior / domain-specific critique | `document/reasoning/BEHAVIOR.md` → `document/reasoning/CAPABILITIES.md` (supporting methods only) |
 | Golden visual/component grammar | `document/DESIGN-CONTRACT.md` |
 | PRD Handoff | `document/VALIDATION.md` |
 | Production Assets meaning | `production-assets/CONTRACT.md` |

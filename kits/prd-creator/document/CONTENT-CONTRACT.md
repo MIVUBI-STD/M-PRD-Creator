@@ -75,6 +75,20 @@ Level Design communicates spatial/build responsibility, design flow, complete bu
 
 Developer communicates runtime responsibility, lifecycle, implementation requirements, result handling, interruption/reset/reuse/handoff, and runtime invariants.
 
+## Behavioral conservation
+
+For complex or revised gameplay, use [Behavioral Working Model](reasoning/BEHAVIOR.md)
+and applicable [domain concerns](reasoning/CAPABILITIES.md) to check whether
+approved conditions, events, effects, state/resource ownership and outcomes
+are represented consistently across Gameplay, Level Design and Developer.
+
+The working model is a temporary semantic interpretation, never additional
+canonical content or render-data fields. Scenario questions, critique and
+unsupported assumptions cannot be converted into project decisions in the
+PRD. Missing authoritative decisions return to Project Requirements; missing
+representation of approved meaning is repaired in `work/content.md`.
+Different wording alone is not a contradiction.
+
 ## Requirement location trace — optional, explicit, reviewable
 
 A material requirement may be located in canonical content with a standalone comment
