@@ -73,6 +73,22 @@ Review relevant concerns once: source fidelity, decision completeness, new-reade
 Semantic Readiness: PASS | FAIL
 ```
 
+### Map-system readiness review (source-activated)
+
+Before accepting a map PRD, follow the [single design contract](
+CONTENT-CONTRACT.md) on material systems only. Check that source-backed
+mechanics have: an explicit actor/event/condition, an identified
+player/team/arena/global scope where relevant, a coherent visible outcome,
+role-specific actionable responsibilities, and a reviewable acceptance
+expectation. When interruption or recovery changes the result, establish
+the approved policy rather than silently filling the gap.
+
+Review one normal journey and only consequential boundaries established
+by the actual project (for example capacity, readiness, disconnect or
+simultaneous endings). A clear no-finding case does not justify another
+approval layer. A design acceptance expectation is **not** a runtime
+implementation test, load benchmark or device PASS.
+
 ### Operated-session acceptance (only when source-backed)
 
 For an explicitly facilitated project, manually reconcile the approved

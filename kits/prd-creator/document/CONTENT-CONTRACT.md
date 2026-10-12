@@ -75,6 +75,44 @@ Level Design communicates spatial/build responsibility, design flow, complete bu
 
 Developer communicates runtime responsibility, lifecycle, implementation requirements, result handling, interruption/reset/reuse/handoff, and runtime invariants.
 
+## Source-activated map system design contract
+
+Before splitting approved map mechanics across role sections, apply one
+bounded design pass **inside PRD Production**:
+
+\`\`\`text
+current SRC / REQ
+→ operating context and player journey (when relevant)
+→ actor + event + condition/guard + affected scope/state owner
+→ player-visible outcome + interruption/recovery policy
+→ actionable Gameplay / Level Design / Developer responsibilities
+→ source-grounded acceptance expectation
+\`\`\`
+
+This is a review order, **not** a new PRD stage, artifact, schema or engine.
+For simple maps, omit mechanisms the approved source never establishes.
+For multi-system maps, group related requirements under the system that
+actually owns their behavior; do not repeat the same rule under every
+role merely to fill space.
+
+| Design question | Existing canonical PRD responsibility |
+|---|---|
+| Who uses the map, under what relevant constraints? | Overview; source authority remains with [Project Requirements](../intake/SOURCE-INTAKE.md) |
+| What happens from entry through result/return? | Gameplay Flow and the owning Gameplay package |
+| What does the player do, see and achieve? | Gameplay |
+| What world/layout/interaction enables that experience? | Level Design |
+| Who owns session, player, team, arena or result state? | Developer |
+| What happens on important failure, interruption or authorized override? | Relevant Gameplay / Level Design / Developer owners |
+| What is the expected outcome used to accept that design? | Package acceptance and PRD Handoff |
+
+For each consequential requirement, compare **source authority, actor, trigger,
+guard, scope, effect, observable result and recovery** across its owning
+roles. Distinguish player assignment, location, attempt progress, inventory
+and stored result when a project makes them materially different.
+An unresolved policy is not a default to invent: return only that decision
+to Project Requirements using existing Completion / Proposal / Blocked.
+Scenario examples are reasoning aids and never proof of executed gameplay.
+
 ## Facilitated-session design placement (conditional)
 
 When current, approved Project Requirements include teacher/facilitator-led
