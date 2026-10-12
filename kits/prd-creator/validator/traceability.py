@@ -8,11 +8,13 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from shared.intake import load_intake_state, load_requirement_register, load_source_inventory, sha256_file
+from shared.intake import SourceRecord, load_intake_state, load_requirement_register, load_source_inventory, sha256_file
 from shared.issues import Issue
+from shared.paths import resolve_project_path
 from shared.state import StateError
 
 MARKER = re.compile(r"^\s*<!-- PRD-TRACE: (REQ-\d{3,}) -->\s*$")
@@ -20,6 +22,7 @@ HINT = re.compile(r"<!--\s*PRD-TRACE\b", re.IGNORECASE)
 HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 CONTENT = "work/content.md"
 HTML_CODE_START = re.compile(r"^<(pre|code|script|style)\b", re.IGNORECASE)
+SOURCE_LINES = re.compile(r"^(.+?)#L([1-9][0-9]*)(?:-L([1-9][0-9]*))?$")
 
 
 def _is_indented_code(line: str) -> bool:
@@ -47,6 +50,27 @@ def _next_claim(lines: list[str], index: int) -> tuple[int, str] | None:
         return offset + 1, text[:240]
     return None
 
+
+def _retained_source_excerpt(project: Path, locator: str, source: SourceRecord) -> dict[str, object]:
+    """Read only an exact, bounded locator from a current retained text source."""
+    if source.retention != "repository" or source.status != "current" or source.inspection == "blocked":
+        return {}
+    match = SOURCE_LINES.fullmatch(locator)
+    if match is None or match.group(1) != source.path:
+        return {}
+    first = int(match.group(2))
+    last = int(match.group(3) or match.group(2))
+    if last < first or last - first >= 8:
+        return {}
+    try:
+        path = resolve_project_path(project, source.path, must_exist=True)
+        with path.open(encoding="utf-8") as stream:
+            excerpt = list(islice(stream, first - 1, last))
+    except (OSError, UnicodeError, ValueError):
+        return {}
+    if len(excerpt) != last - first + 1 or sum(map(len, excerpt)) > 2400:
+        return {}
+    return {"source_excerpt_lines": [first, last], "source_excerpt": "".join(excerpt).rstrip("\r\n")}
 
 def approval_binding(project: Path, current_sha: str) -> dict[str, Any]:
     """Report existing intake approval freshness without claiming semantic approval."""
@@ -235,6 +259,7 @@ def assess(project: Path) -> dict[str, Any]:
                         "inspection": by_source[sid].inspection,
                         "retention": by_source[sid].retention,
                         "path": by_source[sid].path,
+                        **_retained_source_excerpt(project, requirement.evidence_locator, by_source[sid]),
                     }
                     for sid in requirement.provenance
                 ],

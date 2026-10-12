@@ -242,6 +242,41 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(report["status"], "unreviewed")
         self.assertFalse(report["semantic_verified"])
 
+    def test_retained_line_locator_previews_exact_text_without_semantic_proof(self) -> None:
+        project = self.make_project()
+        source_path = project / "source-note.md"
+        source_path.write_text("Session rules\nArena assignment persists\nRun progress resets\n", encoding="utf-8")
+        inventory = project / "state/source-inventory.yaml"
+        inventory.write_text(
+            inventory.read_text(encoding="utf-8")
+            + "    retention: repository\n"
+            + "    path: source-note.md\n"
+            + f"    sha256: {hashlib.sha256(source_path.read_bytes()).hexdigest()}\n",
+            encoding="utf-8",
+        )
+        register = project / "state/requirement-register.yaml"
+        base_register = register.read_text(encoding="utf-8")
+        for locator, expected in (
+            ("source-note.md#L2-L3", "Arena assignment persists\nRun progress resets"),
+            ("source-note.md#L2", "Arena assignment persists"),
+            ("another.md#L2", None),
+            ("source-note.md#L4", None),
+            ("source-note.md#L3-L2", None),
+            ("source-note.md#L1-L9", None),
+            ("../source-note.md#L2", None),
+            ("source-note.md#reconnect", None),
+        ):
+            with self.subTest(locator=locator):
+                register.write_text(base_register + f"    evidence_locator: {locator}\n", encoding="utf-8")
+                report = assess(project)
+                source = report["requirements"][0]["source_evidence"][0]
+                self.assertFalse(report["semantic_verified"])
+                if expected is None:
+                    self.assertNotIn("source_excerpt", source)
+                else:
+                    self.assertEqual(source["source_excerpt"], expected)
+                    self.assertEqual(source["source_excerpt_lines"], [2, 3] if "L2-L3" in locator else [2, 2])
+
     def test_review_cases_refuse_stale_content_projection(self) -> None:
         project = self.make_project()
         current = assess(project)

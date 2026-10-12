@@ -199,6 +199,11 @@ currency and inventory are different resources. Do not manufacture an economy
 conflict from the word "reset"; request ownership clarification only if
 the actual source maps coins to the same reset-owned inventory.
 
+A small [manual semantic calibration set](../../../../tests/semantic-review-cases.md)
+illustrates source precedence, unresolved event ordering, and a no-finding
+control. Its reference answers are not executable test results or evidence
+of empirical model accuracy. Use it only when changing this reasoning method.
+
 ## Stop / proof boundary
 
 Stop when material meaning is settled and further questions are speculative.

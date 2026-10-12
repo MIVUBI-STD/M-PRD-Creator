@@ -47,6 +47,15 @@ The existing requirement-register fields `evidence_locator` and `evidence_status
 
 Requirement location in PRD production is separate from source provenance; see `../document/CONTENT-CONTRACT.md`. Do not turn an AI-generated evidence pointer or a REQ marker into an approval flag.
 
+For current, repository-retained UTF-8 text, an optional exact locator
+such as `source-note.md#L2-L4` lets `tools/prd.py trace` display that
+passage directly with its line numbers. The path must match the registered
+source path; a preview is limited to eight lines and 2,400 characters.
+External, superseded, inaccessible, ambiguous, or out-of-range pointers
+receive no generated quote. A displayed excerpt confirms only the text at
+those lines, **not** that it supports the requirement or that the PRD agrees.
+Keep using the existing `evidence_locator` field; do not create a new status.
+
 ### Source-to-requirement evidence review
 
 When an evidence locator or source fidelity changes a material decision,
