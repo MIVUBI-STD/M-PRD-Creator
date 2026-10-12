@@ -207,7 +207,7 @@ def assess(project: Path) -> dict[str, Any]:
     for i, line in enumerate(lines):
         stripped = line.lstrip()
         if fence is not None:
-            if re.fullmatch(rf"{re.escape(fence[0])}{{{len(fence)},}}[ \t]*", stripped):
+            if not _is_indented_code(line) and re.fullmatch(rf"{re.escape(fence[0])}{{{len(fence)},}}[ \t]*", stripped):
                 fence = None
             continue
         if _is_indented_code(line):

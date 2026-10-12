@@ -135,6 +135,7 @@ class RequirementTraceContracts(unittest.TestCase):
             "~~~python\n~~not-a-close\n<!-- PRD-TRACE: REQ-999 -->\n~~~\n",
             "~~~~markdown\n~~~\n<!-- PRD-TRACE: REQ-999 -->\n~~~~\n",
             "```python\n```not-a-close\n<!-- PRD-TRACE: REQ-999 -->\n```\n",
+            "```python\n    ```\n<!-- PRD-TRACE: REQ-999 -->\n```\n",
         )
         for sample in samples:
             with self.subTest(sample=sample):
