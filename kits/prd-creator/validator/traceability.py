@@ -228,7 +228,14 @@ def assess(project: Path) -> dict[str, Any]:
                 "evidence_locator": requirement.evidence_locator,
                 "evidence_status": requirement.evidence_status,
                 "source_evidence": [
-                    {"id": sid, "role": by_source[sid].role, "status": by_source[sid].status}
+                    {
+                        "id": sid,
+                        "role": by_source[sid].role,
+                        "status": by_source[sid].status,
+                        "inspection": by_source[sid].inspection,
+                        "retention": by_source[sid].retention,
+                        "path": by_source[sid].path,
+                    }
                     for sid in requirement.provenance
                 ],
                 "mapping": "LOCATED_NOT_SEMANTICALLY_VERIFIED" if matches else "UNMAPPED",

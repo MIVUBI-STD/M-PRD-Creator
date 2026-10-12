@@ -47,6 +47,25 @@ The existing requirement-register fields `evidence_locator` and `evidence_status
 
 Requirement location in PRD production is separate from source provenance; see `../document/CONTENT-CONTRACT.md`. Do not turn an AI-generated evidence pointer or a REQ marker into an approval flag.
 
+### Source-to-requirement evidence review
+
+When an evidence locator or source fidelity changes a material decision,
+inspect the **actual passage** before judging the requirement or PRD wording.
+The existing read-only `tools/prd.py trace` report exposes each cited
+source's declared role, current/superseded status, inspection scope,
+retention, and project-relative path when available. These are navigation
+cues, not verified quotations or semantic agreement. A retained source's
+SHA-256 proves byte identity only; an external or missing source passage
+cannot be silently filled in by AI.
+
+Compare the source passage with the requirement's actor, event/guard, scope,
+negation, quantities, exceptions and outcome, then compare the material
+claim with its actual representation in `work/content.md`. If the passage
+cannot be inspected, mark the claim unresolved in the existing review
+workflow rather than calling it confirmed. Resolve a material discrepancy
+at its first authoritative owner; reuse Completion / Proposal / Blocked
+instead of adding a semantic approval status or a separate evidence registry.
+
 ## Integrated completeness
 
 Before PRD Production, reason once across the complete applicable model:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -206,7 +207,39 @@ class RequirementTraceContracts(unittest.TestCase):
         requirement = payload["requirements"][0]
         self.assertEqual(requirement["evidence_locator"], "design-note.md#reconnect")
         self.assertEqual(requirement["evidence_status"], "conflict")
-        self.assertEqual(requirement["source_evidence"][0]["role"], "authoritative")
+        self.assertEqual(
+            requirement["source_evidence"][0],
+            {
+                "id": "SRC-001",
+                "role": "authoritative",
+                "status": "current",
+                "inspection": "full",
+                "retention": "",
+                "path": "",
+            },
+        )
+        self.assertFalse(payload["semantic_verified"])
+
+    def test_source_review_exposes_retained_path_without_claiming_semantics(self) -> None:
+        project = self.make_project()
+        evidence = project / "source-note.md"
+        evidence.write_text("Approved fixture source.\n", encoding="utf-8")
+        inventory = project / "state/source-inventory.yaml"
+        inventory.write_text(
+            inventory.read_text(encoding="utf-8")
+            + "    retention: repository\n"
+            + "    path: source-note.md\n"
+            + f"    sha256: {hashlib.sha256(evidence.read_bytes()).hexdigest()}\n",
+            encoding="utf-8",
+        )
+        report = assess(project)
+        source = report["requirements"][0]["source_evidence"][0]
+        self.assertEqual(source["path"], "source-note.md")
+        self.assertEqual(source["retention"], "repository")
+        self.assertEqual(source["inspection"], "full")
+        self.assertEqual(source["role"], "authoritative")
+        self.assertEqual(report["status"], "unreviewed")
+        self.assertFalse(report["semantic_verified"])
 
     def test_review_cases_refuse_stale_content_projection(self) -> None:
         project = self.make_project()
