@@ -128,6 +128,38 @@ class RequirementTraceContracts(unittest.TestCase):
         self.assertEqual(payload["mapped_count"], 1)
         self.assertEqual(payload["issues"], [])
 
+    def test_long_code_fences_cannot_expose_example_requirement_markers(self) -> None:
+        project = self.make_project()
+        samples = (
+            "````markdown\n```python\n<!-- PRD-TRACE: REQ-999 -->\n```\n<!-- PRD-TRACE: REQ-999 -->\n````\n",
+            "~~~python\n~~not-a-close\n<!-- PRD-TRACE: REQ-999 -->\n~~~\n",
+            "~~~~markdown\n~~~\n<!-- PRD-TRACE: REQ-999 -->\n~~~~\n",
+            "```python\n```not-a-close\n<!-- PRD-TRACE: REQ-999 -->\n```\n",
+        )
+        for sample in samples:
+            with self.subTest(sample=sample):
+                self.update_content(project, "# Contract Fixture\n\n" + sample)
+                report = assess(project)
+                self.assertEqual(report["status"], "unreviewed")
+                self.assertEqual(report["mapped_count"], 0)
+                self.assertEqual(report["issues"], [])
+
+    def test_longer_closing_fence_restores_live_requirement_markers(self) -> None:
+        project = self.make_project()
+        self.update_content(
+            project,
+            "# Contract Fixture\n\n"
+            "````markdown\n"
+            "<!-- PRD-TRACE: REQ-999 -->\n"
+            "`````\n"
+            "<!-- PRD-TRACE: REQ-001 -->\n"
+            "The accepted Core Trial remains intact.\n",
+        )
+        report = assess(project)
+        self.assertEqual(report["status"], "mapped_unverified")
+        self.assertEqual(report["mapped_count"], 1)
+        self.assertEqual(report["issues"], [])
+
     def test_trace_markers_inside_indented_code_are_not_evidence(self) -> None:
         project = self.make_project()
         for indent in ("    ", "\t", "  \t"):

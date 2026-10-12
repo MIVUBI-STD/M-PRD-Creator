@@ -23,6 +23,7 @@ HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 CONTENT = "work/content.md"
 HTML_CODE_START = re.compile(r"^<(pre|code|script|style)\b", re.IGNORECASE)
 SOURCE_LINES = re.compile(r"^(.+?)#L([1-9][0-9]*)(?:-L([1-9][0-9]*))?$")
+FENCE_OPEN = re.compile(r"^(`{3,}|~{3,})")
 
 
 def _is_indented_code(line: str) -> bool:
@@ -206,7 +207,7 @@ def assess(project: Path) -> dict[str, Any]:
     for i, line in enumerate(lines):
         stripped = line.lstrip()
         if fence is not None:
-            if stripped.startswith(fence):
+            if re.fullmatch(rf"{re.escape(fence[0])}{{{len(fence)},}}[ \t]*", stripped):
                 fence = None
             continue
         if _is_indented_code(line):
@@ -221,10 +222,12 @@ def assess(project: Path) -> dict[str, Any]:
             if re.search(rf"</{tag}\s*>", stripped, re.IGNORECASE) is None:
                 html_code = tag
             continue
-        opening = next((token for token in (chr(96) * 3, "~~~") if stripped.startswith(token)), None)
+        opening = FENCE_OPEN.match(stripped)
         if opening is not None:
-            fence = opening
-            continue
+            candidate = opening.group(1)
+            if candidate[0] != "`" or "`" not in stripped[opening.end() :]:
+                fence = candidate
+                continue
         title = HEADING.fullmatch(line.strip())
         if title:
             heading = title.group(1)
