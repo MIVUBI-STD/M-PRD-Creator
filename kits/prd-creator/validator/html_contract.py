@@ -223,7 +223,7 @@ def _exact_projection_checks(
         ]
 
     checks: list[HtmlCheck] = []
-    has_extensions = (
+    has_extension_source = (
         (project / "work" / "asset-requirements.md").is_file()
         or (project / "work" / "voice-production.md").is_file()
     )
@@ -250,9 +250,17 @@ def _exact_projection_checks(
             and html_text.count(marker) == 1
             and html_text.startswith(expected, marker_at + len(marker))
         )
-        if ok and not has_extensions:
-            closing = "</main>" if name == "html_core_pages_match_current_projection" else "</nav>"
-            ok = html_text.startswith(closing, marker_at + len(marker) + len(expected))
+        if ok:
+            remainder = html_text[marker_at + len(marker) + len(expected) :]
+            if name == "html_core_pages_match_current_projection":
+                direct_close = "</main>"
+                valid_extension = '<section class="sheet professional-only production-assets-page"'
+            else:
+                direct_close = "</nav>"
+                valid_extension = '<div class="nav-group is-open professional-nav production-assets-nav">'
+            ok = remainder.startswith(direct_close) or (
+                has_extension_source and remainder.startswith(valid_extension)
+            )
         detail = (
             f"{description} matches the current canonical render projection"
             if ok

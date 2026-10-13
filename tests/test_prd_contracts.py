@@ -373,6 +373,28 @@ class ProjectDocumentContracts(unittest.TestCase):
         self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
         self.assertIn("PRD_HTML_NAV_CONTENT_DRIFT", validated.stdout)
 
+    def test_voice_source_alone_cannot_exempt_unapproved_html_additions(self) -> None:
+        for closing, extra, finding in (
+            ("</main>", "<p>Unsupported gameplay requirement</p>", "PRD_HTML_CORE_CONTENT_DRIFT"),
+            ("</nav>", '<a href="#summary">Unapproved nav entry</a>', "PRD_HTML_NAV_CONTENT_DRIFT"),
+        ):
+            with self.subTest(closing=closing):
+                project = self.make_project()
+                self.assertEqual(self.render(project).returncode, 0)
+                (project / "work" / "voice-production.md").write_text(
+                    "# Voice Production draft not yet rendered\n", encoding="utf-8"
+                )
+                # A later Voice draft does not invalidate a clean PRD core.
+                self.assertEqual(self.validate(project).returncode, 0)
+
+                path = project / "output" / "v1.0.0" / "prd.html"
+                original = path.read_text(encoding="utf-8")
+                self.assertIn(closing, original)
+                path.write_text(original.replace(closing, extra + closing, 1), encoding="utf-8")
+                result = self.validate(project)
+                self.assertEqual(result.returncode, 1, result.stderr or result.stdout)
+                self.assertIn(finding, result.stdout)
+
     def test_renderer_rejects_stale_content_hash(self) -> None:
         project = self.make_project()
         (project / "work" / "content.md").write_text(

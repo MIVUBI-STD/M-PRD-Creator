@@ -45,7 +45,7 @@ Mechanical validation proves deterministic facts including:
 - core page and navigation HTML match the exact renderer projection, so altering displayed content while leaving metadata hashes untouched fails validation;
 - page/navigation/component markers and duplicate-ID/scoring checks remain valid.
 
-The exact-projection checks cover the canonical PRD core and navigation. Without Production Assets or Voice page extensions, they also reject unexpected content appended after the approved main-body and navigation content. Where extensions are present, their appended pages remain subject to separate domain checks. These checks are not complete Golden CSS/script replay, browser tests, or cryptographic signatures.
+The exact-projection checks cover the canonical PRD core and navigation. After the current core or navigation projection, they require either the immediate closing tag or the **exact start of the approved Production Assets extension** when an applicable source exists. Merely creating a Voice Production file does not permit arbitrary HTML to be appended to an unchanged PRD. Content within an actual extension remains subject to its separate bounded domain checks. These checks are not complete Golden CSS/script replay, browser tests, or cryptographic signatures.
 
 Mechanical PASS does not prove semantic fidelity or browser visual quality.
 
