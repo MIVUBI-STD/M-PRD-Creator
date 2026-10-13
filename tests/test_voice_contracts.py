@@ -18,6 +18,7 @@ from prd_fixture import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+OPERATOR = ROOT / "tools" / "prd.py"
 VALIDATOR = ROOT / "kits" / "prd-creator" / "validator" / "validate_voice.py"
 DELIVERY = ROOT / "kits" / "prd-creator" / "renderer" / "delivery.py"
 
@@ -219,6 +220,33 @@ class VoiceProductionContracts(unittest.TestCase):
                 encoding="utf-8",
             )
         return project
+
+    def test_operator_status_keeps_upstream_trace_warning_with_voice_present(self) -> None:
+        project = self.make_project(status="voice_script_ready")
+        status = run_cli(OPERATOR, "status", project, "--json")
+        self.assertEqual(status.returncode, 0, status.stderr or status.stdout)
+        payload = json.loads(status.stdout)
+        self.assertEqual(payload["mechanical_status"], "clear")
+        self.assertEqual(payload["handoff"]["status"], "pass")
+        self.assertEqual(payload["voice"]["status"], "pass")
+        self.assertTrue(
+            any("traceability is unreviewed" in warning for warning in payload["warnings"])
+        )
+        self.assertTrue(
+            any("does not authenticate" in warning for warning in payload["warnings"])
+        )
+        self.assertFalse(payload["semantic_review_authenticated"])
+
+    def test_operator_status_keeps_upstream_warning_before_voice_production(self) -> None:
+        project = self.make_project(status="voice_requirements_ready")
+        (project / "work" / "voice-production.md").unlink()
+        status = run_cli(OPERATOR, "status", project, "--json")
+        self.assertEqual(status.returncode, 0, status.stderr or status.stdout)
+        payload = json.loads(status.stdout)
+        self.assertTrue(
+            any("traceability is unreviewed" in warning for warning in payload["warnings"])
+        )
+        self.assertEqual(payload["voice"]["status"], "pass")
 
     def test_validator_happy_path_needs_no_docx_export(self) -> None:
         project = self.make_project()

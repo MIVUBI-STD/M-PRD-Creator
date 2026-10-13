@@ -74,12 +74,18 @@ def _load_render_data(project: Path) -> tuple[dict[str, Any], str, str]:
     return data, revision, hashlib.sha256(raw).hexdigest()
 
 
-def _accepted_revision(project: Path, voice_state: VoiceState) -> tuple[str, list[Issue]]:
+def _accepted_revision(project: Path, voice_state: VoiceState) -> tuple[str, list[Issue], list[str]]:
     issues: list[Issue] = []
     try:
         upstream = handoff_validator.validate(project)
     except (OSError, StateError, ProjectPathError, ValueError, json.JSONDecodeError) as exc:
         upstream = {"status": "fail", "errors": [str(exc)]}
+    raw_warnings = upstream.get("warnings")
+    upstream_warnings = (
+        [item for item in raw_warnings if isinstance(item, str)]
+        if isinstance(raw_warnings, list)
+        else []
+    )
     if upstream.get("status") != "pass":
         detail = "; ".join(str(item) for item in upstream.get("errors", [])[:5]) or "unknown handoff failure"
         issues.append(
@@ -109,7 +115,7 @@ def _accepted_revision(project: Path, voice_state: VoiceState) -> tuple[str, lis
                 field="source_handoff",
             )
         )
-        return "", issues
+        return "", issues, upstream_warnings
     if handoff.status != "handoff_ready":
         issues.append(
             _issue(
@@ -120,7 +126,7 @@ def _accepted_revision(project: Path, voice_state: VoiceState) -> tuple[str, lis
                 field="status",
             )
         )
-    return handoff.accepted_prd_version, issues
+    return handoff.accepted_prd_version, issues, upstream_warnings
 
 
 def _state_identity_issues(
@@ -634,9 +640,12 @@ def _result(
     entries: int,
     sections: int,
     html_state: str,
+    *,
+    warnings: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
         "status": "pass" if not issues else "fail",
+        "warnings": list(warnings or []),
         "errors": [str(issue) for issue in issues],
         "issues": [issue.as_dict() for issue in issues],
         "voice_status": state.status if state is not None else "invalid",
@@ -734,7 +743,7 @@ def validate(project: Path) -> dict[str, Any]:
             "not_provided",
         )
 
-    accepted_revision, upstream_issues = _accepted_revision(project, voice_state)
+    accepted_revision, upstream_issues, upstream_warnings = _accepted_revision(project, voice_state)
     issues.extend(upstream_issues)
     issues.extend(_state_identity_issues(voice_state, accepted_revision, current_revision, current_render_sha))
 
@@ -749,7 +758,7 @@ def validate(project: Path) -> dict[str, Any]:
                     path="work/voice-production.md",
                 )
             )
-        return _result(voice_state, issues, 0, 0, 0, "not_applicable")
+        return _result(voice_state, issues, 0, 0, 0, "not_applicable", warnings=upstream_warnings)
 
     try:
         requirements_path = resolve_project_path(
@@ -761,7 +770,7 @@ def validate(project: Path) -> dict[str, Any]:
         requirements = parse_requirements(requirements_path)
     except SourceParseError as exc:
         issues.append(exc.as_issue())
-        return _result(voice_state, issues, 0, 0, 0, "not_required_yet")
+        return _result(voice_state, issues, 0, 0, 0, "not_required_yet", warnings=upstream_warnings)
     except (OSError, ProjectPathError, ValueError) as exc:
         issues.append(
             _issue(
@@ -771,7 +780,7 @@ def validate(project: Path) -> dict[str, Any]:
                 path="work/voice-requirements.md",
             )
         )
-        return _result(voice_state, issues, 0, 0, 0, "not_required_yet")
+        return _result(voice_state, issues, 0, 0, 0, "not_required_yet", warnings=upstream_warnings)
 
     try:
         issues.extend(_requirements_revision_issues(requirements_path, accepted_revision))
@@ -784,11 +793,11 @@ def validate(project: Path) -> dict[str, Any]:
                 path="work/voice-requirements.md",
             )
         )
-        return _result(voice_state, issues, len(requirements), 0, 0, "not_required_yet")
+        return _result(voice_state, issues, len(requirements), 0, 0, "not_required_yet", warnings=upstream_warnings)
     issues.extend(_requirements_owner_issues(render_data, requirements))
 
     if voice_state.status in REQUIREMENTS_READY_STATUSES:
-        return _result(voice_state, issues, len(requirements), 0, 0, "not_required_yet")
+        return _result(voice_state, issues, len(requirements), 0, 0, "not_required_yet", warnings=upstream_warnings)
 
     try:
         production_path = resolve_project_path(
@@ -800,7 +809,7 @@ def validate(project: Path) -> dict[str, Any]:
         production = parse_production(production_path)
     except SourceParseError as exc:
         issues.append(exc.as_issue())
-        return _result(voice_state, issues, len(requirements), 0, 0, "not_provided")
+        return _result(voice_state, issues, len(requirements), 0, 0, "not_provided", warnings=upstream_warnings)
     except (OSError, ProjectPathError, ValueError) as exc:
         issues.append(
             _issue(
@@ -810,7 +819,7 @@ def validate(project: Path) -> dict[str, Any]:
                 path="work/voice-production.md",
             )
         )
-        return _result(voice_state, issues, len(requirements), 0, 0, "not_provided")
+        return _result(voice_state, issues, len(requirements), 0, 0, "not_provided", warnings=upstream_warnings)
 
     try:
         issues.extend(_production_binding_issues(requirements_path, production_path, accepted_revision))
@@ -902,4 +911,5 @@ def validate(project: Path) -> dict[str, Any]:
         sum(len(section.entries) for section in production.sections),
         len(production.sections),
         html_state,
+        warnings=upstream_warnings,
     )

@@ -19,7 +19,7 @@ Run:
 python kits/prd-creator/validator/validate_voice.py workspace/active/<project>/
 ```
 
-Every validatable Voice state first reruns PRD Handoff validation. Voice cannot remain current when upstream acceptance/delivery is stale.
+Every validatable Voice state first reruns PRD Handoff validation. Voice cannot remain current when upstream acceptance/delivery is stale. The Voice validator forwards upstream warnings (such as unreviewed requirement traceability or unverified acceptance authenticity) through its read-only result, so an operator using the deepest available status does not silently lose those limits. These warnings are not new acceptance gates.
 
 Voice source identity is exact:
 
