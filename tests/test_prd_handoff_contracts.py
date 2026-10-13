@@ -547,6 +547,42 @@ class PrdHandoffContracts(unittest.TestCase):
         result = self.validate(project)
         self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
 
+    def test_later_voice_edit_does_not_revoke_accepted_prd(self) -> None:
+        project = self.make_project(with_assets=True)
+        voice = project / "work" / "voice-requirements.md"
+        voice.write_text("# Voice Requirements\n\nOriginal text.\n", encoding="utf-8")
+        delivered = run_cli(DELIVERY, project)
+        self.assertEqual(delivered.returncode, 0, delivered.stderr or delivered.stdout)
+        self.assertEqual(self.validate(project).returncode, 0)
+
+        voice.write_text("# Voice Requirements\n\nRevised downstream wording.\n", encoding="utf-8")
+        valid_upstream = self.validate(project)
+        self.assertEqual(valid_upstream.returncode, 0, valid_upstream.stderr or valid_upstream.stdout)
+        payload = json.loads(valid_upstream.stdout)
+        delivery_check = next(
+            check for check in payload["checks"] if check["check"] == "delivery_revision_matches_current_prd"
+        )
+        self.assertIn("optional Voice content is not certified", delivery_check["detail"])
+
+        context = project / "output" / "v1.0.0" / "context.md"
+        text = context.read_text(encoding="utf-8")
+        context.write_text(
+            text.replace("Central interaction target", "Unapproved asset claim", 1),
+            encoding="utf-8",
+        )
+        invalid_upstream = self.validate(project)
+        self.assertEqual(invalid_upstream.returncode, 1, invalid_upstream.stderr or invalid_upstream.stdout)
+        self.assertIn("context.md differs from current canonical PRD/Assets source", invalid_upstream.stdout)
+
+    def test_unreviewed_trace_warning_reaches_handoff(self) -> None:
+        project = self.make_project()
+        result = self.validate(project)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        payload = json.loads(result.stdout)
+        self.assertTrue(any("traceability is unreviewed" in warning for warning in payload["warnings"]))
+        self.assertTrue(any("does not authenticate" in warning for warning in payload["warnings"]))
+        self.assertFalse(payload["semantic_review_authenticated"])
+
     def test_nonsemantic_version_cannot_authorize_handoff(self) -> None:
         project = self.make_project(current_version="Final Review")
         validated = self.validate(project)

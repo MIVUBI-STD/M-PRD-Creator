@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from renderer.delivery import build_context, build_index
 from shared.acceptance import required_value_issues, sha_binding_issues
 from shared.handoff import load_handoff_state
 from shared.issues import Issue, SourceParseError
@@ -521,6 +522,60 @@ def _html_issues(
     return issues
 
 
+def _voice_delivery_context_issues(project: Path, data: dict[str, Any], revision: str) -> list[Issue]:
+    """Verify complete Voice content at final delivery, not at upstream PRD Handoff."""
+
+    base = f"output/v{revision}"
+    context_ref = f"{base}/context.md"
+    index_ref = f"{base}/index.json"
+    try:
+        context_file = resolve_project_path(project, context_ref, must_exist=True)
+        index_file = resolve_project_path(project, index_ref, must_exist=True)
+        context = context_file.read_text(encoding="utf-8")
+        index = json.loads(index_file.read_text(encoding="utf-8"))
+        lines = context.splitlines()
+        if len(lines) < 4 or not lines[3].startswith("Status: "):
+            raise ValueError("context.md is missing the generated status header")
+        status = lines[3].removeprefix("Status: ").strip()
+        if status not in {"unknown", "needs_revision", "development_ready", "handoff_ready"}:
+            raise ValueError(f"context.md contains unsupported status {status!r}")
+        title_data = data["document"]["title"]
+        title = str(title_data.get("en") if isinstance(title_data, dict) else title_data or "").strip()
+        if not title:
+            raise ValueError("current PRD document title is missing")
+        current_context = build_context(project, title, revision, status)
+    except (OSError, UnicodeError, ValueError, ProjectPathError, KeyError, TypeError) as exc:
+        return [
+            _issue(
+                "VOICE_CONTEXT_UNAVAILABLE",
+                "flow7.voice_delivery",
+                f"Current Voice context or index cannot be validated: {exc}",
+                path=context_ref,
+            )
+        ]
+
+    issues: list[Issue] = []
+    if context != current_context:
+        issues.append(
+            _issue(
+                "VOICE_CONTEXT_STALE",
+                "flow7.voice_delivery",
+                "Voice context.md differs from current requirements and accepted PRD sources",
+                path=context_ref,
+            )
+        )
+    if index != build_index(project, title, revision, status, context):
+        issues.append(
+            _issue(
+                "VOICE_INDEX_STALE",
+                "flow7.voice_delivery",
+                "Voice index.json navigation does not match the delivered context",
+                path=index_ref,
+            )
+        )
+    return issues
+
+
 def _delivery_selection_issues(production: VoiceProduction, state: VoiceState) -> list[Issue]:
     if state.status != "voice_delivery_ready":
         return []
@@ -824,6 +879,9 @@ def validate(project: Path) -> dict[str, Any]:
             )
         )
         html_state = "missing"
+
+    if voice_state.status == "voice_delivery_ready":
+        issues.extend(_voice_delivery_context_issues(project, render_data, current_revision))
 
     try:
         issues.extend(_voice_acceptance_issues(project, production_path, voice_state))

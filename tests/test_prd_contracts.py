@@ -341,6 +341,38 @@ class ProjectDocumentContracts(unittest.TestCase):
         self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
         self.assertIn("PRD_HTML_NAV_CONTENT_DRIFT", validated.stdout)
 
+    def test_appended_core_markup_fails_when_no_extension_is_expected(self) -> None:
+        project = self.make_project()
+        self.assertEqual(self.render(project).returncode, 0)
+        path = project / "output" / "v1.0.0" / "prd.html"
+        original = path.read_text(encoding="utf-8")
+        prefix, marker, body = original.partition('<main class="document-main">')
+        self.assertTrue(marker)
+        self.assertIn("</main>", body)
+        path.write_text(
+            prefix + marker + body.replace("</main>", "<p>Unsupported promise</p></main>", 1),
+            encoding="utf-8",
+        )
+        validated = self.validate(project)
+        self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
+        self.assertIn("PRD_HTML_CORE_CONTENT_DRIFT", validated.stdout)
+
+    def test_appended_navigation_markup_fails_when_no_extension_is_expected(self) -> None:
+        project = self.make_project()
+        self.assertEqual(self.render(project).returncode, 0)
+        path = project / "output" / "v1.0.0" / "prd.html"
+        original = path.read_text(encoding="utf-8")
+        prefix, marker, navigation = original.partition('<nav class="sidebar-nav">')
+        self.assertTrue(marker)
+        self.assertIn("</nav>", navigation)
+        path.write_text(
+            prefix + marker + navigation.replace("</nav>", '<a href="#summary">Unsupported link</a></nav>', 1),
+            encoding="utf-8",
+        )
+        validated = self.validate(project)
+        self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
+        self.assertIn("PRD_HTML_NAV_CONTENT_DRIFT", validated.stdout)
+
     def test_renderer_rejects_stale_content_hash(self) -> None:
         project = self.make_project()
         (project / "work" / "content.md").write_text(

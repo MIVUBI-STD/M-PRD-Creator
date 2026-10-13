@@ -136,15 +136,34 @@ def _recorded_delivery_status(document: str, *, owner: str) -> str:
     return status
 
 
+def _context_matches_upstream(project: Path, content: str, title: str, version: str, status: str) -> bool:
+    """Check accepted PRD/Asset bytes, not the later Voice appendix."""
+
+    core = build_context(project, title, version, status, include_voice=False)
+    if content == core:
+        return True
+    if not (project / "work" / "voice-requirements.md").is_file():
+        return False
+    if (project / "work" / "asset-requirements.md").is_file():
+        boundary = "\n\n### Voice Requirements\n\n"
+    else:
+        boundary = "\n\n## Production Assets\n\n### Voice Requirements\n\n"
+    prefix = core.rstrip("\n") + boundary
+    return content.startswith(prefix) and content.endswith("\n") and bool(content[len(prefix) :].strip())
+
+
 def _result(
     errors: list[str],
     checks: list[dict[str, str]],
     issues: list[Issue | dict[str, object]],
+    *,
+    warnings: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
         "status": "pass" if not errors else "fail",
         "proof_scope": "mechanical_only",
         "semantic_review_authenticated": False,
+        "warnings": list(warnings or []),
         "errors": errors,
         "checks": checks,
         "issues": [item.as_dict() if isinstance(item, Issue) else item for item in issues],
@@ -160,6 +179,7 @@ def validate(project: Path) -> dict[str, Any]:
     errors: list[str] = []
     checks: list[dict[str, str]] = []
     issues: list[Issue | dict[str, object]] = []
+    warnings: list[str] = []
 
     def check(
         name: str,
@@ -220,6 +240,7 @@ def validate(project: Path) -> dict[str, Any]:
     )
 
     current_prd = prd_api.validate(project)
+    warnings.extend(item for item in current_prd.get("warnings", []) if isinstance(item, str))
     current_prd_ok = current_prd.get("status") == "pass"
     current_prd_errors = [str(item) for item in current_prd.get("errors", [])]
     check(
@@ -348,19 +369,9 @@ def validate(project: Path) -> dict[str, Any]:
                 delivery_ok = False
                 delivery_details.append("generated context.md and README.md status metadata disagree")
 
-            expected_context = build_context(project, title, current_version, context_status)
-            if context_text != expected_context:
-                # Voice may be authored after PRD Handoff. Previously accepted
-                # PRD/Asset context need not yet include that optional downstream source.
-                post_handoff_voice = (
-                    (project / "work" / "voice-requirements.md").is_file()
-                    and context_text == build_context(
-                        project, title, current_version, context_status, include_voice=False
-                    )
-                )
-                if not post_handoff_voice:
-                    delivery_ok = False
-                    delivery_details.append("context.md differs from current canonical PRD/Assets source")
+            if not _context_matches_upstream(project, context_text, title, current_version, context_status):
+                delivery_ok = False
+                delivery_details.append("context.md differs from current canonical PRD/Assets source")
 
             expected_index = build_index(project, title, current_version, context_status, context_text)
             if index_data != expected_index:
@@ -376,7 +387,7 @@ def validate(project: Path) -> dict[str, Any]:
     check(
         "delivery_revision_matches_current_prd",
         delivery_ok,
-        "context.md, index.json, and output/README.md match deterministic canonical PRD delivery"
+        "Canonical PRD/Assets context prefix, derived index, and README match; optional Voice content is not certified"
         if delivery_ok
         else "; ".join(delivery_details) or "delivery content could not be verified",
         code="HANDOFF_DELIVERY_STALE",
@@ -404,8 +415,13 @@ def validate(project: Path) -> dict[str, Any]:
         record_issue=False,
     )
     issues.extend(acceptance_findings)
+    if acceptance_ok:
+        warnings.append(
+            "Semantic Readiness and Material Conservation are declared review outcomes; "
+            "mechanical handoff does not authenticate the reviewer or approval event."
+        )
 
-    return _result(errors, checks, issues)
+    return _result(errors, checks, issues, warnings=warnings)
 
 
 def main() -> int:

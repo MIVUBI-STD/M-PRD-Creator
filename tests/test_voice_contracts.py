@@ -242,6 +242,38 @@ class VoiceProductionContracts(unittest.TestCase):
         self.assertEqual(validated.returncode, 0, validated.stderr or validated.stdout)
         self.assertIn("project_html=passed", validated.stdout)
 
+    def test_voice_delivery_rejects_stale_context_without_rejecting_prd_handoff(self) -> None:
+        project = self.make_project(
+            status="voice_delivery_ready",
+            include_html=True,
+            include_acceptance=True,
+        )
+        context = project / "output" / "v1.0.0" / "context.md"
+        text = context.read_text(encoding="utf-8")
+        self.assertIn("Tell the player to begin the trial.", text)
+        context.write_text(
+            text.replace("Tell the player to begin the trial.", "New unsourced Voice wording.", 1),
+            encoding="utf-8",
+        )
+        validated = run_cli(VALIDATOR, project)
+        self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
+        self.assertIn("VOICE_CONTEXT_STALE", validated.stdout)
+        self.assertNotIn("VOICE_UPSTREAM_HANDOFF_INVALID", validated.stdout)
+
+    def test_voice_delivery_rejects_stale_index(self) -> None:
+        project = self.make_project(
+            status="voice_delivery_ready",
+            include_html=True,
+            include_acceptance=True,
+        )
+        index_file = project / "output" / "v1.0.0" / "index.json"
+        index = json.loads(index_file.read_text(encoding="utf-8"))
+        index["navigation"] = []
+        index_file.write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
+        validated = run_cli(VALIDATOR, project)
+        self.assertEqual(validated.returncode, 1, validated.stderr or validated.stdout)
+        self.assertIn("VOICE_INDEX_STALE", validated.stdout)
+
     def test_validator_rejects_missing_voice_prompt_in_project_html(self) -> None:
         project = self.make_project(include_html=True)
         html_path = project / "output" / "v1.0.0" / "prd.html"

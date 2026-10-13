@@ -52,7 +52,8 @@ Mechanical validation proves:
 - HTML binds exact current Voice requirements + production bytes;
 - each Voice ID renders on the correct Production Assets page inside its stable Moment;
 - Prompt bytes match canonical performance text;
-- final Voice acceptance binds exact current production bytes.
+- final Voice acceptance binds exact current production bytes;
+- at `voice_delivery_ready`, `context.md` matches current Voice Requirements and upstream PRD content, and `index.json` matches the context navigation.
 
 Mechanical PASS does not prove semantic, naturalness, actor-continuity, expression, pronunciation, visual, or generated-audio quality.
 

@@ -45,7 +45,7 @@ Mechanical validation proves deterministic facts including:
 - core page and navigation HTML match the exact renderer projection, so altering displayed content while leaving metadata hashes untouched fails validation;
 - page/navigation/component markers and duplicate-ID/scoring checks remain valid.
 
-The exact-projection checks cover the canonical PRD core and navigation, not every byte in the Golden shell, scripts, CSS or optional downstream presentation. They are not a browser test or a complete tamper-proof signature.
+The exact-projection checks cover the canonical PRD core and navigation. Without Production Assets or Voice page extensions, they also reject unexpected content appended after the approved main-body and navigation content. Where extensions are present, their appended pages remain subject to separate domain checks. These checks are not complete Golden CSS/script replay, browser tests, or cryptographic signatures.
 
 Mechanical PASS does not prove semantic fidelity or browser visual quality.
 
@@ -205,11 +205,11 @@ status: handoff_ready
 accepted_prd_version: <X.Y.Z>
 ```
 
-Handoff validation proves the canonical PRD validator still passes, accepted version matches current render data, and acceptance binds exact current Render Data + Production Assets bytes. It also regenerates the expected `context.md`, `index.json`, and `output/README.md` representations **in memory** to reject same-version tampering or stale document bodies rather than trusting version text alone. The comparison does not modify delivered artifacts.
+Handoff validation proves the canonical PRD validator still passes, accepted version matches current Render Data, and acceptance binds exact current Render Data + Production Assets bytes. It reconstructs the expected **upstream PRD/Assets part** of `context.md`, checks the delivered `index.json` navigation, and compares `output/README.md` with its deterministic representation. A matching version label alone is insufficient; no delivered file is modified by validation.
 
-Voice Requirements created **after** an accepted PRD Handoff may be absent from the older accepted context; the validator permits that exact pre-Voice context, without certifying the newer optional Voice content. Voice Delivery and its own checks retain responsibility for those downstream artifacts.
+Voice Requirements created **after** PRD Handoff may be absent from its earlier context. Existing Voice appendices may also lag a subsequent Voice edit. PRD Handoff only verifies the exact PRD/Assets prefix; an optional Voice appendix is not an upstream acceptance claim. Final `Voice Delivery` validation checks the entire Voice context and derived index against the current Voice Requirements. Do not interpret upstream PASS as Voice readiness.
 
-The returned `status: pass` has `proof_scope: mechanical_only` and `semantic_review_authenticated: false`. The human-declared `Semantic Readiness: PASS` and `Material Conservation: PASS` remain required acceptance claims, **not authenticated external review evidence**. A real semantic review must still compare current source meaning and accepted decisions; no machine result in this gate proves that work took place.
+The returned `status: pass` has `proof_scope: mechanical_only` and `semantic_review_authenticated: false`. The human-declared `Semantic Readiness: PASS` and `Material Conservation: PASS` remain required acceptance claims, **not authenticated external review evidence**. PRD validator warnings, including unreviewed legacy traceability, are forwarded into handoff output along with that authentication limit. A real semantic review must compare current source meaning and accepted decisions; no machine PASS proves that review actually took place.
 
 ## Targeted requirement revision review
 

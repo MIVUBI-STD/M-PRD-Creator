@@ -201,7 +201,9 @@ def document_composition_errors(data: dict[str, Any], facts: HtmlFacts) -> list[
     return failures
 
 
-def _exact_projection_checks(data: dict[str, Any], html_text: str, relative_html: str) -> list[HtmlCheck]:
+def _exact_projection_checks(
+    project: Path, data: dict[str, Any], html_text: str, relative_html: str
+) -> list[HtmlCheck]:
     """Recreate approved page/navigation HTML without accepting embedded revision metadata as proof."""
 
     # The canonical schema is already validated before this helper is called.
@@ -221,6 +223,10 @@ def _exact_projection_checks(data: dict[str, Any], html_text: str, relative_html
         ]
 
     checks: list[HtmlCheck] = []
+    has_extensions = (
+        (project / "work" / "asset-requirements.md").is_file()
+        or (project / "work" / "voice-production.md").is_file()
+    )
     for marker, expected, name, code, description in (
         (
             '<main class="document-main">',
@@ -244,6 +250,9 @@ def _exact_projection_checks(data: dict[str, Any], html_text: str, relative_html
             and html_text.count(marker) == 1
             and html_text.startswith(expected, marker_at + len(marker))
         )
+        if ok and not has_extensions:
+            closing = "</main>" if name == "html_core_pages_match_current_projection" else "</nav>"
+            ok = html_text.startswith(closing, marker_at + len(marker) + len(expected))
         detail = (
             f"{description} matches the current canonical render projection"
             if ok
@@ -284,7 +293,7 @@ def validate_html_contract(
         )
         return HtmlContractResult(tuple(checks), tuple(expected))
 
-    checks.extend(_exact_projection_checks(data, html_text, relative_html))
+    checks.extend(_exact_projection_checks(project, data, html_text, relative_html))
 
     actual_render_data_sha = hashlib.sha256(data_path.read_bytes()).hexdigest()
     bindings = facts.render_data_sha256
