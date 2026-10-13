@@ -158,6 +158,52 @@ class Flow2StateConsistencyContracts(unittest.TestCase):
                 self.refresh_approval(project)
                 self.assert_flow2_failure(project, needle)
 
+    def test_ready_rejects_explicit_unresolved_evidence_on_source_requirement(self) -> None:
+        for marker in ("conflict", "Conflicted", "unresolved", "blocked"):
+            with self.subTest(evidence_status=marker):
+                project = self.make_project()
+                register = project / "state" / "requirement-register.yaml"
+                register.write_text(
+                    register.read_text(encoding="utf-8") + f"    evidence_status: {marker}\n",
+                    encoding="utf-8",
+                )
+                self.refresh_approval(project)
+                self.assert_flow2_failure(project, "REQUIREMENT_EVIDENCE_UNRESOLVED")
+
+    def test_approved_proposal_does_not_override_explicit_blocked_evidence(self) -> None:
+        project = self.make_project()
+        register = project / "state" / "requirement-register.yaml"
+        register.write_text(
+            "requirements:\n"
+            "  - id: REQ-001\n"
+            "    area: gameplay\n"
+            "    statement: Proposed fixture rule.\n"
+            "    provenance: [SRC-001]\n"
+            "    recovery_class: proposal\n"
+            "    approval_status: approved\n"
+            "    resolution: Approval declared, but evidence remains blocked.\n"
+            "    evidence_status: blocked\n",
+            encoding="utf-8",
+        )
+        self.refresh_approval(project)
+        self.assert_flow2_failure(project, "REQUIREMENT_EVIDENCE_UNRESOLVED")
+
+    def test_resolved_evidence_note_does_not_create_an_unproven_blocker(self) -> None:
+        project = self.make_project()
+        register = project / "state" / "requirement-register.yaml"
+        register.write_text(
+            register.read_text(encoding="utf-8") + "    evidence_status: reviewed_note\n",
+            encoding="utf-8",
+        )
+        self.refresh_approval(project)
+        data_path = project / "work" / "render-data.json"
+        write_render_data(project, json.loads(data_path.read_text(encoding="utf-8")))
+        rendered = run_cli(RENDERER, data_path, project / "output" / "v1.0.0" / "prd.html")
+        self.assertEqual(rendered.returncode, 0, rendered.stderr or rendered.stdout)
+        validated = self.validate(project)
+        self.assertEqual(validated.returncode, 0, validated.stderr or validated.stdout)
+        self.assertFalse(json.loads(validated.stdout)["traceability"]["semantic_verified"])
+
     def test_ready_rejects_dangling_provenance(self) -> None:
         project = self.make_project()
         path = project / "state" / "requirement-register.yaml"

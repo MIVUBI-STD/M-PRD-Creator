@@ -64,6 +64,18 @@ Material Proposals require user approval. Authoritative facts and evidence-backe
 
 The existing requirement-register fields `evidence_locator` and `evidence_status` may preserve a source-specific pointer or unresolved/conflicting evidence note without inventing a new source. Source IDs and current authoritative status remain mechanically checked by `shared/intake.py`. A locator written by AI is a claim to inspect, not proof that the referenced passage exists or agrees with the requirement.
 
+An exact `evidence_status` marker of `conflict`, `conflicted`, `unresolved`, or `blocked`
+is an explicit **open concern**. An ordinary source/Completion requirement
+cannot reach `ready_for_prd` while that marker remains. Even a declared
+approved Proposal does not override `blocked` or `unresolved` evidence.
+
+For `conflict` or `conflicted` only, an already approved material Proposal
+retains its existing declared-approval route and warning that user consent has
+not been independently authenticated. Inspect the real decision before
+clearing the concern. This guard is **not** an automatic semantic conflict
+detector. Other free-form notes remain review hints rather than new machine
+states. Do not rewrite a marker solely to obtain PASS.
+
 Requirement location in PRD production is separate from source provenance; see `../document/CONTENT-CONTRACT.md`. Do not turn an AI-generated evidence pointer or a REQ marker into an approval flag.
 
 For current, repository-retained UTF-8 text, an optional exact locator

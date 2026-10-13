@@ -19,6 +19,7 @@ SOURCE_INSPECTIONS = {"full", "targeted", "blocked"}
 SOURCE_RETENTIONS = {"repository", "external"}
 REQUIREMENT_RECOVERY = {"", "source", "completion", "proposal", "blocked"}
 REQUIREMENT_APPROVAL = {"", "pending", "approved", "rejected"}
+EXPLICIT_OPEN_EVIDENCE = {"conflict", "conflicted", "unresolved", "blocked"}
 INTAKE_STATUSES = {"collecting_sources", "audit_in_progress", "needs_decision", "blocked", "ready_for_prd"}
 
 SOURCE_ROOT_FIELDS = {"sources"}
@@ -274,6 +275,26 @@ def validate_flow2_state(project: Path, *, warnings: list[str] | None = None) ->
                 )
             )
     for requirement in requirements:
+        # Free-form evidence notes are not a new proof authority. Only explicit
+        # unresolved markers block readiness; an approved Proposal keeps its
+        # existing declared-approval warning rather than proving user consent.
+        evidence_marker = requirement.evidence_status.casefold()
+        unresolved_evidence = evidence_marker in EXPLICIT_OPEN_EVIDENCE
+        proposal_conflict_decided = (
+            evidence_marker in {"conflict", "conflicted"}
+            and requirement.recovery_class == "proposal"
+            and requirement.approval_status == "approved"
+        )
+        if unresolved_evidence and not proposal_conflict_decided:
+            issues.append(
+                Issue(
+                    "REQUIREMENT_EVIDENCE_UNRESOLVED",
+                    "flow2.requirement",
+                    "explicit unresolved evidence must be reconciled before ready_for_prd",
+                    path="state/requirement-register.yaml",
+                    field=requirement.requirement_id,
+                )
+            )
         if requirement.recovery_class == "blocked":
             issues.append(
                 Issue(
