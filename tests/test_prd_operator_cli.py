@@ -69,6 +69,25 @@ class PrdOperatorCliContracts(unittest.TestCase):
         self.assertIsNone(payload["first_issue"])
         self.assertIn("no handoff readiness is claimed", payload["next_action"])
 
+    def test_operator_exposes_unreviewed_trace_and_semantic_proof_limits(self) -> None:
+        project = self.make_project()
+        self.assertEqual(run_operator("build", project).returncode, 0)
+        status = run_operator("status", project, "--json")
+        self.assertEqual(status.returncode, 0, status.stderr or status.stdout)
+        payload = json.loads(status.stdout)
+        self.assertFalse(payload["semantic_review_authenticated"])
+        self.assertTrue(any("traceability is unreviewed" in item for item in payload["warnings"]))
+        self.assertTrue(any("mechanical-only" in item for item in payload["warnings"]))
+
+        (project / "work" / "acceptance.md").write_text(acceptance_text(project), encoding="utf-8")
+        (project / "state" / "handoff-state.yaml").write_text(handoff_state_text(), encoding="utf-8")
+        accepted = run_operator("status", project, "--json")
+        self.assertEqual(accepted.returncode, 0, accepted.stderr or accepted.stdout)
+        accepted_payload = json.loads(accepted.stdout)
+        self.assertEqual(accepted_payload["handoff"]["status"], "pass")
+        self.assertTrue(any("does not authenticate" in item for item in accepted_payload["warnings"]))
+        self.assertFalse(accepted_payload["semantic_review_authenticated"])
+
     def test_status_fails_closed_without_structured_validator_issue(self) -> None:
         project = self.make_project()
         with patch.object(

@@ -123,10 +123,14 @@ def _issue_codes(result: dict[str, Any]) -> set[str]:
 
 
 def _domain(result: dict[str, Any]) -> dict[str, Any]:
-    return {
+    scope: dict[str, Any] = {
         "status": str(result.get("status") or "fail"),
         "first_issue": _first_issue(result),
     }
+    source_warnings = result.get("warnings")
+    if isinstance(source_warnings, list):
+        scope["warnings"] = [warning for warning in source_warnings if isinstance(warning, str)]
+    return scope
 
 
 def _passed() -> dict[str, Any]:
@@ -191,6 +195,14 @@ def status_payload(project: Path) -> dict[str, Any]:
         voice = _not_present()
 
     stages = (("prd", prd), ("handoff", handoff), ("voice", voice))
+    warnings: list[str] = []
+    for _, stage in stages:
+        for warning in stage.get("warnings", []):
+            if warning not in warnings:
+                warnings.append(warning)
+    warnings.append(
+        "Status is mechanical-only: acceptance declarations and human semantic review are not authenticated here."
+    )
     first_issue = next(
         (stage["first_issue"] for _, stage in stages if isinstance(stage.get("first_issue"), dict)),
         None,
@@ -224,6 +236,8 @@ def status_payload(project: Path) -> dict[str, Any]:
         "project": project.name,
         "mechanical_status": "blocked" if blocked else "clear",
         "proof_scope": "mechanical_only",
+        "semantic_review_authenticated": False,
+        "warnings": warnings,
         "prd": prd,
         "handoff": handoff,
         "voice": voice,

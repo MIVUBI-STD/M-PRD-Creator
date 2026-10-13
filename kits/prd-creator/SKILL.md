@@ -131,6 +131,8 @@ REQ markers in `work/content.md` identify where approved requirements are repres
 
 Mechanical checks prove mechanical contracts. Semantic review proves meaning. Visual PASS requires browser/render evidence. Audio quality requires actual audio evidence.
 
+The `tools/prd.py status` operator view is a read-only, **mechanical-only** status projection. It carries validator warnings where the existing proof path supplies them, and always makes clear that semantic acceptance and user-review authenticity are not certified. A green `mechanical_status` must never be presented as independent human approval or implementation readiness.
+
 ## First wrong owner
 
 ```text
